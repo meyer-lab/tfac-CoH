@@ -79,7 +79,7 @@ def genFigure():
     start = time.time()
     nameOut = "figure" + sys.argv[1]
 
-    exec("from CoH.figures." + nameOut + " import makeFigure", globals())
+    exec("from coh.figures." + nameOut + " import makeFigure", globals())
     ff = makeFigure()
     ff.savefig(fdir + nameOut + ".svg", dpi=300, bbox_inches="tight", pad_inches=0)
 
