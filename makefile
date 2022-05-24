@@ -6,7 +6,7 @@ flist = 1
 
 all: $(patsubst %, output/figure%.svg, $(flist))
 
-output/figure%.svg: CoH/figures/figure%.py
+output/figure%.svg: coh/figures/figure%.py
 	mkdir -p ./output
 	poetry run fbuild $*
 
