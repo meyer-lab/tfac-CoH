@@ -14,6 +14,7 @@ from ..flow import make_flow_df, make_CoH_Tensor
 
 path_here = os.path.dirname(os.path.dirname(__file__))
 
+
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
@@ -23,7 +24,7 @@ def makeFigure():
     subplotLabel(ax)
     # make_flow_df()
     # make_CoH_Tensor()
-    
+
     num_comps = 10
 
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoH Tensor DataSet.nc"))
@@ -35,7 +36,7 @@ def makeFigure():
     plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Treatment", numComps=num_comps)
     plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Cell", numComps=num_comps)
     plot_tFac_CoH(ax[5], tFacAllM, CoH_Data, "Marker", numComps=num_comps)
-    
+
     return f
 
 
@@ -74,6 +75,5 @@ def plot_tFac_CoH(ax, tFac, CoH_Array, mode, numComps=3):
         tFacDF = pd.concat([tFacDF, pd.DataFrame({"Component_Val": mode_facs[:, i], "Component": (i + 1), mode: mode_labels})])
 
     tFacDF = pd.pivot(tFacDF, index="Component", columns=mode, values="Component_Val")
-
-    sns.heatmap(data=tFacDF, ax=ax)
- 
+    cmap = sns.color_palette("vlag", as_cmap=True)
+    sns.heatmap(data=tFacDF, ax=ax, cmap=cmap, vmin=-1, vmax=1)
