@@ -171,6 +171,7 @@ def make_flow_df():
                         CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker_dict[marker], "Mean": mean})])
 
     #CoH_DF["Mean"] = np.log(CoH_DF["Mean"].values)
+    """
     untreatedDF = CoH_DF.loc[CoH_DF["Treatment"] == "Untreated"]
     for patient in CoH_DF.Patient.unique():
         for time in CoH_DF.Time.unique():
@@ -179,6 +180,7 @@ def make_flow_df():
                     for cell in CoH_DF.Cell.unique():
                         CoH_DF.loc[(CoH_DF["Patient"] == patient) & (CoH_DF["Time"] == time) & (CoH_DF["Marker"] == marker) & (CoH_DF["Cell"] == cell) & (CoH_DF["Treatment"] == treatment),
                                    "Mean"] -= untreatedDF.loc[(untreatedDF["Patient"] == patient) & (untreatedDF["Time"] == time) & (untreatedDF["Marker"] == marker) & (untreatedDF["Cell"] == cell)]["Mean"].values
+    """
 
     CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF.csv"))
 
