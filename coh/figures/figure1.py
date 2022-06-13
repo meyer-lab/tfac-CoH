@@ -7,7 +7,7 @@ import numpy as np
 import seaborn as sns
 import pandas as pd
 import os
-from tensorly.decomposition import parafac
+from tensorly.decomposition import non_negative_parafac, parafac
 from .figureCommon import subplotLabel, getSetup
 from os.path import join
 from ..flow import make_flow_df, make_CoH_Tensor
@@ -42,7 +42,8 @@ def makeFigure():
 
 def factorTensor(tensor, numComps):
     """ Takes Tensor, and mask and returns tensor factorized form. """
-    tfac = parafac(np.nan_to_num(tensor), rank=numComps, mask=np.isfinite(tensor), init='random', n_iter_max=5000, tol=1e-9, random_state=1)
+    tfac = non_negative_parafac(np.nan_to_num(tensor), rank=numComps, mask=np.isfinite(tensor), init='random', n_iter_max=5000, tol=1e-9, random_state=1)
+    print("Hey")
     tensor = tensor.copy()
     tensor[np.isnan(tensor)] = tl.cp_to_tensor(tfac)[np.isnan(tensor)]
     return tfac
@@ -52,6 +53,7 @@ def R2Xplot(ax, tensor, compNum):
     """Creates R2X plot for non-neg CP tensor decomposition"""
     varHold = np.zeros(compNum)
     for i in range(1, compNum + 1):
+        print(i)
         tFac = factorTensor(tensor, i)
         varHold[i - 1] = calcR2X(tensor, tFac)
 
