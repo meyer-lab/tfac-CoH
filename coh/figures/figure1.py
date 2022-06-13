@@ -30,7 +30,7 @@ def makeFigure():
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoH Tensor DataSet.nc"))
     tFacAllM = factorTensor(CoH_Data.values, numComps=num_comps)
     tFacAllM.normalize()
-    R2Xplot(ax[0], CoH_Data.values, compNum=6)
+    R2Xplot(ax[0], CoH_Data.values, compNum=10)
     plot_tFac_CoH(ax[1], tFacAllM, CoH_Data, "Patient", numComps=num_comps)
     plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Time", numComps=num_comps)
     plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Treatment", numComps=num_comps)
@@ -42,7 +42,7 @@ def makeFigure():
 
 def factorTensor(tensor, numComps):
     """ Takes Tensor, and mask and returns tensor factorized form. """
-    tfac = non_negative_parafac(np.nan_to_num(tensor), rank=numComps, mask=np.isfinite(tensor), init='random', n_iter_max=5000, tol=1e-9, random_state=1)
+    tfac = parafac(np.nan_to_num(tensor), rank=numComps, mask=np.isfinite(tensor), init='random', n_iter_max=5000, tol=1e-9, random_state=1)
     tensor = tensor.copy()
     tensor[np.isnan(tensor)] = tl.cp_to_tensor(tfac)[np.isnan(tensor)]
     return tfac
@@ -78,4 +78,4 @@ def plot_tFac_CoH(ax, tFac, CoH_Array, mode, numComps=3):
 
     tFacDF = pd.pivot(tFacDF, index="Component", columns=mode, values="Component_Val")
     cmap = sns.color_palette("vlag", as_cmap=True)
-    sns.heatmap(data=tFacDF, ax=ax, cmap=cmap, vmin=0, vmax=1)
+    sns.heatmap(data=tFacDF, ax=ax, cmap=cmap, vmin=-1, vmax=1)
