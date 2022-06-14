@@ -19,7 +19,7 @@ path_here = os.path.dirname(os.path.dirname(__file__))
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((4, 8), (1, 2))
+    ax, f = getSetup((8, 4), (1, 2))
 
     # Add subplot labels
     subplotLabel(ax)
