@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-flist = 1
+flist = 1 2
 
 .PHONY: clean test all
 
