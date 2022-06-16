@@ -131,7 +131,7 @@ def pop_gate(sample, cell_type, patient, gateDF):
     return pop_sample
 
 
-def make_flow_df():
+def make_flow_df(subtract=True):
     """Compiles data for all populations for all patients into .csv"""
     patients = ["Patient 35", "Patient 43", "Patient 44", "Patient 45", "Patient 52", "Patient 54", "Patient 56", "Patient 58", "Patient 63", "Patient 66", "Patient 70", "Patient 79"]
     times = ["15min", "60min"]
@@ -170,22 +170,26 @@ def make_flow_df():
                         mean = np.mean(mean.values[mean.values < np.quantile(mean.values, 0.995)])
                         CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker_dict[marker], "Mean": mean})])
 
-    #CoH_DF["Mean"] = np.log(CoH_DF["Mean"].values)
-    untreatedDF = CoH_DF.loc[CoH_DF["Treatment"] == "Untreated"]
-    for patient in CoH_DF.Patient.unique():
-        for time in CoH_DF.Time.unique():
-            for marker in CoH_DF.Marker.unique():
-                for treatment in CoH_DF.Treatment.unique():
-                    for cell in CoH_DF.Cell.unique():
-                        CoH_DF.loc[(CoH_DF["Patient"] == patient) & (CoH_DF["Time"] == time) & (CoH_DF["Marker"] == marker) & (CoH_DF["Cell"] == cell) & (CoH_DF["Treatment"] == treatment),
-                                   "Mean"] -= untreatedDF.loc[(untreatedDF["Patient"] == patient) & (untreatedDF["Time"] == time) & (untreatedDF["Marker"] == marker) & (untreatedDF["Cell"] == cell)]["Mean"].values
+    if subtract:
+        untreatedDF = CoH_DF.loc[CoH_DF["Treatment"] == "Untreated"]
+        for patient in CoH_DF.Patient.unique():
+            for time in CoH_DF.Time.unique():
+                for marker in CoH_DF.Marker.unique():
+                    for treatment in CoH_DF.Treatment.unique():
+                        for cell in CoH_DF.Cell.unique():
+                            CoH_DF.loc[(CoH_DF["Patient"] == patient) & (CoH_DF["Time"] == time) & (CoH_DF["Marker"] == marker) & (CoH_DF["Cell"] == cell) & (CoH_DF["Treatment"] == treatment),
+                                    "Mean"] -= untreatedDF.loc[(untreatedDF["Patient"] == patient) & (untreatedDF["Time"] == time) & (untreatedDF["Marker"] == marker) & (untreatedDF["Cell"] == cell)]["Mean"].values
+        CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF.csv"))
+    else:
+        CoH_DF.to_csv(join(path_here, "coh/data/NN_CoH_Flow_DF.csv"))
 
-    CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF.csv"))
 
-
-def make_CoH_Tensor():
+def make_CoH_Tensor(subtract=True):
     """Processes RA DataFrame into Xarray Tensor"""
-    CoH_DF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_DF.csv"))
+    if subtract:
+        CoH_DF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_DF.csv"))
+    else:
+        CoH_DF = pd.read_csv(join(path_here, "coh/data/NN_CoH_Flow_DF.csv"))
     patients = CoH_DF.Patient.unique()
     times = CoH_DF.Time.unique()
     treatments = CoH_DF.Treatment.unique()
@@ -210,5 +214,8 @@ def make_CoH_Tensor():
         tensor[:, :, :, :, i][~np.isnan(tensor[:, :, :, :, i])] /= np.nanmax(tensor[:, :, :, :, i])
 
     CoH_xarray = xa.DataArray(tensor, dims=("Patient", "Time", "Treatment", "Cell", "Marker"), coords={"Patient": patients, "Time": times, "Treatment": treatments, "Cell": cells, "Marker": markers})
-    CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH Tensor DataSet.nc"))
+    if subtract:
+        CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH Tensor DataSet.nc"))
+    else:
+        CoH_xarray.to_netcdf(join(path_here, "coh/data/NN CoH Tensor DataSet.nc"))
     return tensor
