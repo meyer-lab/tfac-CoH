@@ -8,6 +8,7 @@ import seaborn as sns
 import pandas as pd
 import os
 from tensorly.decomposition import non_negative_parafac, parafac
+from tensorpack.cmtf import cp_normalize
 from .figureCommon import subplotLabel, getSetup
 from os.path import join
 from ..flow import make_flow_df, make_CoH_Tensor
@@ -29,7 +30,7 @@ def makeFigure():
 
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoH Tensor DataSet.nc"))
     tFacAllM = factorTensor(CoH_Data.values, numComps=num_comps)
-    tFacAllM.normalize()
+    cp_normalize(tFacAllM)
     R2Xplot(ax[0], CoH_Data.values, compNum=10)
     plot_tFac_CoH(ax[1], tFacAllM, CoH_Data, "Patient", numComps=num_comps)
     plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Time", numComps=num_comps)
