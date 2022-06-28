@@ -28,7 +28,7 @@ def makeFigure():
 
     num_comps = 10
 
-    CoH_Data = xa.open_dataarray(join(path_here, "data/CoH Tensor DataSet Just Signal.nc"))
+    CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
     tFacAllM = factorTensor(CoH_Data.values, numComps=num_comps)
     cp_normalize(tFacAllM)
     R2Xplot(ax[0], CoH_Data.values, compNum=25)

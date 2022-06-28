@@ -228,7 +228,7 @@ def make_CoH_Tensor(subtract=True, just_signal=False):
     CoH_xarray = xa.DataArray(tensor, dims=("Patient", "Time", "Treatment", "Cell", "Marker"), coords={"Patient": patients, "Time": times, "Treatment": treatments, "Cell": cells, "Marker": markers})
     if subtract:
         if just_signal:
-            CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH Tensor DataSet Just Signal.nc"))
+            CoH_xarray.to_netcdf(join(path_here, "coh/data/CoHTensorDataJustSignal.nc"))
         else:
             CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH Tensor DataSet.nc"))
     else:
