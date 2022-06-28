@@ -38,6 +38,7 @@ def makeFigure():
     plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Cell", numComps=num_comps)
     plot_tFac_CoH(ax[5], tFacAllM, CoH_Data, "Marker", numComps=num_comps)
 
+
     return f
 
 
