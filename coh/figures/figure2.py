@@ -24,7 +24,7 @@ def makeFigure():
     # Add subplot labels
     subplotLabel(ax)
 
-    CoH_Data = xa.open_dataarray(join(path_here, "data/CoH Tensor DataSet.nc"))
+    CoH_Data = xa.open_dataarray(join(path_here, "data/NN CoH Tensor DataSet.nc"))
     # perform parafac
     tc = Decomposition(CoH_Data.to_numpy(), max_rr=12)
     tc.perform_tfac()
