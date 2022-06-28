@@ -83,9 +83,6 @@ develop = false
 [package.dependencies]
 decorator = "*"
 fcsparser = ">=0.1.1"
-matplotlib = ">=1.5.3"
-pandas = ">=0.19.0"
-scipy = "*"
 
 [package.source]
 type = "git"

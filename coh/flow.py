@@ -195,7 +195,7 @@ def make_flow_df(subtract=True):
         CoH_DF.to_csv(join(path_here, "coh/data/NN_CoH_Flow_DF.csv"))
 
 
-def make_CoH_Tensor(subtract=True):
+def make_CoH_Tensor(subtract=True, just_signal=False):
     """Processes RA DataFrame into Xarray Tensor"""
     if subtract:
         CoH_DF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_DF.csv"))
@@ -205,7 +205,10 @@ def make_CoH_Tensor(subtract=True):
     times = CoH_DF.Time.unique()
     treatments = CoH_DF.Treatment.unique()
     cells = CoH_DF.Cell.unique()
-    markers = CoH_DF.Marker.unique()
+    if just_signal:
+        markers = np.array(["pSTAT1", "pSTAT3", "pSTAT4", "pSTAT5", "pSTAT6", "pSmad1-2"])
+    else:
+        markers = CoH_DF.Marker.unique()
 
     tensor = np.empty((len(patients), len(times), len(treatments), len(cells), len(markers)))
     tensor[:] = np.nan
@@ -216,8 +219,6 @@ def make_CoH_Tensor(subtract=True):
                 for ii, cell in enumerate(cells):
                     for jj, mark in enumerate(markers):
                         entry = CoH_DF.loc[(CoH_DF.Patient == pat) & (CoH_DF.Time == tim) & (CoH_DF.Treatment == treat) & (CoH_DF.Cell == cell) & (CoH_DF.Marker == mark)]["Mean"].values
-                        if np.isnan(np.mean(entry)):
-                            print(pat, tim, treat, cell, mark)
                         tensor[i, j, k, ii, jj] = np.mean(entry)
 
     # Normalize
@@ -226,7 +227,10 @@ def make_CoH_Tensor(subtract=True):
 
     CoH_xarray = xa.DataArray(tensor, dims=("Patient", "Time", "Treatment", "Cell", "Marker"), coords={"Patient": patients, "Time": times, "Treatment": treatments, "Cell": cells, "Marker": markers})
     if subtract:
-        CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH Tensor DataSet.nc"))
+        if just_signal:
+            CoH_xarray.to_netcdf(join(path_here, "coh/data/CoHTensorDataJustSignal.nc"))
+        else:
+            CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH Tensor DataSet.nc"))
     else:
         CoH_xarray.to_netcdf(join(path_here, "coh/data/NN CoH Tensor DataSet.nc"))
     return tensor
