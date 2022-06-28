@@ -133,7 +133,7 @@ def pop_gate(sample, cell_type, patient, gateDF):
 
 def make_flow_df(subtract=True):
     """Compiles data for all populations for all patients into .csv"""
-    patients = ["Patient 35", "Patient 43", "Patient 44", "Patient 45", "Patient 52", "Patient 54", "Patient 56", "Patient 58", "Patient 63", "Patient 66", "Patient 70", "Patient 79"]
+    patients = ["Patient 35", "Patient 43", "Patient 44", "Patient 45", "Patient 52", "Patient 54", "Patient 56", "Patient 58", "Patient 63", "Patient 66", "Patient 70", "Patient 79", "Patient 4", "Patient 8", "Patient 406"]
     times = ["15min", "60min"]
     treatments = [
         "IFNg-1ng",
@@ -152,23 +152,34 @@ def make_flow_df(subtract=True):
         "Untreated"]
     cell_types = ["T", "CD16 NK", "CD8+", "CD4+", "CD4-/CD8-", "Treg", "Treg 1", "Treg 2", "Treg 3", "CD8 TEM", "CD8 TCM", "CD8 Naive", "CD8 TEMRA",
                   "CD4 TEM", "CD4 TCM", "CD4 Naive", "CD4 TEMRA", "CD20 B", "CD20 B Naive", "CD20 B Memory", "CD33 Myeloid", "Classical Monocyte", "NC Monocyte"]
+    markers_all = ["pSTAT4", "CD20", "CD14", "pSTAT6", "CD27", "CD3", "CD33", "CD45RA", "Live/Dead", "CD4", "CD16", "CD8", "pSTAT3", "pSTAT1", "pSmad1-2", "FoxP3", "pSTAT5"]
     gateDF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_Gates.csv"))
     CoH_DF = pd.DataFrame([])
 
     for patient in patients:
         patient_num = patient.split(" ")[1]
+        patient_files = []
+        for name in Path(r"" + str("/opt/CoH/" + patient + "/")).glob("**/*.fcs"):
+            patient_files.append(str(name))
         for time in times:
             for treatment in treatments:
                 print(patient, time, treatment)
-                sample = FCMeasurement(ID="Sample", datafile="/opt/CoH/" + patient + "/----F" + patient_num + "_" + time + "_" + treatment + "_Unmixed.fcs")
-                sample, markers = process_sample(sample)
-                sample = live_PBMC_gate(sample, patient, gateDF)
-                for cell_type in cell_types:
-                    pop_sample = pop_gate(sample, cell_type, patient, gateDF)
-                    for marker in markers:
-                        mean = pop_sample.data[marker_dict[marker]]
-                        mean = np.mean(mean.values[mean.values < np.quantile(mean.values, 0.995)])
-                        CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker_dict[marker], "Mean": mean})])
+                if ("/opt/CoH/" + patient + "/----F" + patient_num + "_" + time + "_" + treatment + "_Unmixed.fcs" in patient_files):
+                    sample = FCMeasurement(ID="Sample", datafile="/opt/CoH/" + patient + "/----F" + patient_num + "_" + time + "_" + treatment + "_Unmixed.fcs")
+                    sample, markers = process_sample(sample)
+                    sample = live_PBMC_gate(sample, patient, gateDF)
+                    for cell_type in cell_types:
+                        pop_sample = pop_gate(sample, cell_type, patient, gateDF)
+                        for marker in markers:
+                            mean = pop_sample.data[marker_dict[marker]]
+                            mean = np.mean(mean.values[mean.values < np.quantile(mean.values, 0.995)])
+                            np.log(-1)
+                            CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker_dict[marker], "Mean": mean})])
+                else:
+                    print("Skipped")
+                    for cell_type in cell_types:
+                        for marker in markers_all:
+                            CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker, "Mean": np.nan})])
 
     if subtract:
         untreatedDF = CoH_DF.loc[CoH_DF["Treatment"] == "Untreated"]
