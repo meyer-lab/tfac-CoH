@@ -5,14 +5,13 @@ import xarray as xa
 import numpy as np
 import seaborn as sns
 import pandas as pd
-import os
 from tensorly.cp_tensor import cp_flip_sign
 from tensorpack.cmtf import cp_normalize, perform_CP
 from .figureCommon import subplotLabel, getSetup
-from os.path import join
+from os.path import join, dirname
 from ..flow import make_flow_df, make_CoH_Tensor
 
-path_here = os.path.dirname(os.path.dirname(__file__))
+path_here = dirname(dirname(__file__))
 
 
 def makeFigure():
@@ -28,7 +27,7 @@ def makeFigure():
     num_comps = 8
 
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
-    tFacAllM = factorTensor(CoH_Data.values, numComps=num_comps)
+    tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
     cp_normalize(tFacAllM)
     R2Xplot(ax[0], CoH_Data.values, compNum=15)
     plot_tFac_CoH(ax[1], tFacAllM, CoH_Data, "Patient", numComps=num_comps)
@@ -43,9 +42,10 @@ def makeFigure():
 
 def factorTensor(tensor, numComps):
     """ Takes Tensor, and mask and returns tensor factorized form. """
-    tfac = perform_CP(tensor, numComps, tol=1e-7, maxiter=1000, progress=True)
+    tfac = perform_CP(tensor, numComps, tol=1e-7, maxiter=1000)
+    R2X = tfac.R2X
     tfac = cp_flip_sign(tfac)
-    return tfac
+    return tfac, R2X
 
 
 def R2Xplot(ax, tensor, compNum):
@@ -53,8 +53,8 @@ def R2Xplot(ax, tensor, compNum):
     varHold = np.zeros(compNum)
     for i in range(1, compNum + 1):
         print(i)
-        tFac = factorTensor(tensor, i)
-        varHold[i - 1] = tFac.R2X
+        _, R2X = factorTensor(tensor, i)
+        varHold[i - 1] = R2X
 
     ax.scatter(np.arange(1, compNum + 1), varHold, c='k', s=20.)
     ax.set(title="R2X", ylabel="Variance Explained", xlabel="Number of Components", ylim=(0, 1), xlim=(0, compNum + 0.5), xticks=np.arange(0, compNum + 1))
