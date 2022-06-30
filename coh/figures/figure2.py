@@ -2,18 +2,13 @@
 This creates Figure 1.
 """
 import xarray as xa
-import tensorly as tl
-import numpy as np
-import seaborn as sns
-import pandas as pd
-import os
 from tensorpack import Decomposition
 from tensorpack.tucker import tucker_decomp
 from tensorpack.plot import reduction, tucker_reduction
 from .figureCommon import subplotLabel, getSetup
-from os.path import join
+from os.path import join, dirname
 
-path_here = os.path.dirname(os.path.dirname(__file__))
+path_here = dirname(dirname(__file__))
 
 
 def makeFigure():
@@ -24,15 +19,15 @@ def makeFigure():
     # Add subplot labels
     subplotLabel(ax)
 
-    CoH_Data = xa.open_dataarray(join(path_here, "data/NN CoH Tensor DataSet.nc"))
+    CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
     # perform parafac
-    tc = Decomposition(CoH_Data.to_numpy(), max_rr=12)
+    tc = Decomposition(CoH_Data.to_numpy(), max_rr=8)
     tc.perform_tfac()
-    tc.perform_PCA(flattenon=2)
+    tc.perform_PCA(flattenon=0)
 
     reduction(ax[0], tc)
-    tuck = Decomposition(CoH_Data.to_numpy(), method=tucker_decomp)
-    para = Decomposition(CoH_Data.to_numpy())
-    tucker_reduction(ax[1], tuck, para)
+    #tuck = Decomposition(CoH_Data.to_numpy(), method=tucker_decomp, max_rr=2)
+    #para = Decomposition(CoH_Data.to_numpy())
+    #tucker_reduction(ax[1], tuck, para)
 
     return f
