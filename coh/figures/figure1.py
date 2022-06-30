@@ -2,13 +2,12 @@
 This creates Figure 1.
 """
 import xarray as xa
-import tensorly as tl
 import numpy as np
 import seaborn as sns
 import pandas as pd
 import os
-from tensorly.decomposition import non_negative_parafac, parafac
-from tensorpack.cmtf import cp_normalize
+from tensorly.cp_tensor import cp_flip_sign
+from tensorpack.cmtf import cp_normalize, perform_CP
 from .figureCommon import subplotLabel, getSetup
 from os.path import join
 from ..flow import make_flow_df, make_CoH_Tensor
@@ -26,12 +25,12 @@ def makeFigure():
     # make_flow_df()
     # make_CoH_Tensor(just_signal=True)
 
-    num_comps = 10
+    num_comps = 8
 
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
     tFacAllM = factorTensor(CoH_Data.values, numComps=num_comps)
     cp_normalize(tFacAllM)
-    R2Xplot(ax[0], CoH_Data.values, compNum=25)
+    R2Xplot(ax[0], CoH_Data.values, compNum=15)
     plot_tFac_CoH(ax[1], tFacAllM, CoH_Data, "Patient", numComps=num_comps)
     plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Time", numComps=num_comps)
     plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Treatment", numComps=num_comps)
@@ -44,9 +43,8 @@ def makeFigure():
 
 def factorTensor(tensor, numComps):
     """ Takes Tensor, and mask and returns tensor factorized form. """
-    tfac = parafac(np.nan_to_num(tensor), rank=numComps, mask=np.isfinite(tensor), init='random', n_iter_max=5000, tol=1e-9, random_state=1)
-    tensor = tensor.copy()
-    tensor[np.isnan(tensor)] = tl.cp_to_tensor(tfac)[np.isnan(tensor)]
+    tfac = perform_CP(tensor, numComps, tol=1e-7, maxiter=1000, progress=True)
+    tfac = cp_flip_sign(tfac)
     return tfac
 
 
@@ -56,16 +54,10 @@ def R2Xplot(ax, tensor, compNum):
     for i in range(1, compNum + 1):
         print(i)
         tFac = factorTensor(tensor, i)
-        varHold[i - 1] = calcR2X(tensor, tFac)
+        varHold[i - 1] = tFac.R2X
 
     ax.scatter(np.arange(1, compNum + 1), varHold, c='k', s=20.)
     ax.set(title="R2X", ylabel="Variance Explained", xlabel="Number of Components", ylim=(0, 1), xlim=(0, compNum + 0.5), xticks=np.arange(0, compNum + 1))
-
-
-def calcR2X(tensorIn, tensorFac):
-    """ Calculate R2X. """
-    tErr = np.nanvar(tl.cp_to_tensor(tensorFac) - tensorIn)
-    return 1.0 - tErr / np.nanvar(tensorIn)
 
 
 def plot_tFac_CoH(ax, tFac, CoH_Array, mode, numComps=3):
