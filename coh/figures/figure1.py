@@ -21,8 +21,8 @@ def makeFigure():
 
     # Add subplot labels
     subplotLabel(ax)
-    # make_flow_df()
-    # make_CoH_Tensor(just_signal=True)
+    #make_flow_df()
+    #make_CoH_Tensor(just_signal=True)
 
     num_comps = 8
 
@@ -73,5 +73,5 @@ def plot_tFac_CoH(ax, tFac, CoH_Array, mode, numComps=3):
     tFacDF = pd.pivot(tFacDF, index="Component", columns=mode, values="Component_Val")
     cmap = sns.color_palette("vlag", as_cmap=True)
     if mode == "Patient":
-        tFacDF = tFacDF[["Patient 35", "Patient 43", "Patient 44", "Patient 45", "Patient 52", "Patient 54", "Patient 56", "Patient 58", "Patient 63", "Patient 66", "Patient 70", "Patient 79", "Patient 4", "Patient 8", "Patient 406"]]
+        tFacDF = tFacDF[["Patient 35", "Patient 43", "Patient 44", "Patient 45", "Patient 52", "Patient 54", "Patient 56", "Patient 58", "Patient 63", "Patient 66", "Patient 70", "Patient 79", "Patient 4", "Patient 8", "Patient 406", "Patient 10-T1",  "Patient 10-T2",  "Patient 10-T3", "Patient 15-T1",  "Patient 15-T2",  "Patient 15-T3"]]
     sns.heatmap(data=tFacDF, ax=ax, cmap=cmap, vmin=-1, vmax=1)

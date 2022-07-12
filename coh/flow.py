@@ -133,7 +133,7 @@ def pop_gate(sample, cell_type, patient, gateDF):
 
 def make_flow_df(subtract=True):
     """Compiles data for all populations for all patients into .csv"""
-    patients = ["Patient 35", "Patient 43", "Patient 44", "Patient 45", "Patient 52", "Patient 54", "Patient 56", "Patient 58", "Patient 63", "Patient 66", "Patient 70", "Patient 79", "Patient 4", "Patient 8", "Patient 406"]
+    patients = ["Patient 35", "Patient 43", "Patient 44", "Patient 45", "Patient 52", "Patient 54", "Patient 56", "Patient 58", "Patient 63", "Patient 66", "Patient 70", "Patient 79", "Patient 4", "Patient 8", "Patient 406", "Patient 10-T1",  "Patient 10-T2",  "Patient 10-T3", "Patient 15-T1",  "Patient 15-T2",  "Patient 15-T3"]
     times = ["15min", "60min"]
     treatments = [
         "IFNg-1ng",
@@ -153,7 +153,7 @@ def make_flow_df(subtract=True):
     cell_types = ["T", "CD16 NK", "CD8+", "CD4+", "CD4-/CD8-", "Treg", "Treg 1", "Treg 2", "Treg 3", "CD8 TEM", "CD8 TCM", "CD8 Naive", "CD8 TEMRA",
                   "CD4 TEM", "CD4 TCM", "CD4 Naive", "CD4 TEMRA", "CD20 B", "CD20 B Naive", "CD20 B Memory", "CD33 Myeloid", "Classical Monocyte", "NC Monocyte"]
     markers_all = ["pSTAT4", "CD20", "CD14", "pSTAT6", "CD27", "CD3", "CD33", "CD45RA", "Live/Dead", "CD4", "CD16", "CD8", "pSTAT3", "pSTAT1", "pSmad1-2", "FoxP3", "pSTAT5"]
-    gateDF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_Gates.csv"))
+    gateDF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_Gates.csv")).reset_index().drop("Unnamed: 0", axis=1)
     CoH_DF = pd.DataFrame([])
 
     for patient in patients:
