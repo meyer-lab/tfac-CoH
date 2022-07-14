@@ -10,6 +10,7 @@ import pandas as pd
 import numpy as np
 import warnings
 import xarray as xa
+from copy import copy
 from FlowCytometryTools import PolyGate, FCMeasurement
 
 path_here = os.path.dirname(os.path.dirname(__file__))
@@ -125,13 +126,15 @@ def live_PBMC_gate(sample, patient, gateDF):
 def pop_gate(sample, cell_type, patient, gateDF):
     """Extracts cell population sample"""
     gates = gate_dict[cell_type]
+    pop_sample = copy(sample)
     for gate_name in gates:
         gate = form_gate(gateDF.loc[(gateDF["Patient"] == patient) & (gateDF["Gate Label"] == gate_name)].Gate.values[0])
-        pop_sample = sample.gate(gate)
-    return pop_sample
+        pop_sample = pop_sample.gate(gate)
+    abund = pop_sample.counts / sample.counts
+    return pop_sample, abund
 
 
-def make_flow_df(subtract=True):
+def make_flow_df(subtract=True, abundance=False):
     """Compiles data for all populations for all patients into .csv"""
     patients = ["Patient 35", "Patient 43", "Patient 44", "Patient 45", "Patient 52", "Patient 54", "Patient 56", "Patient 58", "Patient 63", "Patient 66", "Patient 70", "Patient 79", "Patient 4", "Patient 8", "Patient 406", "Patient 10-T1",  "Patient 10-T2",  "Patient 10-T3", "Patient 15-T1",  "Patient 15-T2",  "Patient 15-T3"]
     times = ["15min", "60min"]
@@ -169,17 +172,23 @@ def make_flow_df(subtract=True):
                     sample, markers = process_sample(sample)
                     sample = live_PBMC_gate(sample, patient, gateDF)
                     for cell_type in cell_types:
-                        pop_sample = pop_gate(sample, cell_type, patient, gateDF)
-                        for marker in markers:
-                            mean = pop_sample.data[marker_dict[marker]]
-                            mean = np.mean(mean.values[mean.values < np.quantile(mean.values, 0.995)])
-                            np.log(-1)
-                            CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker_dict[marker], "Mean": mean})])
+                        pop_sample, abund = pop_gate(sample, cell_type, patient, gateDF)
+                        if abundance:
+                            CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Abundance": abund})])
+                        else:
+                            for marker in markers:
+                                mean = pop_sample.data[marker_dict[marker]]
+                                mean = np.mean(mean.values[mean.values < np.quantile(mean.values, 0.995)])
+                                CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker_dict[marker], "Mean": mean})])
                 else:
                     print("Skipped")
                     for cell_type in cell_types:
                         for marker in markers_all:
-                            CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker, "Mean": np.nan})])
+                            if abund:
+                                CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Abundance": np.nan})])
+                            else:
+                                CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker, "Mean": np.nan})])
+
 
     if subtract:
         untreatedDF = CoH_DF.loc[CoH_DF["Treatment"] == "Untreated"]
@@ -192,7 +201,10 @@ def make_flow_df(subtract=True):
                                     "Mean"] -= untreatedDF.loc[(untreatedDF["Patient"] == patient) & (untreatedDF["Time"] == time) & (untreatedDF["Marker"] == marker) & (untreatedDF["Cell"] == cell)]["Mean"].values
         CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF.csv"))
     else:
-        CoH_DF.to_csv(join(path_here, "coh/data/NN_CoH_Flow_DF.csv"))
+        if abund:
+            CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_Abund.csv"))
+        else:    
+            CoH_DF.to_csv(join(path_here, "coh/data/NN_CoH_Flow_DF.csv"))
 
 
 def make_CoH_Tensor(subtract=True, just_signal=False):
@@ -233,4 +245,33 @@ def make_CoH_Tensor(subtract=True, just_signal=False):
             CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH Tensor DataSet.nc"))
     else:
         CoH_xarray.to_netcdf(join(path_here, "coh/data/NN CoH Tensor DataSet.nc"))
+    return tensor
+
+
+def make_CoH_Tensor_abund():
+    """Processes RA DataFrame into Xarray Tensor"""
+    CoH_DF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_DF_Abund.csv"))
+
+    patients = CoH_DF.Patient.unique()
+    times = CoH_DF.Time.unique()
+    treatments = CoH_DF.Treatment.unique()
+    cells = CoH_DF.Cell.unique()
+
+    tensor = np.empty((len(patients), len(times), len(treatments), len(cells)))
+    tensor[:] = np.nan
+    for i, pat in enumerate(patients):
+        print(pat)
+        for j, tim in enumerate(times):
+            for k, treat in enumerate(treatments):
+                for ii, cell in enumerate(cells):
+                    entry = CoH_DF.loc[(CoH_DF.Patient == pat) & (CoH_DF.Time == tim) & (CoH_DF.Treatment == treat) & (CoH_DF.Cell == cell)]["Abundance"].values
+                    tensor[i, j, k, ii] = np.mean(entry)
+
+    # Normalize
+    for i, _ in enumerate(cells):
+        tensor[:, :, :, i][~np.isnan(tensor[:, :, :, i])] /= np.nanmax(tensor[:, :, :, i])
+        tensor[:, :, :, i][~np.isnan(tensor[:, :, :, i])] -= np.nanmean(tensor[:, :, :, i])
+
+    CoH_xarray = xa.DataArray(tensor, dims=("Patient", "Time", "Treatment", "Cell"), coords={"Patient": patients, "Time": times, "Treatment": treatments, "Cell": cells})
+    CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH_Tensor_Abundance.nc"))
     return tensor

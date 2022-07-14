@@ -24,7 +24,7 @@ def makeFigure():
     #make_flow_df()
     #make_CoH_Tensor(just_signal=True)
 
-    num_comps = 8
+    num_comps = 10
 
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)

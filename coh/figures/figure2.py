@@ -23,7 +23,7 @@ path_here = os.path.dirname(os.path.dirname(__file__))
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((8, 8), (2, 2))
+    ax, f = getSetup((6, 3), (1, 2))
 
     # Add subplot labels
     subplotLabel(ax)
@@ -31,17 +31,17 @@ def makeFigure():
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
     
     #makePCA_df(CoH_Data)
-    plot_PCA(ax[0:2])
+    #plot_PCA(ax[0:2])
     
     # perform parafac
-    tc = Decomposition(CoH_Data.to_numpy()[0:-3, :, :, :, :], max_rr=12)
+    tc = Decomposition(CoH_Data.to_numpy()[0:-9, :, :, :, :], max_rr=12)
     tc.perform_tfac()
     tc.perform_PCA(flattenon=2)
 
-    reduction(ax[2], tc)
-    tuck = Decomposition(CoH_Data.to_numpy()[0:-3, :, :, :, :], method=tucker_decomp)
-    para = Decomposition(CoH_Data.to_numpy()[0:-3, :, :, :, :])
-    tucker_reduction(ax[3], tuck, para)
+    reduction(ax[0], tc)
+    tuck = Decomposition(CoH_Data.to_numpy()[0:-9, :, :, :, :], method=tucker_decomp)
+    para = Decomposition(CoH_Data.to_numpy()[0:-9, :, :, :, :])
+    tucker_reduction(ax[1], tuck, para)
 
     return f
 
