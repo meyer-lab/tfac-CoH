@@ -39,8 +39,8 @@ marker_dict = {"Alexa Fluor 647-A": "pSTAT4",
                "PE-A": "pSmad1-2",
                "PE-CF594-A": "FoxP3",
                "PE-Cy7-A": "pSTAT5",
-               "BV605-A": "PD1",
-               "BV510": "PDL1"}
+               "BV605-A": "PD-1",
+               "BV510-A": "PD-L1"}
 
 
 def compile_patient(patient_num, cellFrac):
@@ -56,7 +56,7 @@ def compile_patient(patient_num, cellFrac):
 def combineWells(samples, cellFrac):
     """Accepts sample array returned from importF, and array of channels, returns combined well data"""
     markers = np.array(["Alexa Fluor 647-A", "Alexa Fluor 700-A", "BV650-A", "APC-Cy7-A", "V450-A", "BV786-A", "BV570-A", "BV750-A", "BUV395-A", "LIVE DEAD Blue-A",
-                       "BUV563-A", "BUV737-A", "BUV805-A", "Alexa Fluor 488-A", "Brilliant Blue 515-A", "PerCP-Cy5.5-A", "PE-A", "PE-CF594-A", "PE-Cy7-A"])
+                       "BUV563-A", "BUV737-A", "BUV805-A", "Alexa Fluor 488-A", "Brilliant Blue 515-A", "PerCP-Cy5.5-A", "PE-A", "PE-CF594-A", "PE-Cy7-A", "BV605-A", "BV510-A"])
     log_markers = markers[np.isin(markers, samples[0].data.columns)]
     samples[0] = samples[0].transform("tlog", channels=log_markers)
     combinedSamples = samples[0]
@@ -72,7 +72,7 @@ def combineWells(samples, cellFrac):
 def process_sample(sample):
     """Relabels and logs a sample"""
     markers = np.array(["Alexa Fluor 647-A", "Alexa Fluor 700-A", "BV650-A", "APC-Cy7-A", "V450-A", "BV786-A", "BV570-A", "BV750-A", "BUV395-A", "LIVE DEAD Blue-A",
-                       "BUV563-A", "BUV737-A", "BUV805-A", "Alexa Fluor 488-A", "Brilliant Blue 515-A", "PerCP-Cy5.5-A", "PE-A", "PE-CF594-A", "PE-Cy7-A"])
+                       "BUV563-A", "BUV737-A", "BUV805-A", "Alexa Fluor 488-A", "Brilliant Blue 515-A", "PerCP-Cy5.5-A", "PE-A", "PE-CF594-A", "PE-Cy7-A", "BV605-A", "BV510-A"])
     log_markers = markers[np.isin(markers, sample.data.columns)]
     sample = sample.transform("tlog", channels=log_markers)
     sample.data = sample.data.rename(marker_dict, axis=1)
