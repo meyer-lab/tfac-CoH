@@ -38,7 +38,9 @@ marker_dict = {"Alexa Fluor 647-A": "pSTAT4",
                "PerCP-Cy5.5-A": "pSTAT1",
                "PE-A": "pSmad1-2",
                "PE-CF594-A": "FoxP3",
-               "PE-Cy7-A": "pSTAT5"}
+               "PE-Cy7-A": "pSTAT5",
+               "BV605-A": "PD-1",
+               "BV510-A": "PD-L1"}
 
 
 def compile_patient(patient_num, cellFrac):
@@ -54,7 +56,7 @@ def compile_patient(patient_num, cellFrac):
 def combineWells(samples, cellFrac):
     """Accepts sample array returned from importF, and array of channels, returns combined well data"""
     markers = np.array(["Alexa Fluor 647-A", "Alexa Fluor 700-A", "BV650-A", "APC-Cy7-A", "V450-A", "BV786-A", "BV570-A", "BV750-A", "BUV395-A", "LIVE DEAD Blue-A",
-                       "BUV563-A", "BUV737-A", "BUV805-A", "Alexa Fluor 488-A", "Brilliant Blue 515-A", "PerCP-Cy5.5-A", "PE-A", "PE-CF594-A", "PE-Cy7-A"])
+                       "BUV563-A", "BUV737-A", "BUV805-A", "Alexa Fluor 488-A", "Brilliant Blue 515-A", "PerCP-Cy5.5-A", "PE-A", "PE-CF594-A", "PE-Cy7-A", "BV605-A", "BV510-A"])
     log_markers = markers[np.isin(markers, samples[0].data.columns)]
     samples[0] = samples[0].transform("tlog", channels=log_markers)
     combinedSamples = samples[0]
@@ -70,7 +72,7 @@ def combineWells(samples, cellFrac):
 def process_sample(sample):
     """Relabels and logs a sample"""
     markers = np.array(["Alexa Fluor 647-A", "Alexa Fluor 700-A", "BV650-A", "APC-Cy7-A", "V450-A", "BV786-A", "BV570-A", "BV750-A", "BUV395-A", "LIVE DEAD Blue-A",
-                       "BUV563-A", "BUV737-A", "BUV805-A", "Alexa Fluor 488-A", "Brilliant Blue 515-A", "PerCP-Cy5.5-A", "PE-A", "PE-CF594-A", "PE-Cy7-A"])
+                       "BUV563-A", "BUV737-A", "BUV805-A", "Alexa Fluor 488-A", "Brilliant Blue 515-A", "PerCP-Cy5.5-A", "PE-A", "PE-CF594-A", "PE-Cy7-A", "BV605-A", "BV510-A"])
     log_markers = markers[np.isin(markers, sample.data.columns)]
     sample = sample.transform("tlog", channels=log_markers)
     sample.data = sample.data.rename(marker_dict, axis=1)
@@ -136,9 +138,9 @@ def pop_gate(sample, cell_type, patient, gateDF):
 
 def make_flow_df(subtract=True, abundance=False):
     """Compiles data for all populations for all patients into .csv"""
-    patients = ["Patient 35", "Patient 43", "Patient 44", "Patient 45", "Patient 52", "Patient 54", "Patient 56", "Patient 58", "Patient 63", "Patient 66", "Patient 70", "Patient 79", "Patient 4", "Patient 8", "Patient 406", "Patient 10-T1",  "Patient 10-T2",  "Patient 10-T3", "Patient 15-T1",  "Patient 15-T2",  "Patient 15-T3"]
+    patients = ["Patient 35", "Patient 43", "Patient 44", "Patient 45", "Patient 52", "Patient 54", "Patient 56", "Patient 58", "Patient 63", "Patient 66", "Patient 70", "Patient 79", "Patient 4", "Patient 8", "Patient 406", "Patient 10-T1",  "Patient 10-T2",  "Patient 10-T3", "Patient 15-T1", "Patient 15-T2",   "Patient 15-T3"]
     times = ["15min", "60min"]
-    treatments = [
+    treatments = ["Untreated",
         "IFNg-1ng",
         "IFNg-1ng+IL6-1ng",
         "IFNg-1ng+IL6-50ng",
@@ -151,11 +153,10 @@ def make_flow_df(subtract=True, abundance=False):
         "IL4-50ng",
         "IL6-1ng",
         "IL6-50ng",
-        "TGFB-50ng",
-        "Untreated"]
+        "TGFB-50ng"]
     cell_types = ["T", "CD16 NK", "CD8+", "CD4+", "CD4-/CD8-", "Treg", "Treg 1", "Treg 2", "Treg 3", "CD8 TEM", "CD8 TCM", "CD8 Naive", "CD8 TEMRA",
                   "CD4 TEM", "CD4 TCM", "CD4 Naive", "CD4 TEMRA", "CD20 B", "CD20 B Naive", "CD20 B Memory", "CD33 Myeloid", "Classical Monocyte", "NC Monocyte"]
-    markers_all = ["pSTAT4", "CD20", "CD14", "pSTAT6", "CD27", "CD3", "CD33", "CD45RA", "Live/Dead", "CD4", "CD16", "CD8", "pSTAT3", "pSTAT1", "pSmad1-2", "FoxP3", "pSTAT5"]
+    markers_all = ["pSTAT4", "CD20", "CD14", "pSTAT6", "CD27", "CD3", "CD33", "CD45RA", "Live/Dead", "CD4", "CD16", "CD8", "pSTAT3", "pSTAT1", "pSmad1-2", "FoxP3", "pSTAT5", "PD-1", "PDL-1"]
     gateDF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_Gates.csv")).reset_index().drop("Unnamed: 0", axis=1)
     CoH_DF = pd.DataFrame([])
 
@@ -167,6 +168,8 @@ def make_flow_df(subtract=True, abundance=False):
         for time in times:
             for treatment in treatments:
                 print(patient, time, treatment)
+                if treatment == "Untreated" and subtract:
+                    untreatedDF = pd.DataFrame()
                 if ("/opt/CoH/" + patient + "/----F" + patient_num + "_" + time + "_" + treatment + "_Unmixed.fcs" in patient_files):
                     sample = FCMeasurement(ID="Sample", datafile="/opt/CoH/" + patient + "/----F" + patient_num + "_" + time + "_" + treatment + "_Unmixed.fcs")
                     sample, markers = process_sample(sample)
@@ -179,31 +182,30 @@ def make_flow_df(subtract=True, abundance=False):
                             for marker in markers:
                                 mean = pop_sample.data[marker_dict[marker]]
                                 mean = np.mean(mean.values[mean.values < np.quantile(mean.values, 0.995)])
-                                CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker_dict[marker], "Mean": mean})])
+                                if subtract:
+                                    if treatment == "Untreated":
+                                        CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker_dict[marker], "Mean": mean})])
+                                        untreatedDF = pd.concat([untreatedDF, pd.DataFrame({"Cell": cell_type, "Marker": marker_dict[marker], "Mean": [mean]})])
+                                    else:
+                                        subVal = untreatedDF.loc[(untreatedDF["Marker"] == marker_dict[marker]) & (untreatedDF["Cell"] == cell_type)]["Mean"].values
+                                        CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker_dict[marker], "Mean": mean - subVal})])
+                                else:
+                                    CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker_dict[marker], "Mean": mean})])
                 else:
                     print("Skipped")
                     for cell_type in cell_types:
-                        for marker in markers_all:
-                            if abund:
+                        for marker in markers:
+                            if abundance:
                                 CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Abundance": np.nan})])
                             else:
-                                CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker, "Mean": np.nan})])
-
-
+                                CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker_dict[marker], "Mean": np.nan})])
     if subtract:
-        untreatedDF = CoH_DF.loc[CoH_DF["Treatment"] == "Untreated"]
-        for patient in CoH_DF.Patient.unique():
-            for time in CoH_DF.Time.unique():
-                for marker in CoH_DF.Marker.unique():
-                    for treatment in CoH_DF.Treatment.unique():
-                        for cell in CoH_DF.Cell.unique():
-                            CoH_DF.loc[(CoH_DF["Patient"] == patient) & (CoH_DF["Time"] == time) & (CoH_DF["Marker"] == marker) & (CoH_DF["Cell"] == cell) & (CoH_DF["Treatment"] == treatment),
-                                    "Mean"] -= untreatedDF.loc[(untreatedDF["Patient"] == patient) & (untreatedDF["Time"] == time) & (untreatedDF["Marker"] == marker) & (untreatedDF["Cell"] == cell)]["Mean"].values
+        CoH_DF.loc[(CoH_DF.Treatment == "Untreated"), "Mean"] = 0
         CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF.csv"))
     else:
-        if abund:
+        if abundance:
             CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_Abund.csv"))
-        else:    
+        else:
             CoH_DF.to_csv(join(path_here, "coh/data/NN_CoH_Flow_DF.csv"))
 
 
