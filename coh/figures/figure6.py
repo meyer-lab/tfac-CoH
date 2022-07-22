@@ -9,8 +9,7 @@ from tensorly.cp_tensor import cp_flip_sign
 from tensorpack.cmtf import cp_normalize, perform_CP
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import r2_score
+from ..tensor import CoH_LogReg_plot
 
 path_here = dirname(dirname(__file__))
 
@@ -30,7 +29,7 @@ def makeFigure():
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
     cp_normalize(tFacAllM)
-    RA_LogReg_plot(ax[0], tFacAllM, CoH_Data, 10)
+    CoH_LogReg_plot(ax[0], tFacAllM, CoH_Data, 10)
     plot_tFac_CoH(ax[1], tFacAllM, CoH_Data, "Patient", numComps=num_comps)
     plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Time", numComps=num_comps)
     plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Treatment", numComps=num_comps)
@@ -78,13 +77,4 @@ def plot_tFac_CoH(ax, tFac, CoH_Array, mode, numComps=3):
     sns.heatmap(data=tFacDF, ax=ax, cmap=cmap, vmin=-1, vmax=1)
 
 
-def RA_LogReg_plot(ax, tFac, CoH_Array, numComps):
-    """Plot factor weights for donor BC prediction"""
-    coord = CoH_Array.dims.index("Patient")
-    mode_facs = tFac[1][coord]
-    Donor_RA_y = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
-    LR_RA = LogisticRegression(random_state=0).fit(mode_facs, Donor_RA_y)
-    RA_comp_weights = pd.DataFrame({"Component": np.arange(1, numComps + 1), "Coefficient": LR_RA.coef_[0]})
-    sns.barplot(data=RA_comp_weights, x="Component", y="Coefficient", color="k", ax=ax)
-    print(LR_RA.score(mode_facs, Donor_RA_y))

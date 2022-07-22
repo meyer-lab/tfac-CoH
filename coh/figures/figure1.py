@@ -21,8 +21,8 @@ def makeFigure():
 
     # Add subplot labels
     subplotLabel(ax)
-    make_flow_df()
-    make_CoH_Tensor(just_signal=True)
+    #make_flow_df()
+    #make_CoH_Tensor(just_signal=True)
 
     num_comps = 10
 

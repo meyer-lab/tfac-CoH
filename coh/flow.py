@@ -138,7 +138,7 @@ def pop_gate(sample, cell_type, patient, gateDF):
 
 def make_flow_df(subtract=True, abundance=False):
     """Compiles data for all populations for all patients into .csv"""
-    patients = ["Patient 35", "Patient 43", "Patient 44", "Patient 45", "Patient 52", "Patient 54", "Patient 56", "Patient 58", "Patient 63", "Patient 66", "Patient 70", "Patient 79", "Patient 4", "Patient 8", "Patient 406", "Patient 10-T1",  "Patient 10-T2",  "Patient 10-T3", "Patient 15-T1",  "Patient 15-T2",  "Patient 15-T3"]
+    patients = ["Patient 35", "Patient 43", "Patient 44", "Patient 45", "Patient 52", "Patient 54", "Patient 56", "Patient 58", "Patient 63", "Patient 66", "Patient 70", "Patient 79", "Patient 4", "Patient 8", "Patient 406", "Patient 10-T1",  "Patient 10-T2",  "Patient 10-T3", "Patient 15-T1", "Patient 15-T2",   "Patient 15-T3"]
     times = ["15min", "60min"]
     treatments = ["Untreated",
         "IFNg-1ng",
@@ -194,19 +194,18 @@ def make_flow_df(subtract=True, abundance=False):
                 else:
                     print("Skipped")
                     for cell_type in cell_types:
-                        for marker in markers_all:
-                            if abund:
+                        for marker in markers:
+                            if abundance:
                                 CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Abundance": np.nan})])
                             else:
-                                CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker, "Mean": np.nan})])
-    CoH_DF.loc[(CoH_DF.Treatment == "Untreated"), "Mean"] = 0
+                                CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker_dict[marker], "Mean": np.nan})])
     if subtract:
-        
+        CoH_DF.loc[(CoH_DF.Treatment == "Untreated"), "Mean"] = 0
         CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF.csv"))
     else:
-        if abund:
+        if abundance:
             CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_Abund.csv"))
-        else:    
+        else:
             CoH_DF.to_csv(join(path_here, "coh/data/NN_CoH_Flow_DF.csv"))
 
 
