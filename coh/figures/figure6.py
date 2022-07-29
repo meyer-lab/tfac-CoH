@@ -35,7 +35,7 @@ def makeFigure():
     cp_normalize(tFacAllM)
 
     #makePCA_df(CoH_Data)
-    #CoH_LogReg_plot(ax[0], tFacAllM, CoH_Data, 10)
+    CoH_LogReg_plot(ax[0], tFacAllM, CoH_Data, 10)
     PCAdf = pd.read_csv(join(path_here, "data/CoH_PCA.csv")).dropna(axis='columns').drop("Unnamed: 0", axis=1).set_index("Patient")
 
     tfacDF = plot_tFac_CoH(ax[1], tFacAllM, CoH_Data, "Patient", numComps=num_comps)
