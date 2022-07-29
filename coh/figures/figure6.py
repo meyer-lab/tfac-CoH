@@ -10,6 +10,10 @@ from tensorpack.cmtf import cp_normalize, perform_CP
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
 from ..tensor import CoH_LogReg_plot
+from sklearn.model_selection import train_test_split
+from sklearn.model_selection import LeaveOneOut
+from sklearn.model_selection import cross_val_score
+from sklearn.linear_model import LogisticRegression
 
 path_here = dirname(dirname(__file__))
 
@@ -24,18 +28,32 @@ def makeFigure():
     #make_flow_df()
     #make_CoH_Tensor(just_signal=True)
 
-    num_comps = 10
+    num_comps = 20
 
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
     cp_normalize(tFacAllM)
-    CoH_LogReg_plot(ax[0], tFacAllM, CoH_Data, 10)
-    plot_tFac_CoH(ax[1], tFacAllM, CoH_Data, "Patient", numComps=num_comps)
+
+    #makePCA_df(CoH_Data)
+    #CoH_LogReg_plot(ax[0], tFacAllM, CoH_Data, 10)
+    PCAdf = pd.read_csv(join(path_here, "data/CoH_PCA.csv")).dropna(axis='columns').drop("Unnamed: 0", axis=1).set_index("Patient")
+
+    tfacDF = plot_tFac_CoH(ax[1], tFacAllM, CoH_Data, "Patient", numComps=num_comps)
     plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Time", numComps=num_comps)
     plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Treatment", numComps=num_comps)
     plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Cell", numComps=num_comps)
     plot_tFac_CoH(ax[5], tFacAllM, CoH_Data, "Marker", numComps=num_comps)
 
+    PCA_X = PCAdf.values
+    TFAC_X = tfacDF.transpose().values
+    Donor_CoH_y = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    cv = LeaveOneOut()
+    model = LogisticRegression()
+    #print(PCA_X)
+    scoresPCA = cross_val_score(model, PCA_X, Donor_CoH_y, cv=cv)
+    scoresTFAC = cross_val_score(model, TFAC_X, Donor_CoH_y, cv=cv)
+    print(scoresPCA)
+    print(scoresTFAC)
 
     return f
 
@@ -75,6 +93,22 @@ def plot_tFac_CoH(ax, tFac, CoH_Array, mode, numComps=3):
     if mode == "Patient":
         tFacDF = tFacDF[["Patient 35", "Patient 43", "Patient 44", "Patient 45", "Patient 52", "Patient 54", "Patient 56", "Patient 58", "Patient 63", "Patient 66", "Patient 70", "Patient 79", "Patient 4", "Patient 8", "Patient 406", "Patient 10-T1",  "Patient 10-T2",  "Patient 10-T3", "Patient 15-T1",  "Patient 15-T2",  "Patient 15-T3"]]
     sns.heatmap(data=tFacDF, ax=ax, cmap=cmap, vmin=-1, vmax=1)
+    return tFacDF
 
 
-
+def makePCA_df(TensorArray):
+    """Returns PCA with score and loadings of COH DataSet"""
+    DF = TensorArray.to_dataframe(name="value").reset_index()
+    #DF = DF.loc[(DF.Patient != "Patient 4") & (DF.Patient != "Patient 8") & (DF.Patient != "Patient 406")]
+    PCAdf = pd.DataFrame()
+    for patient in DF.Patient.unique():
+        patientDF = DF.loc[DF.Patient == patient]
+        patientRow = pd.DataFrame({"Patient": [patient]})
+        for time in DF.Time.unique():
+            for treatment in DF.Treatment.unique():
+                for marker in DF.Marker.unique():
+                    for cell in DF.Cell.unique():
+                        uniqueDF = patientDF.loc[(patientDF.Time == time) & (patientDF.Marker == marker) & (patientDF.Treatment == treatment) & (patientDF.Cell == cell)]
+                        patientRow[time + "_" + treatment + "_"+ marker + "_"+ cell] = uniqueDF.value.values
+        PCAdf = pd.concat([PCAdf, patientRow])
+    PCAdf.to_csv(join(path_here, "data/CoH_PCA.csv"))

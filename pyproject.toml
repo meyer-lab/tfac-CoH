@@ -19,6 +19,7 @@ pyarrow = "^6.0.1"
 xarray = "^2022.3.0"
 tensorpack = {git = "https://github.com/meyer-lab/tensorpack.git", rev = "main"}
 flowcytometrytools = {git = "https://github.com/borcuttjahns/FlowCytometryTools.git"}
+sklearn = "^0.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
