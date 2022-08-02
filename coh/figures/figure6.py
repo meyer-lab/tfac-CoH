@@ -10,9 +10,7 @@ from tensorpack.cmtf import cp_normalize, perform_CP
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
 from ..tensor import CoH_LogReg_plot
-from sklearn.model_selection import train_test_split
-from sklearn.model_selection import LeaveOneOut
-from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import StratifiedKFold, cross_val_score
 from sklearn.linear_model import LogisticRegression
 
 path_here = dirname(dirname(__file__))
@@ -28,7 +26,7 @@ def makeFigure():
     #make_flow_df()
     #make_CoH_Tensor(just_signal=True)
 
-    num_comps = 20
+    num_comps = 10
 
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
@@ -47,7 +45,7 @@ def makeFigure():
     PCA_X = PCAdf.values
     TFAC_X = tfacDF.transpose().values
     Donor_CoH_y = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-    cv = LeaveOneOut()
+    cv = StratifiedKFold(n_splits=5)
     model = LogisticRegression()
     #print(PCA_X)
     scoresPCA = cross_val_score(model, PCA_X, Donor_CoH_y, cv=cv)
