@@ -136,7 +136,7 @@ def pop_gate(sample, cell_type, patient, gateDF):
     return pop_sample, abund
 
 
-def make_flow_df(subtract=True, abundance=False):
+def make_flow_df(subtract=True, abundance=False, foldChange=False):
     """Compiles data for all populations for all patients into .csv"""
     patients = ["Patient 35", "Patient 43", "Patient 44", "Patient 45", "Patient 52", "Patient 54", "Patient 56", "Patient 58", "Patient 63", "Patient 66", "Patient 70", "Patient 79", "Patient 4", "Patient 8", "Patient 406", "Patient 10-T1",  "Patient 10-T2",  "Patient 10-T3", "Patient 15-T1", "Patient 15-T2",   "Patient 15-T3"]
     times = ["15min", "60min"]
@@ -156,7 +156,6 @@ def make_flow_df(subtract=True, abundance=False):
         "TGFB-50ng"]
     cell_types = ["T", "CD16 NK", "CD8+", "CD4+", "CD4-/CD8-", "Treg", "Treg 1", "Treg 2", "Treg 3", "CD8 TEM", "CD8 TCM", "CD8 Naive", "CD8 TEMRA",
                   "CD4 TEM", "CD4 TCM", "CD4 Naive", "CD4 TEMRA", "CD20 B", "CD20 B Naive", "CD20 B Memory", "CD33 Myeloid", "Classical Monocyte", "NC Monocyte"]
-    markers_all = ["pSTAT4", "CD20", "CD14", "pSTAT6", "CD27", "CD3", "CD33", "CD45RA", "Live/Dead", "CD4", "CD16", "CD8", "pSTAT3", "pSTAT1", "pSmad1-2", "FoxP3", "pSTAT5", "PD-1", "PDL-1"]
     gateDF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_Gates.csv")).reset_index().drop("Unnamed: 0", axis=1)
     CoH_DF = pd.DataFrame([])
 
@@ -188,7 +187,10 @@ def make_flow_df(subtract=True, abundance=False):
                                         untreatedDF = pd.concat([untreatedDF, pd.DataFrame({"Cell": cell_type, "Marker": marker_dict[marker], "Mean": [mean]})])
                                     else:
                                         subVal = untreatedDF.loc[(untreatedDF["Marker"] == marker_dict[marker]) & (untreatedDF["Cell"] == cell_type)]["Mean"].values
-                                        CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker_dict[marker], "Mean": mean - subVal})])
+                                        if foldChange:
+                                            CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker_dict[marker], "Mean": (mean / subVal) - 1})])
+                                        else:
+                                            CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker_dict[marker], "Mean": mean - subVal})])
                                 else:
                                     CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker_dict[marker], "Mean": mean})])
                 else:
@@ -201,7 +203,10 @@ def make_flow_df(subtract=True, abundance=False):
                                 CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker_dict[marker], "Mean": np.nan})])
     if subtract:
         CoH_DF.loc[(CoH_DF.Treatment == "Untreated"), "Mean"] = 0
-        CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF.csv"))
+        if foldChange:
+            CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_FC.csv"))
+        else:
+            CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF.csv"))
     else:
         if abundance:
             CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_Abund.csv"))
@@ -209,17 +214,21 @@ def make_flow_df(subtract=True, abundance=False):
             CoH_DF.to_csv(join(path_here, "coh/data/NN_CoH_Flow_DF.csv"))
 
 
-def make_CoH_Tensor(subtract=True, just_signal=False):
+def make_CoH_Tensor(subtract=True, just_signal=False, foldChange=False):
     """Processes RA DataFrame into Xarray Tensor"""
     if subtract:
-        CoH_DF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_DF.csv"))
+        if foldChange:
+            CoH_DF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_DF_FC.csv"))
+        else:
+            CoH_DF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_DF.csv"))
+        CoH_DF.loc[(CoH_DF.Treatment == "Untreated"), "Mean"] = 0
     else:
         CoH_DF = pd.read_csv(join(path_here, "coh/data/NN_CoH_Flow_DF.csv"))
     patients = CoH_DF.Patient.unique()
     times = CoH_DF.Time.unique()
     treatments = CoH_DF.Treatment.unique()
     cells = CoH_DF.Cell.unique()
-    if just_signal:
+    if just_signal or foldChange:
         markers = np.array(["pSTAT1", "pSTAT3", "pSTAT4", "pSTAT5", "pSTAT6", "pSmad1-2"])
     else:
         markers = CoH_DF.Marker.unique()
@@ -241,10 +250,13 @@ def make_CoH_Tensor(subtract=True, just_signal=False):
 
     CoH_xarray = xa.DataArray(tensor, dims=("Patient", "Time", "Treatment", "Cell", "Marker"), coords={"Patient": patients, "Time": times, "Treatment": treatments, "Cell": cells, "Marker": markers})
     if subtract:
-        if just_signal:
-            CoH_xarray.to_netcdf(join(path_here, "coh/data/CoHTensorDataJustSignal.nc"))
+        if foldChange:
+            CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH_Tensor_DataSet_FC.nc"))
         else:
-            CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH Tensor DataSet.nc"))
+            if just_signal:
+                CoH_xarray.to_netcdf(join(path_here, "coh/data/CoHTensorDataJustSignal.nc"))
+            else:
+                CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH Tensor DataSet.nc"))
     else:
         CoH_xarray.to_netcdf(join(path_here, "coh/data/NN CoH Tensor DataSet.nc"))
     return tensor
