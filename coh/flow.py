@@ -1,6 +1,7 @@
 """
 This file includes various methods for flow cytometry analysis of fixed cells.
 """
+from importlib.abc import PathEntryFinder
 import os
 from os.path import dirname, join
 from pathlib import Path
@@ -201,17 +202,19 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
                                 CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Abundance": np.nan})])
                             else:
                                 CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker_dict[marker], "Mean": np.nan})])
-    if subtract:
-        CoH_DF.loc[(CoH_DF.Treatment == "Untreated"), "Mean"] = 0
-        if foldChange:
-            CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_FC.csv"))
-        else:
-            CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF.csv"))
-    else:
-        if abundance:
-            CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_Abund.csv"))
-        else:
-            CoH_DF.to_csv(join(path_here, "coh/data/NN_CoH_Flow_DF.csv"))
+    # if subtract:
+    #     CoH_DF.loc[(CoH_DF.Treatment == "Untreated"), "Mean"] = 0
+    #     if foldChange:
+    #         CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_FC.csv"))
+    #     else:
+    #         CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF.csv"))
+    # else:
+    #     if abundance:
+    #         CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_Abund.csv"))
+    #     else:
+    #         CoH_DF.to_csv(join(path_here, "coh/data/NN_CoH_Flow_DF.csv"))
+    
+    return CoH_DF
 
 
 def make_CoH_Tensor(subtract=True, just_signal=False, foldChange=False):
@@ -289,3 +292,56 @@ def make_CoH_Tensor_abund():
     CoH_xarray = xa.DataArray(tensor, dims=("Patient", "Time", "Treatment", "Cell"), coords={"Patient": patients, "Time": times, "Treatment": treatments, "Cell": cells})
     CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH_Tensor_Abundance.nc"))
     return tensor
+
+
+def make_flow_sc_dataframe():
+    """Compiles data for all populations for all patients into .csv"""
+    patients = ["Patient 35", "Patient 43", "Patient 44", "Patient 45", "Patient 52", "Patient 54", "Patient 56", "Patient 58", "Patient 63", "Patient 66", "Patient 70", "Patient 79", "Patient 4", "Patient 8", "Patient 406", "Patient 10-T1",  "Patient 10-T2",  "Patient 10-T3", "Patient 15-T1", "Patient 15-T2",   "Patient 15-T3"]
+    times = ["15min", "60min"]
+    treatments = ["Untreated",
+        "IFNg-1ng",
+        "IFNg-1ng+IL6-1ng",
+        "IFNg-1ng+IL6-50ng",
+        "IFNg-50ng",
+        "IFNg-50ng+IL6-1ng",
+        "IFNg-50ng+IL6-50ng",
+        "IL10-50ng",
+        "IL12-100ng",
+        "IL2-50ng",
+        "IL4-50ng",
+        "IL6-1ng",
+        "IL6-50ng",
+        "TGFB-50ng"]
+    cell_types = ["T", "CD16 NK", "CD8+", "CD4+", "CD4-/CD8-", "Treg", "Treg 1", "Treg 2", "Treg 3", "CD8 TEM", "CD8 TCM", "CD8 Naive", "CD8 TEMRA",
+                  "CD4 TEM", "CD4 TCM", "CD4 Naive", "CD4 TEMRA", "CD20 B", "CD20 B Naive", "CD20 B Memory", "CD33 Myeloid", "Classical Monocyte", "NC Monocyte"]
+    gateDF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_Gates.csv")).reset_index().drop("Unnamed: 0", axis=1)
+    # CoH_DF = pd.DataFrame([])
+    totalDF = pd.DataFrame([])
+
+    for i, patient in enumerate(patients):
+        patient_num = patient.split(" ")[1]
+        patient_files = []
+        for name in Path(r"" + str("/opt/CoH/" + patient + "/")).glob("**/*.fcs"):
+            patient_files.append(str(name))
+        for j, time in enumerate(times):
+            for k, treatment in enumerate(treatments):
+                print(patient, time, treatment)
+                if ("/opt/CoH/" + patient + "/----F" + patient_num + "_" + time + "_" + treatment + "_Unmixed.fcs" in patient_files):
+                    sample = FCMeasurement(ID="Sample", datafile="/opt/CoH/" + patient + "/----F" + patient_num + "_" + time + "_" + treatment + "_Unmixed.fcs")
+                    sample, markers = process_sample(sample)
+                    sample = live_PBMC_gate(sample, patient, gateDF)
+                    for cell_type in cell_types:
+                        pop_sample, abund = pop_gate(sample, cell_type, patient, gateDF)
+                        CoH_DF = pop_sample.data.drop("Time",axis=1)
+                        CoH_DF["Cell"] = np.arange(1, CoH_DF.shape[0] + 1)
+                        CoH_DF["CellType"] = np.tile(cell_type,CoH_DF.shape[0])
+                        CoH_DF["Time"] = np.tile(time,CoH_DF.shape[0])
+                        CoH_DF["Treatment"] = np.tile(treatment,CoH_DF.shape[0])
+                        CoH_DF["Patient"] = np.tile([patient],CoH_DF.shape[0])
+
+                    totalDF = pd.concat([totalDF,CoH_DF])
+                    print(np.shape(totalDF))
+    
+    totalDF.to_csv(join(path_here, "coh/data/CoH_Flow_SC.csv"))
+
+    return totalDF
