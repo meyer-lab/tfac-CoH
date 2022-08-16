@@ -18,11 +18,7 @@ def makeFigure():
 
     # Add subplot labels
     subplotLabel(ax)
-
     
     CoH_DF = make_flow_sc_dataframe()
-    print(CoH_DF)
-    CoH_DF.to_csv('output.csv')
-    
-    
+
     return f

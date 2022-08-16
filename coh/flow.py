@@ -341,6 +341,6 @@ def make_flow_sc_dataframe():
                     totalDF = pd.concat([totalDF,CoH_DF])
                     print(np.shape(totalDF))
     
-    totalDF.to_csv(join(path_here, "coh/data/CoH_Flow_SC.csv"))
+    totalDF.to_csv(join(path_here, "coh/data/CoH_Flow_SC.nc"))
 
     return totalDF
