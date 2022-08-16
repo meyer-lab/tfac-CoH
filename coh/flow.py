@@ -314,7 +314,6 @@ def make_flow_sc_dataframe():
     cell_types = ["T", "CD16 NK", "CD8+", "CD4+", "CD4-/CD8-", "Treg", "Treg 1", "Treg 2", "Treg 3", "CD8 TEM", "CD8 TCM", "CD8 Naive", "CD8 TEMRA",
                   "CD4 TEM", "CD4 TCM", "CD4 Naive", "CD4 TEMRA", "CD20 B", "CD20 B Naive", "CD20 B Memory", "CD33 Myeloid", "Classical Monocyte", "NC Monocyte"]
     gateDF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_Gates.csv")).reset_index().drop("Unnamed: 0", axis=1)
-    # CoH_DF = pd.DataFrame([])
     totalDF = pd.DataFrame([])
 
     for i, patient in enumerate(patients):
@@ -331,12 +330,12 @@ def make_flow_sc_dataframe():
                     sample = live_PBMC_gate(sample, patient, gateDF)
                     for cell_type in cell_types:
                         pop_sample, abund = pop_gate(sample, cell_type, patient, gateDF)
-                        CoH_DF = pop_sample.data.drop("Time",axis=1)
+                        CoH_DF = pop_sample.data.drop("Time", axis=1)
                         CoH_DF["Cell"] = np.arange(1, CoH_DF.shape[0] + 1)
-                        CoH_DF["CellType"] = np.tile(cell_type,CoH_DF.shape[0])
-                        CoH_DF["Time"] = np.tile(time,CoH_DF.shape[0])
-                        CoH_DF["Treatment"] = np.tile(treatment,CoH_DF.shape[0])
-                        CoH_DF["Patient"] = np.tile([patient],CoH_DF.shape[0])
+                        CoH_DF["CellType"] = np.tile(cell_type, CoH_DF.shape[0])
+                        CoH_DF["Time"] = np.tile(time, CoH_DF.shape[0])
+                        CoH_DF["Treatment"] = np.tile(treatment, CoH_DF.shape[0])
+                        CoH_DF["Patient"] = np.tile([patient], CoH_DF.shape[0])
 
                     totalDF = pd.concat([totalDF,CoH_DF])
                     print(np.shape(totalDF))
