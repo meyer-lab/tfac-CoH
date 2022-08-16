@@ -293,7 +293,6 @@ def make_CoH_Tensor_abund():
     CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH_Tensor_Abundance.nc"))
     return tensor
 
-
 def make_flow_sc_dataframe():
     """Compiles data for all populations for all patients into .csv"""
     patients = ["Patient 35", "Patient 43", "Patient 44", "Patient 45", "Patient 52", "Patient 54", "Patient 56", "Patient 58", "Patient 63", "Patient 66", "Patient 70", "Patient 79", "Patient 4", "Patient 8", "Patient 406", "Patient 10-T1",  "Patient 10-T2",  "Patient 10-T3", "Patient 15-T1", "Patient 15-T2",   "Patient 15-T3"]
