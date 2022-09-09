@@ -3,18 +3,17 @@ import numpy as np
 import seaborn as sns
 import pandas as pd
 from tensorly.decomposition import non_negative_parafac, parafac
+from tensorly.cp_tensor import cp_flip_sign
+from tensorpack.cmtf import perform_CP
 from sklearn.linear_model import LogisticRegression
 
 
-def factorTensor(tensor, numComps, nn=False):
+def factorTensor(tensor, numComps):
     """ Takes Tensor, and mask and returns tensor factorized form. """
-    if nn:
-        tfac = non_negative_parafac(np.nan_to_num(tensor), rank=numComps, mask=np.isfinite(tensor), init='random', n_iter_max=5000, tol=1e-9, random_state=1)
-    else:
-        tfac = parafac(np.nan_to_num(tensor), rank=numComps, mask=np.isfinite(tensor), init='random', n_iter_max=5000, tol=1e-9, random_state=1)
-    tensor = tensor.copy()
-    tensor[np.isnan(tensor)] = tl.cp_to_tensor(tfac)[np.isnan(tensor)]
-    return tfac
+    tfac = perform_CP(tensor, numComps, tol=1e-7, maxiter=1000)
+    R2X = tfac.R2X
+    tfac = cp_flip_sign(tfac)
+    return tfac, R2X
 
 
 def R2Xplot(ax, tensor, compNum):
@@ -22,8 +21,8 @@ def R2Xplot(ax, tensor, compNum):
     varHold = np.zeros(compNum)
     for i in range(1, compNum + 1):
         print(i)
-        tFac = factorTensor(tensor, i)
-        varHold[i - 1] = calcR2X(tensor, tFac)
+        _, R2X = factorTensor(tensor, i)
+        varHold[i - 1] = R2X
 
     ax.scatter(np.arange(1, compNum + 1), varHold, c='k', s=20.)
     ax.set(title="R2X", ylabel="Variance Explained", xlabel="Number of Components", ylim=(0, 1), xlim=(0, compNum + 0.5), xticks=np.arange(0, compNum + 1))
