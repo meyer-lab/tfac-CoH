@@ -23,7 +23,7 @@ path_here = os.path.dirname(os.path.dirname(__file__))
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((6, 3), (1, 2))
+    ax, f = getSetup((9, 3), (1, 2))
 
     # Add subplot labels
     subplotLabel(ax)
@@ -39,9 +39,10 @@ def makeFigure():
     tc.perform_PCA(flattenon=2)
 
     reduction(ax[0], tc)
-    tuck = Decomposition(CoH_Data.to_numpy()[0:-9, :, :, :, :], method=tucker_decomp)
-    para = Decomposition(CoH_Data.to_numpy()[0:-9, :, :, :, :])
+    tuck = Decomposition(CoH_Data.to_numpy()[0:-9, :, :, :, :], method=tucker_decomp, max_rr=10)
+    para = Decomposition(CoH_Data.to_numpy()[0:-9, :, :, :, :], max_rr=10)
     tucker_reduction(ax[1], tuck, para)
+    #plot_PCA(ax[0:2])
 
     return f
 
@@ -70,7 +71,7 @@ def plot_PCA(ax):
     pcaMat = DF.to_numpy()
     pca = PCA(n_components=2)
     scaler = StandardScaler()
-    pcaMat = scaler.fit_transform(pcaMat)
+    pcaMat = scaler.fit_transform(np.nan_2_num(pcaMat))
     scores = pca.fit_transform(pcaMat)
     loadings = pca.components_
 
