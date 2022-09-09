@@ -31,10 +31,10 @@ def makeFigure():
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
     cp_normalize(tFacAllM)
     #makePCA_df(CoH_Data)
-    #CoH_LogReg_plot(ax[1], tFacAllM, CoH_Data, num_comps)
+    CoH_LogReg_plot(ax[1], tFacAllM, CoH_Data, num_comps)
     PCAdf = pd.read_csv(join(path_here, "data/CoH_PCA.csv")).dropna(axis='columns').drop("Unnamed: 0", axis=1).set_index("Patient")
 
-    #BC_status_plot(20, CoH_Data, PCAdf, ax[0])
+    BC_status_plot(20, CoH_Data, PCAdf, ax[0])
 
     plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Treatment", numComps=num_comps)
     plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Marker", numComps=num_comps)
