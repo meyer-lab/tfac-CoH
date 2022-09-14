@@ -18,7 +18,7 @@ path_here = dirname(dirname(__file__))
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((12, 9), (3, 2))
+    ax, f = getSetup((8, 6), (3, 2))
 
     # Add subplot labels
     subplotLabel(ax)
@@ -54,7 +54,7 @@ def BC_status_plot(compNum, CoH_Data, PCAdf, ax):
     cv = StratifiedKFold(n_splits=5)
     model = LogisticRegression()
     scoresPCA = cross_val_score(model, PCA_X, Donor_CoH_y, cv=cv)
-    for i in range(1, compNum + 1):
+    for i in range(5, compNum + 1):
         if i != 14:
             tFacAllM, _ = factorTensor(CoH_Data.values, numComps=i)
             cp_normalize(tFacAllM)
@@ -75,7 +75,7 @@ def BC_status_plot(compNum, CoH_Data, PCAdf, ax):
             accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "All Data", "Components": [i], "Accuracy (5-fold CV)": np.mean(scoresPCA)})])
     accDF = accDF.reset_index(drop=True)
     sns.lineplot(data=accDF, x="Components", y="Accuracy (5-fold CV)", hue="Data Type", ax=ax)
-    ax.set(xticks = np.arange(1, compNum + 1))
+    ax.set(xticks = np.arange(5, compNum + 1))
 
 
 def BC_scatter(ax, CoH_DF, marker, cytokine):
