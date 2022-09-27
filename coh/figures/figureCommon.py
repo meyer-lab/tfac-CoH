@@ -57,7 +57,7 @@ def getSetup(figsize, gridd, multz=None, empts=None):
 def subplotLabel(axs):
     """Place subplot labels on figure."""
     for ii, ax in enumerate(axs):
-        ax.text(-0.2, 1.2, ascii_lowercase[ii], transform=ax.transAxes, fontweight="bold", va="top")
+        ax.text(-0.2, 1.2, ascii_lowercase[ii], transform=ax.transAxes, fontweight="bold", va="top", fontsize=14)
 
 
 def overlayCartoon(figFile, cartoonFile, x, y, scalee=1):

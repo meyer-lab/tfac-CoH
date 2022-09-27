@@ -18,14 +18,14 @@ path_here = dirname(dirname(__file__))
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((12, 9), (3, 2))
+    ax, f = getSetup((15, 9), (3, 2))
 
     # Add subplot labels
     subplotLabel(ax)
     #make_flow_df()
     #make_CoH_Tensor(just_signal=True)
 
-    num_comps = 10
+    num_comps = 8
 
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
