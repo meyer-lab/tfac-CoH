@@ -29,13 +29,13 @@ def makeFigure():
     #plot_PCA(ax[0:2])
     
     # perform parafac
-    tc = Decomposition(CoH_Data.to_numpy()[0:-9, :, :, :, :], max_rr=12)
+    tc = Decomposition(CoH_Data.to_numpy()[0:-15, :, :, :, :], max_rr=12)
     tc.perform_tfac()
     tc.perform_PCA(flattenon=2)
 
     reduction(ax[0], tc)
-    tuck = Decomposition(CoH_Data.to_numpy()[0:-9, :, :, :, :], method=tucker_decomp, max_rr=10)
-    para = Decomposition(CoH_Data.to_numpy()[0:-9, :, :, :, :], max_rr=10)
+    tuck = Decomposition(CoH_Data.to_numpy()[0:-15, :, :, :, :], method=tucker_decomp, max_rr=10)
+    para = Decomposition(CoH_Data.to_numpy()[0:-15, :, :, :, :], max_rr=10)
     tucker_reduction(ax[1], tuck, para)
     #plot_PCA(ax[0:2])
 
