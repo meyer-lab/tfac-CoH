@@ -8,9 +8,10 @@ import pandas as pd
 from tensorpack.cmtf import cp_normalize
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
-from ..tensor import factorTensor,CoH_LogReg_plot, plot_tFac_CoH
+from ..tensor import factorTensor,CoH_LogReg_plot, plot_tFac_CoH, make_alldata_DF
 from sklearn.model_selection import StratifiedKFold, cross_val_score
 from sklearn.linear_model import LogisticRegression
+from sklearn import preprocessing
 
 path_here = dirname(dirname(__file__))
 
@@ -25,35 +26,37 @@ def makeFigure():
     #make_flow_df()
     #make_CoH_Tensor(just_signal=True)
 
-    num_comps = 10
+    num_comps = 12
     
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
     cp_normalize(tFacAllM)
-    #makePCA_df(CoH_Data)
+    #make_alldata_DF(CoH_Data, PCA=False)
     CoH_LogReg_plot(ax[1], tFacAllM, CoH_Data, num_comps)
-    PCAdf = pd.read_csv(join(path_here, "data/CoH_PCA.csv")).dropna(axis='columns').drop("Unnamed: 0", axis=1).set_index("Patient")
+    matrix_DF = pd.read_csv(join(path_here, "data/CoH_Matrix.csv"), index_col=0).dropna(axis='columns').set_index("Patient")
 
-    BC_status_plot(20, CoH_Data, PCAdf, ax[0])
+    BC_status_plot(15, CoH_Data, matrix_DF, ax[0])
 
     plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Treatment", numComps=num_comps)
     plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Marker", numComps=num_comps)
 
     CoH_DF = pd.read_csv(join(path_here, "data/CoH_Flow_DF.csv"))
     BC_scatter(ax[4], CoH_DF, "pSTAT3", "IL10-50ng")
-    BC_scatter(ax[5], CoH_DF, "pSTAT5", "IFNg-50ng")
+    BC_scatter(ax[5], CoH_DF, "pSTAT5", "IL2-50ng")
 
     return f
 
 
-def BC_status_plot(compNum, CoH_Data, PCAdf, ax):
+def BC_status_plot(compNum, CoH_Data, matrixDF, ax):
     """Plot 5 fold CV by # components"""
     accDF = pd.DataFrame()
-    PCA_X = PCAdf.values
-    Donor_CoH_y = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    status_DF = pd.read_csv(join(path_here, "data/Patient_Status.csv"), index_col=0)
+    matrixDF = matrixDF.values
+    lb = preprocessing.LabelBinarizer()
+    Donor_CoH_y = lb.fit_transform(status_DF.Status).ravel()
     cv = StratifiedKFold(n_splits=5)
     model = LogisticRegression()
-    scoresPCA = cross_val_score(model, PCA_X, Donor_CoH_y, cv=cv)
+    scoresPCA = cross_val_score(model, matrixDF, Donor_CoH_y, cv=cv)
     for i in range(5, compNum + 1):
         if i != 14:
             tFacAllM, _ = factorTensor(CoH_Data.values, numComps=i)
@@ -67,7 +70,7 @@ def BC_status_plot(compNum, CoH_Data, PCAdf, ax):
                 tFacDF = pd.concat([tFacDF, pd.DataFrame({"Component_Val": mode_facs[:, j], "Component": (j + 1), "Patient": mode_labels})])
 
             tFacDF = pd.pivot(tFacDF, index="Component", columns="Patient", values="Component_Val")
-            tFacDF = tFacDF[["Patient 35", "Patient 43", "Patient 44", "Patient 45", "Patient 52", "Patient 54", "Patient 56", "Patient 58", "Patient 63", "Patient 66", "Patient 70", "Patient 79", "Patient 4", "Patient 8", "Patient 406", "Patient 10-T1",  "Patient 10-T2",  "Patient 10-T3", "Patient 15-T1",  "Patient 15-T2",  "Patient 15-T3"]]
+            tFacDF = tFacDF[status_DF.Patient]
             TFAC_X = tFacDF.transpose().values
             model = LogisticRegression()
             scoresTFAC = cross_val_score(model, TFAC_X, Donor_CoH_y, cv=cv)
@@ -86,16 +89,26 @@ def BC_scatter(ax, CoH_DF, marker, cytokine):
     ax.set(title=marker + " in response to " + cytokine, xlabel=marker, ylabel="Count")
 
 
-status_dict = {"Patient 35": "Healthy", 
+status_dict = {"Patient 26": "Healthy",
+                "Patient 28": "Healthy",
+                "Patient 30": "Healthy",
+                "Patient 34": "Healthy",
+                "Patient 35": "Healthy", 
                 "Patient 43": "Healthy", 
                 "Patient 44": "Healthy",
                 "Patient 45": "Healthy", 
                 "Patient 52": "Healthy",
+                "Patient 52A": "Healthy",
                 "Patient 54": "Healthy",
                 "Patient 56": "Healthy",
-                "Patient 58": "Healthy", 
+                "Patient 58": "Healthy",
+                "Patient 60": "Healthy",
+                "Patient 61": "Healthy",
+                "Patient 62": "Healthy", 
                 "Patient 63": "Healthy", 
                 "Patient 66": "Healthy", 
+                "Patient 68": "Healthy",
+                "Patient 69": "Healthy",
                 "Patient 70": "Healthy", 
                 "Patient 79": "Healthy", 
                 "Patient 4": "BC", 
@@ -106,4 +119,9 @@ status_dict = {"Patient 35": "Healthy",
                 "Patient 10-T3": "BC", 
                 "Patient 15-T1": "BC",  
                 "Patient 15-T2": "BC",  
-                "Patient 15-T3": "BC"}
+                "Patient 15-T3": "BC",
+                "Patient 19186-2": "BC",
+                "Patient 19186-3": "BC",
+                "Patient 19186-14": "BC",
+                "Patient 21368-3": "BC",
+                "Patient 21368-4": "BC"}

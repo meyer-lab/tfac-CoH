@@ -2969,3 +2969,2028 @@
                	Channel(s): ['CD16', 'CD14']
                	Name: Non-Classical Monocyte
                 "
+0,Patient 28,PBMC Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000000.0, 150000.0), (1600000.0, 150000.0), (2300000.0, 500000.0), (2800000.0, 1000000.0), (2800000.0, 2000000.0), (2500000.0, 2300000.0), (1750000.0, 2500000.0), (750000.0, 375000.0)]
+               	Channel(s): ['FSC-A', 'SSC-A']
+               	Name: PBMC
+                "
+0,Patient 28,Single Cell Gate 1,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(600000.0, 600000.0), (3000000.0, 1700000.0), (2750000.0, 2250000.0), (600000.0, 750000.0)]
+               	Channel(s): ['FSC-A', 'FSC-H']
+               	Name: Single Cells
+                "
+0,Patient 28,Single Cell Gate 2,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(100000.0, 100000.0), (2750000.0, 1600000.0), (2500000.0, 2700000.0), (80000.0, 250000.0)]
+               	Channel(s): ['SSC-A', 'SSC-H']
+               	Name: Single Cells
+                "
+0,Patient 28,Live/Dead Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 0), (6400, 0), (6400, 5000000.0), (2000, 5000000.0)]
+               	Channel(s): ['Live/Dead', 'SSC-A']
+               	Name: Live Dead
+                "
+0,Patient 28,T Cell Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3000, 5800), (6500, 5800), (6500, 8000), (3000, 8000)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: T cell Gate
+                "
+0,Patient 28,CD16 NK Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5600, 5000), (9000, 5000), (9000, 6200), (5600, 6200)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: NK Gate
+                "
+0,Patient 28,CD8 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3800, 6100), (5700, 6100), (5700, 8000), (3800, 8000)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD8 Gate
+                "
+0,Patient 28,CD4 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5500, 0), (8000, 0), (8000, 5800), (5500, 5800)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4 Gate
+                "
+0,Patient 28,CD4/CD8- Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 2000), (5500, 2000), (5500, 5600), (4000, 5600)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4- CD8- Gate
+                "
+0,Patient 28,Treg Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5200, 5500), (8000, 5500), (8000, 8000), (5200, 8000)]
+               	Channel(s): ['FoxP3', 'CD4']
+               	Name: Treg Gate
+                "
+0,Patient 28,Treg1 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4500, 5100), (6800, 5100), (6800, 8000), (4500, 8000)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg1 Gate
+                "
+0,Patient 28,Treg2 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5550, 1000), (8000, 1000), (8000, 5100), (5550, 5100)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg2 Gate
+                "
+0,Patient 28,Treg3 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4200, 2500), (5550, 2500), (5550, 5100), (4200, 5100)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg3 Gate
+                "
+0,Patient 28,CD8 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 4000), (6200, 4000), (6200, 5800), (4000, 5800)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEM
+                "
+0,Patient 28,CD8 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3700, 5800), (6700, 5800), (6700, 8000), (3700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TCM
+                "
+0,Patient 28,CD8 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6700, 5700), (8400, 5700), (8400, 8000), (6700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_naive
+                "
+0,Patient 28,CD8 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6200, 2000), (8400, 2000), (8400, 5700), (6200, 5700)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEMRA
+                "
+0,Patient 28,CD4 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 2000), (5600, 2000), (5600, 5600), (1000, 5600)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEM
+                "
+0,Patient 28,CD4 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 5600), (6100, 5600), (6100, 8000), (1000, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TCM
+                "
+0,Patient 28,CD4 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6100, 5500), (8000, 5500), (8000, 8000), (6100, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_Naive
+                "
+0,Patient 28,CD4 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5800, 1000), (8000, 1000), (8000, 5500), (5800, 5500)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEMRA
+                "
+0,Patient 28,CD20 B Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6000, 4900), (8300, 4900), (8300, 6200), (6000, 6200)]
+               	Channel(s): ['CD20', 'CD3']
+               	Name: CD20 B Cells
+                "
+0,Patient 28,B Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(0, 0), (5900, 0), (5900, 10000), (0, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Naive B Cell
+                "
+0,Patient 28,B Memory Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5900, 0), (10000, 0), (10000, 10000), (5900, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Memory B Cell
+                "
+0,Patient 28,CD33 Myeloid Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5950, 5000), (8000, 5000), (8000, 6400), (5950, 6400)]
+               	Channel(s): ['CD33', 'CD3']
+               	Name: CD33 Myeloid Cell
+                "
+0,Patient 28,Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 7900), (5800, 7900), (5800, 10000), (2000, 10000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Classical Monocyte
+                "
+0,Patient 28,Non-Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5800, 2000), (10000, 2000), (10000, 9000), (5800, 9000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Non-Classical Monocyte
+                "
+0,Patient 26,PBMC Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000000.0, 150000.0), (1600000.0, 150000.0), (2300000.0, 500000.0), (2800000.0, 1000000.0), (2800000.0, 2000000.0), (2500000.0, 2300000.0), (1750000.0, 2500000.0), (750000.0, 375000.0)]
+               	Channel(s): ['FSC-A', 'SSC-A']
+               	Name: PBMC
+                "
+0,Patient 26,Single Cell Gate 1,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(600000.0, 600000.0), (3000000.0, 1700000.0), (2750000.0, 2250000.0), (600000.0, 750000.0)]
+               	Channel(s): ['FSC-A', 'FSC-H']
+               	Name: Single Cells
+                "
+0,Patient 26,Single Cell Gate 2,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(100000.0, 100000.0), (2750000.0, 1500000.0), (2500000.0, 2700000.0), (80000.0, 250000.0)]
+               	Channel(s): ['SSC-A', 'SSC-H']
+               	Name: Single Cells
+                "
+0,Patient 26,Live/Dead Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 0), (6500, 0), (6500, 5000000.0), (2000, 5000000.0)]
+               	Channel(s): ['Live/Dead', 'SSC-A']
+               	Name: Live Dead
+                "
+0,Patient 26,T Cell Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3000, 5800), (6500, 5800), (6500, 8000), (3000, 8000)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: T cell Gate
+                "
+0,Patient 26,CD16 NK Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5600, 5000), (9000, 5000), (9000, 6200), (5600, 6200)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: NK Gate
+                "
+0,Patient 26,CD8 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3800, 6100), (5700, 6100), (5700, 8000), (3800, 8000)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD8 Gate
+                "
+0,Patient 26,CD4 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5500, 0), (8000, 0), (8000, 5800), (5500, 5800)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4 Gate
+                "
+0,Patient 26,CD4/CD8- Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 2000), (5500, 2000), (5500, 5600), (4000, 5600)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4- CD8- Gate
+                "
+0,Patient 26,Treg Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5100, 5500), (8000, 5500), (8000, 8000), (5100, 8000)]
+               	Channel(s): ['FoxP3', 'CD4']
+               	Name: Treg Gate
+                "
+0,Patient 26,Treg1 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4500, 5100), (6800, 5100), (6800, 8000), (4500, 8000)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg1 Gate
+                "
+0,Patient 26,Treg2 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5550, 1000), (8000, 1000), (8000, 5100), (5550, 5100)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg2 Gate
+                "
+0,Patient 26,Treg3 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4200, 2500), (5550, 2500), (5550, 5100), (4200, 5100)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg3 Gate
+                "
+0,Patient 26,CD8 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 4000), (6200, 4000), (6200, 5800), (4000, 5800)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEM
+                "
+0,Patient 26,CD8 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3700, 5800), (6700, 5800), (6700, 8000), (3700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TCM
+                "
+0,Patient 26,CD8 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6700, 5400), (8400, 5400), (8400, 8000), (6700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_naive
+                "
+0,Patient 26,CD8 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6200, 2000), (8400, 2000), (8400, 5400), (6200, 5400)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEMRA
+                "
+0,Patient 26,CD4 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 2000), (5600, 2000), (5600, 5600), (1000, 5600)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEM
+                "
+0,Patient 26,CD4 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 5600), (6100, 5600), (6100, 8000), (1000, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TCM
+                "
+0,Patient 26,CD4 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6100, 5500), (8000, 5500), (8000, 8000), (6100, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_Naive
+                "
+0,Patient 26,CD4 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5800, 1000), (8000, 1000), (8000, 5500), (5800, 5500)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEMRA
+                "
+0,Patient 26,CD20 B Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5400, 4900), (8300, 4900), (8300, 6400), (5400, 6400)]
+               	Channel(s): ['CD20', 'CD3']
+               	Name: CD20 B Cells
+                "
+0,Patient 26,B Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(0, 0), (5900, 0), (5900, 10000), (0, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Naive B Cell
+                "
+0,Patient 26,B Memory Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5900, 0), (10000, 0), (10000, 10000), (5900, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Memory B Cell
+                "
+0,Patient 26,CD33 Myeloid Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5950, 5000), (8000, 5000), (8000, 6400), (5950, 6400)]
+               	Channel(s): ['CD33', 'CD3']
+               	Name: CD33 Myeloid Cell
+                "
+0,Patient 26,Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 7900), (5800, 7900), (5800, 10000), (2000, 10000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Classical Monocyte
+                "
+0,Patient 26,Non-Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5800, 2000), (10000, 2000), (10000, 9000), (5800, 9000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Non-Classical Monocyte
+                "
+0,Patient 30,PBMC Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000000.0, 150000.0), (1600000.0, 150000.0), (2300000.0, 500000.0), (2800000.0, 1000000.0), (2800000.0, 2000000.0), (2500000.0, 2300000.0), (1750000.0, 2500000.0), (750000.0, 375000.0)]
+               	Channel(s): ['FSC-A', 'SSC-A']
+               	Name: PBMC
+                "
+0,Patient 30,Single Cell Gate 1,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(600000.0, 600000.0), (3000000.0, 1700000.0), (2750000.0, 2250000.0), (600000.0, 750000.0)]
+               	Channel(s): ['FSC-A', 'FSC-H']
+               	Name: Single Cells
+                "
+0,Patient 30,Single Cell Gate 2,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(100000.0, 100000.0), (2750000.0, 1500000.0), (2500000.0, 2700000.0), (80000.0, 250000.0)]
+               	Channel(s): ['SSC-A', 'SSC-H']
+               	Name: Single Cells
+                "
+0,Patient 30,Live/Dead Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 0), (6400, 0), (6400, 5000000.0), (2000, 5000000.0)]
+               	Channel(s): ['Live/Dead', 'SSC-A']
+               	Name: Live Dead
+                "
+0,Patient 30,T Cell Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3000, 5900), (6500, 5900), (6500, 8000), (3000, 8000)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: T cell Gate
+                "
+0,Patient 30,CD16 NK Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5600, 5000), (9000, 5000), (9000, 6200), (5600, 6200)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: NK Gate
+                "
+0,Patient 30,CD8 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3800, 6100), (5700, 6100), (5700, 8000), (3800, 8000)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD8 Gate
+                "
+0,Patient 30,CD4 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5500, 0), (8000, 0), (8000, 5800), (5500, 5800)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4 Gate
+                "
+0,Patient 30,CD4/CD8- Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 2000), (5500, 2000), (5500, 5600), (4000, 5600)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4- CD8- Gate
+                "
+0,Patient 30,Treg Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5100, 5500), (8000, 5500), (8000, 8000), (5100, 8000)]
+               	Channel(s): ['FoxP3', 'CD4']
+               	Name: Treg Gate
+                "
+0,Patient 30,Treg1 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4500, 4900), (6800, 4900), (6800, 8000), (4500, 8000)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg1 Gate
+                "
+0,Patient 30,Treg2 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5550, 1000), (8000, 1000), (8000, 4900), (5550, 4900)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg2 Gate
+                "
+0,Patient 30,Treg3 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4200, 2500), (5550, 2500), (5550, 4900), (4200, 4900)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg3 Gate
+                "
+0,Patient 30,CD8 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 4000), (6200, 4000), (6200, 5800), (4000, 5800)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEM
+                "
+0,Patient 30,CD8 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3700, 5800), (6700, 5800), (6700, 8000), (3700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TCM
+                "
+0,Patient 30,CD8 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6700, 5700), (8400, 5700), (8400, 8000), (6700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_naive
+                "
+0,Patient 30,CD8 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6200, 2000), (8400, 2000), (8400, 5700), (6200, 5700)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEMRA
+                "
+0,Patient 30,CD4 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 2000), (5600, 2000), (5600, 5600), (1000, 5600)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEM
+                "
+0,Patient 30,CD4 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 5600), (6100, 5600), (6100, 8000), (1000, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TCM
+                "
+0,Patient 30,CD4 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6100, 5500), (8000, 5500), (8000, 8000), (6100, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_Naive
+                "
+0,Patient 30,CD4 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5800, 1000), (8000, 1000), (8000, 5500), (5800, 5500)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEMRA
+                "
+0,Patient 30,CD20 B Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5600, 4900), (8300, 4900), (8300, 6400), (5600, 6400)]
+               	Channel(s): ['CD20', 'CD3']
+               	Name: CD20 B Cells
+                "
+0,Patient 30,B Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(0, 0), (5800, 0), (5800, 10000), (0, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Naive B Cell
+                "
+0,Patient 30,B Memory Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5800, 0), (10000, 0), (10000, 10000), (5800, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Memory B Cell
+                "
+0,Patient 30,CD33 Myeloid Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5950, 5000), (8000, 5000), (8000, 6400), (5950, 6400)]
+               	Channel(s): ['CD33', 'CD3']
+               	Name: CD33 Myeloid Cell
+                "
+0,Patient 30,Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 7800), (5600, 7800), (5600, 9000), (2000, 9000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Classical Monocyte
+                "
+0,Patient 30,Non-Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5600, 2000), (10000, 2000), (10000, 9000), (5600, 9000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Non-Classical Monocyte
+                "
+0,Patient 34,PBMC Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000000.0, 150000.0), (1600000.0, 150000.0), (2300000.0, 500000.0), (2800000.0, 1000000.0), (2800000.0, 2000000.0), (2500000.0, 2300000.0), (1750000.0, 2500000.0), (750000.0, 375000.0)]
+               	Channel(s): ['FSC-A', 'SSC-A']
+               	Name: PBMC
+                "
+0,Patient 34,Single Cell Gate 1,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(600000.0, 600000.0), (3000000.0, 1700000.0), (2750000.0, 2250000.0), (600000.0, 750000.0)]
+               	Channel(s): ['FSC-A', 'FSC-H']
+               	Name: Single Cells
+                "
+0,Patient 34,Single Cell Gate 2,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(100000.0, 100000.0), (2750000.0, 1500000.0), (2500000.0, 2700000.0), (80000.0, 250000.0)]
+               	Channel(s): ['SSC-A', 'SSC-H']
+               	Name: Single Cells
+                "
+0,Patient 34,Live/Dead Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 0), (6300, 0), (6300, 5000000.0), (2000, 5000000.0)]
+               	Channel(s): ['Live/Dead', 'SSC-A']
+               	Name: Live Dead
+                "
+0,Patient 34,T Cell Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3000, 6000), (6500, 6000), (6500, 8000), (3000, 8000)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: T cell Gate
+                "
+0,Patient 34,CD16 NK Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5600, 5000), (9000, 5000), (9000, 6200), (5600, 6200)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: NK Gate
+                "
+0,Patient 34,CD8 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3800, 6100), (5700, 6100), (5700, 8000), (3800, 8000)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD8 Gate
+                "
+0,Patient 34,CD4 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5500, 0), (8000, 0), (8000, 5800), (5500, 5800)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4 Gate
+                "
+0,Patient 34,CD4/CD8- Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 2000), (5500, 2000), (5500, 5600), (4000, 5600)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4- CD8- Gate
+                "
+0,Patient 34,Treg Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5100, 5500), (8000, 5500), (8000, 8000), (5100, 8000)]
+               	Channel(s): ['FoxP3', 'CD4']
+               	Name: Treg Gate
+                "
+0,Patient 34,Treg1 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4500, 5200), (6800, 5200), (6800, 8000), (4500, 8000)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg1 Gate
+                "
+0,Patient 34,Treg2 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5550, 1000), (8000, 1000), (8000, 5200), (5550, 5200)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg2 Gate
+                "
+0,Patient 34,Treg3 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4200, 2500), (5550, 2500), (5550, 5200), (4200, 5200)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg3 Gate
+                "
+0,Patient 34,CD8 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 4000), (6200, 4000), (6200, 5800), (4000, 5800)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEM
+                "
+0,Patient 34,CD8 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3700, 5800), (6700, 5800), (6700, 8000), (3700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TCM
+                "
+0,Patient 34,CD8 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6700, 5700), (8400, 5700), (8400, 8000), (6700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_naive
+                "
+0,Patient 34,CD8 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6200, 2000), (8400, 2000), (8400, 5700), (6200, 5700)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEMRA
+                "
+0,Patient 34,CD4 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 2000), (5600, 2000), (5600, 5600), (1000, 5600)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEM
+                "
+0,Patient 34,CD4 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 5600), (6100, 5600), (6100, 8000), (1000, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TCM
+                "
+0,Patient 34,CD4 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6100, 5500), (8000, 5500), (8000, 8000), (6100, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_Naive
+                "
+0,Patient 34,CD4 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5800, 1000), (8000, 1000), (8000, 5500), (5800, 5500)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEMRA
+                "
+0,Patient 34,CD20 B Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5400, 4900), (8300, 4900), (8300, 6400), (5400, 6400)]
+               	Channel(s): ['CD20', 'CD3']
+               	Name: CD20 B Cells
+                "
+0,Patient 34,B Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(0, 0), (5500, 0), (5500, 10000), (0, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Naive B Cell
+                "
+0,Patient 34,B Memory Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5500, 0), (10000, 0), (10000, 10000), (5500, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Memory B Cell
+                "
+0,Patient 34,CD33 Myeloid Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5950, 5000), (8000, 5000), (8000, 6400), (5950, 6400)]
+               	Channel(s): ['CD33', 'CD3']
+               	Name: CD33 Myeloid Cell
+                "
+0,Patient 34,Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 8000), (5600, 8000), (5600, 10000), (2000, 10000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Classical Monocyte
+                "
+0,Patient 34,Non-Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5600, 2000), (10000, 2000), (10000, 9000), (5600, 9000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Non-Classical Monocyte
+                "
+0,Patient 52A,PBMC Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000000.0, 150000.0), (1600000.0, 150000.0), (2300000.0, 500000.0), (2800000.0, 1000000.0), (2800000.0, 2000000.0), (2500000.0, 2300000.0), (1750000.0, 2500000.0), (750000.0, 375000.0)]
+               	Channel(s): ['FSC-A', 'SSC-A']
+               	Name: PBMC
+                "
+0,Patient 52A,Single Cell Gate 1,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(600000.0, 600000.0), (3000000.0, 1700000.0), (2750000.0, 2250000.0), (600000.0, 750000.0)]
+               	Channel(s): ['FSC-A', 'FSC-H']
+               	Name: Single Cells
+                "
+0,Patient 52A,Single Cell Gate 2,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(100000.0, 100000.0), (2750000.0, 1900000.0), (2500000.0, 2700000.0), (80000.0, 250000.0)]
+               	Channel(s): ['SSC-A', 'SSC-H']
+               	Name: Single Cells
+                "
+0,Patient 52A,Live/Dead Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 0), (6300, 0), (6300, 5000000.0), (2000, 5000000.0)]
+               	Channel(s): ['Live/Dead', 'SSC-A']
+               	Name: Live Dead
+                "
+0,Patient 52A,T Cell Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3000, 5800), (6500, 5800), (6500, 8000), (3000, 8000)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: T cell Gate
+                "
+0,Patient 52A,CD16 NK Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5800, 5000), (9000, 5000), (9000, 6200), (5800, 6200)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: NK Gate
+                "
+0,Patient 52A,CD8 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3800, 6100), (5700, 6100), (5700, 8000), (3800, 8000)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD8 Gate
+                "
+0,Patient 52A,CD4 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5500, 0), (8000, 0), (8000, 5800), (5500, 5800)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4 Gate
+                "
+0,Patient 52A,CD4/CD8- Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 2000), (5500, 2000), (5500, 5600), (4000, 5600)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4- CD8- Gate
+                "
+0,Patient 52A,Treg Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5100, 5500), (8000, 5500), (8000, 8000), (5100, 8000)]
+               	Channel(s): ['FoxP3', 'CD4']
+               	Name: Treg Gate
+                "
+0,Patient 52A,Treg1 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4500, 4900), (6800, 4900), (6800, 8000), (4500, 8000)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg1 Gate
+                "
+0,Patient 52A,Treg2 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5550, 1000), (8000, 1000), (8000, 4900), (5550, 4900)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg2 Gate
+                "
+0,Patient 52A,Treg3 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4200, 2500), (5550, 2500), (5550, 4900), (4200, 4900)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg3 Gate
+                "
+0,Patient 52A,CD8 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 4000), (6200, 4000), (6200, 5800), (4000, 5800)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEM
+                "
+0,Patient 52A,CD8 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3700, 5800), (6700, 5800), (6700, 8000), (3700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TCM
+                "
+0,Patient 52A,CD8 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6700, 5000), (8400, 5000), (8400, 8000), (6700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_naive
+                "
+0,Patient 52A,CD8 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6200, 2000), (8400, 2000), (8400, 5000), (6200, 5000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEMRA
+                "
+0,Patient 52A,CD4 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 2000), (5600, 2000), (5600, 5600), (1000, 5600)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEM
+                "
+0,Patient 52A,CD4 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 5600), (6100, 5600), (6100, 8000), (1000, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TCM
+                "
+0,Patient 52A,CD4 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6100, 5500), (8000, 5500), (8000, 8000), (6100, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_Naive
+                "
+0,Patient 52A,CD4 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5800, 1000), (8000, 1000), (8000, 5500), (5800, 5500)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEMRA
+                "
+0,Patient 52A,CD20 B Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5400, 4900), (8300, 4900), (8300, 6400), (5400, 6400)]
+               	Channel(s): ['CD20', 'CD3']
+               	Name: CD20 B Cells
+                "
+0,Patient 52A,B Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(0, 0), (4900, 0), (4900, 10000), (0, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Naive B Cell
+                "
+0,Patient 52A,B Memory Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4900, 0), (10000, 0), (10000, 10000), (4900, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Memory B Cell
+                "
+0,Patient 52A,CD33 Myeloid Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5950, 5000), (8000, 5000), (8000, 6400), (5950, 6400)]
+               	Channel(s): ['CD33', 'CD3']
+               	Name: CD33 Myeloid Cell
+                "
+0,Patient 52A,Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 7800), (5600, 7800), (5600, 9500), (2000, 9500)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Classical Monocyte
+                "
+0,Patient 52A,Non-Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5600, 2000), (10000, 2000), (10000, 9000), (5600, 9000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Non-Classical Monocyte
+                "
+0,Patient 60,PBMC Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000000.0, 150000.0), (1600000.0, 150000.0), (2300000.0, 500000.0), (2800000.0, 1000000.0), (2800000.0, 2000000.0), (2500000.0, 2300000.0), (1750000.0, 2500000.0), (750000.0, 375000.0)]
+               	Channel(s): ['FSC-A', 'SSC-A']
+               	Name: PBMC
+                "
+0,Patient 60,Single Cell Gate 1,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(600000.0, 600000.0), (3000000.0, 1700000.0), (2750000.0, 2250000.0), (600000.0, 750000.0)]
+               	Channel(s): ['FSC-A', 'FSC-H']
+               	Name: Single Cells
+                "
+0,Patient 60,Single Cell Gate 2,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(100000.0, 100000.0), (2750000.0, 1500000.0), (2500000.0, 2700000.0), (80000.0, 250000.0)]
+               	Channel(s): ['SSC-A', 'SSC-H']
+               	Name: Single Cells
+                "
+0,Patient 60,Live/Dead Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 0), (6300, 0), (6300, 5000000.0), (2000, 5000000.0)]
+               	Channel(s): ['Live/Dead', 'SSC-A']
+               	Name: Live Dead
+                "
+0,Patient 60,T Cell Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3000, 5800), (6500, 5800), (6500, 8000), (3000, 8000)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: T cell Gate
+                "
+0,Patient 60,CD16 NK Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5600, 5000), (9000, 5000), (9000, 6200), (5600, 6200)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: NK Gate
+                "
+0,Patient 60,CD8 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3800, 6100), (5700, 6100), (5700, 8000), (3800, 8000)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD8 Gate
+                "
+0,Patient 60,CD4 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5500, 0), (8000, 0), (8000, 5800), (5500, 5800)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4 Gate
+                "
+0,Patient 60,CD4/CD8- Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 2000), (5500, 2000), (5500, 5600), (4000, 5600)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4- CD8- Gate
+                "
+0,Patient 60,Treg Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5100, 5500), (8000, 5500), (8000, 8000), (5100, 8000)]
+               	Channel(s): ['FoxP3', 'CD4']
+               	Name: Treg Gate
+                "
+0,Patient 60,Treg1 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4500, 4900), (6800, 4900), (6800, 8000), (4500, 8000)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg1 Gate
+                "
+0,Patient 60,Treg2 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5550, 1000), (8000, 1000), (8000, 4900), (5550, 4900)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg2 Gate
+                "
+0,Patient 60,Treg3 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4200, 2500), (5550, 2500), (5550, 4900), (4200, 4900)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg3 Gate
+                "
+0,Patient 60,CD8 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 4000), (6200, 4000), (6200, 5800), (4000, 5800)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEM
+                "
+0,Patient 60,CD8 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3700, 5800), (6700, 5800), (6700, 8000), (3700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TCM
+                "
+0,Patient 60,CD8 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6700, 5700), (8400, 5700), (8400, 8000), (6700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_naive
+                "
+0,Patient 60,CD8 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6200, 2000), (8400, 2000), (8400, 5700), (6200, 5700)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEMRA
+                "
+0,Patient 60,CD4 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 2000), (5600, 2000), (5600, 5600), (1000, 5600)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEM
+                "
+0,Patient 60,CD4 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 5600), (6100, 5600), (6100, 8000), (1000, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TCM
+                "
+0,Patient 60,CD4 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6100, 5500), (8000, 5500), (8000, 8000), (6100, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_Naive
+                "
+0,Patient 60,CD4 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5800, 1000), (8000, 1000), (8000, 5500), (5800, 5500)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEMRA
+                "
+0,Patient 60,CD20 B Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5400, 4900), (8300, 4900), (8300, 6400), (5400, 6400)]
+               	Channel(s): ['CD20', 'CD3']
+               	Name: CD20 B Cells
+                "
+0,Patient 60,B Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(0, 0), (5000, 0), (5000, 10000), (0, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Naive B Cell
+                "
+0,Patient 60,B Memory Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5000, 0), (10000, 0), (10000, 10000), (5000, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Memory B Cell
+                "
+0,Patient 60,CD33 Myeloid Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5850, 5000), (8000, 5000), (8000, 6200), (5850, 6200)]
+               	Channel(s): ['CD33', 'CD3']
+               	Name: CD33 Myeloid Cell
+                "
+0,Patient 60,Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 7700), (5600, 7700), (5600, 9000), (2000, 9000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Classical Monocyte
+                "
+0,Patient 60,Non-Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5300, 2000), (10000, 2000), (10000, 9000), (5300, 9000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Non-Classical Monocyte
+                "
+0,Patient 61,PBMC Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000000.0, 150000.0), (1600000.0, 150000.0), (2300000.0, 500000.0), (2800000.0, 1000000.0), (2800000.0, 2000000.0), (2500000.0, 2300000.0), (1750000.0, 2500000.0), (750000.0, 375000.0)]
+               	Channel(s): ['FSC-A', 'SSC-A']
+               	Name: PBMC
+                "
+0,Patient 61,Single Cell Gate 1,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(600000.0, 600000.0), (3000000.0, 1700000.0), (2750000.0, 2250000.0), (600000.0, 750000.0)]
+               	Channel(s): ['FSC-A', 'FSC-H']
+               	Name: Single Cells
+                "
+0,Patient 61,Single Cell Gate 2,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(100000.0, 100000.0), (2750000.0, 1500000.0), (2500000.0, 2700000.0), (80000.0, 250000.0)]
+               	Channel(s): ['SSC-A', 'SSC-H']
+               	Name: Single Cells
+                "
+0,Patient 61,Live/Dead Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 0), (6300, 0), (6300, 5000000.0), (2000, 5000000.0)]
+               	Channel(s): ['Live/Dead', 'SSC-A']
+               	Name: Live Dead
+                "
+0,Patient 61,T Cell Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3000, 6000), (6500, 6000), (6500, 8000), (3000, 8000)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: T cell Gate
+                "
+0,Patient 61,CD16 NK Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5600, 5000), (9000, 5000), (9000, 6200), (5600, 6200)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: NK Gate
+                "
+0,Patient 61,CD8 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3800, 6100), (5700, 6100), (5700, 8000), (3800, 8000)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD8 Gate
+                "
+0,Patient 61,CD4 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5500, 0), (8000, 0), (8000, 5800), (5500, 5800)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4 Gate
+                "
+0,Patient 61,CD4/CD8- Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 2000), (5500, 2000), (5500, 5600), (4000, 5600)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4- CD8- Gate
+                "
+0,Patient 61,Treg Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5100, 5500), (8000, 5500), (8000, 8000), (5100, 8000)]
+               	Channel(s): ['FoxP3', 'CD4']
+               	Name: Treg Gate
+                "
+0,Patient 61,Treg1 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4500, 4900), (6800, 4900), (6800, 8000), (4500, 8000)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg1 Gate
+                "
+0,Patient 61,Treg2 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5550, 1000), (8000, 1000), (8000, 4900), (5550, 4900)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg2 Gate
+                "
+0,Patient 61,Treg3 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4200, 2500), (5550, 2500), (5550, 4900), (4200, 4900)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg3 Gate
+                "
+0,Patient 61,CD8 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 4000), (6200, 4000), (6200, 5800), (4000, 5800)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEM
+                "
+0,Patient 61,CD8 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3700, 5800), (6700, 5800), (6700, 8000), (3700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TCM
+                "
+0,Patient 61,CD8 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6700, 5700), (8400, 5700), (8400, 8000), (6700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_naive
+                "
+0,Patient 61,CD8 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6200, 2000), (8400, 2000), (8400, 5700), (6200, 5700)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEMRA
+                "
+0,Patient 61,CD4 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 2000), (5600, 2000), (5600, 5600), (1000, 5600)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEM
+                "
+0,Patient 61,CD4 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 5600), (6100, 5600), (6100, 8000), (1000, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TCM
+                "
+0,Patient 61,CD4 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6100, 5500), (8000, 5500), (8000, 8000), (6100, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_Naive
+                "
+0,Patient 61,CD4 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5800, 1000), (8000, 1000), (8000, 5500), (5800, 5500)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEMRA
+                "
+0,Patient 61,CD20 B Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5400, 4900), (8300, 4900), (8300, 6400), (5400, 6400)]
+               	Channel(s): ['CD20', 'CD3']
+               	Name: CD20 B Cells
+                "
+0,Patient 61,B Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(0, 0), (5700, 0), (5700, 10000), (0, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Naive B Cell
+                "
+0,Patient 61,B Memory Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5700, 0), (10000, 0), (10000, 10000), (5700, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Memory B Cell
+                "
+0,Patient 61,CD33 Myeloid Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5950, 5000), (8000, 5000), (8000, 6200), (5950, 6200)]
+               	Channel(s): ['CD33', 'CD3']
+               	Name: CD33 Myeloid Cell
+                "
+0,Patient 61,Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 7800), (5600, 7800), (5600, 9000), (2000, 9000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Classical Monocyte
+                "
+0,Patient 61,Non-Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5600, 2000), (10000, 2000), (10000, 9000), (5600, 9000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Non-Classical Monocyte
+                "
+0,Patient 62,PBMC Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000000.0, 150000.0), (1600000.0, 150000.0), (2300000.0, 500000.0), (2800000.0, 1000000.0), (2800000.0, 2000000.0), (2500000.0, 2300000.0), (1750000.0, 2500000.0), (750000.0, 375000.0)]
+               	Channel(s): ['FSC-A', 'SSC-A']
+               	Name: PBMC
+                "
+0,Patient 62,Single Cell Gate 1,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(600000.0, 600000.0), (3000000.0, 1700000.0), (2750000.0, 2250000.0), (600000.0, 750000.0)]
+               	Channel(s): ['FSC-A', 'FSC-H']
+               	Name: Single Cells
+                "
+0,Patient 62,Single Cell Gate 2,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(100000.0, 100000.0), (2750000.0, 1500000.0), (2500000.0, 2700000.0), (80000.0, 250000.0)]
+               	Channel(s): ['SSC-A', 'SSC-H']
+               	Name: Single Cells
+                "
+0,Patient 62,Live/Dead Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 0), (6300, 0), (6300, 5000000.0), (2000, 5000000.0)]
+               	Channel(s): ['Live/Dead', 'SSC-A']
+               	Name: Live Dead
+                "
+0,Patient 62,T Cell Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3000, 5800), (6500, 5800), (6500, 8000), (3000, 8000)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: T cell Gate
+                "
+0,Patient 62,CD16 NK Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5600, 5000), (9000, 5000), (9000, 6200), (5600, 6200)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: NK Gate
+                "
+0,Patient 62,CD8 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3800, 6100), (5700, 6100), (5700, 8000), (3800, 8000)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD8 Gate
+                "
+0,Patient 62,CD4 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5500, 0), (8000, 0), (8000, 5800), (5500, 5800)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4 Gate
+                "
+0,Patient 62,CD4/CD8- Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 2000), (5500, 2000), (5500, 5600), (4000, 5600)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4- CD8- Gate
+                "
+0,Patient 62,Treg Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5100, 5500), (8000, 5500), (8000, 8000), (5100, 8000)]
+               	Channel(s): ['FoxP3', 'CD4']
+               	Name: Treg Gate
+                "
+0,Patient 62,Treg1 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4500, 4900), (6800, 4900), (6800, 8000), (4500, 8000)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg1 Gate
+                "
+0,Patient 62,Treg2 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5750, 1000), (8000, 1000), (8000, 4900), (5750, 4900)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg2 Gate
+                "
+0,Patient 62,Treg3 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4400, 2500), (5750, 2500), (5750, 4900), (4400, 4900)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg3 Gate
+                "
+0,Patient 62,CD8 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 4000), (6200, 4000), (6200, 5800), (4000, 5800)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEM
+                "
+0,Patient 62,CD8 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3700, 5800), (6700, 5800), (6700, 8000), (3700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TCM
+                "
+0,Patient 62,CD8 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6700, 5700), (8400, 5700), (8400, 8000), (6700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_naive
+                "
+0,Patient 62,CD8 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6200, 2000), (8400, 2000), (8400, 5700), (6200, 5700)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEMRA
+                "
+0,Patient 62,CD4 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 2000), (5600, 2000), (5600, 5600), (1000, 5600)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEM
+                "
+0,Patient 62,CD4 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 5600), (6100, 5600), (6100, 8000), (1000, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TCM
+                "
+0,Patient 62,CD4 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6100, 5500), (8000, 5500), (8000, 8000), (6100, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_Naive
+                "
+0,Patient 62,CD4 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5800, 1000), (8000, 1000), (8000, 5500), (5800, 5500)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEMRA
+                "
+0,Patient 62,CD20 B Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5600, 4900), (8300, 4900), (8300, 6400), (5600, 6400)]
+               	Channel(s): ['CD20', 'CD3']
+               	Name: CD20 B Cells
+                "
+0,Patient 62,B Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(0, 0), (5500, 0), (5500, 10000), (0, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Naive B Cell
+                "
+0,Patient 62,B Memory Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5500, 0), (10000, 0), (10000, 10000), (5500, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Memory B Cell
+                "
+0,Patient 62,CD33 Myeloid Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5750, 5000), (8000, 5000), (8000, 6200), (5750, 6200)]
+               	Channel(s): ['CD33', 'CD3']
+               	Name: CD33 Myeloid Cell
+                "
+0,Patient 62,Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 8000), (5600, 8000), (5600, 9000), (2000, 9000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Classical Monocyte
+                "
+0,Patient 62,Non-Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5600, 2000), (10000, 2000), (10000, 9000), (5600, 9000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Non-Classical Monocyte
+                "
+0,Patient 68,PBMC Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000000.0, 150000.0), (1600000.0, 150000.0), (2300000.0, 500000.0), (2800000.0, 1000000.0), (2800000.0, 2000000.0), (2500000.0, 2300000.0), (1750000.0, 2500000.0), (750000.0, 375000.0)]
+               	Channel(s): ['FSC-A', 'SSC-A']
+               	Name: PBMC
+                "
+0,Patient 68,Single Cell Gate 1,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(600000.0, 600000.0), (3000000.0, 1700000.0), (2750000.0, 2250000.0), (600000.0, 750000.0)]
+               	Channel(s): ['FSC-A', 'FSC-H']
+               	Name: Single Cells
+                "
+0,Patient 68,Single Cell Gate 2,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(100000.0, 100000.0), (2750000.0, 1500000.0), (2500000.0, 2700000.0), (80000.0, 250000.0)]
+               	Channel(s): ['SSC-A', 'SSC-H']
+               	Name: Single Cells
+                "
+0,Patient 68,Live/Dead Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 0), (6400, 0), (6400, 5000000.0), (2000, 5000000.0)]
+               	Channel(s): ['Live/Dead', 'SSC-A']
+               	Name: Live Dead
+                "
+0,Patient 68,T Cell Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3000, 5900), (6500, 5900), (6500, 8000), (3000, 8000)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: T cell Gate
+                "
+0,Patient 68,CD16 NK Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5600, 5000), (9000, 5000), (9000, 6200), (5600, 6200)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: NK Gate
+                "
+0,Patient 68,CD8 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3800, 6100), (5700, 6100), (5700, 8000), (3800, 8000)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD8 Gate
+                "
+0,Patient 68,CD4 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5500, 0), (8000, 0), (8000, 5800), (5500, 5800)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4 Gate
+                "
+0,Patient 68,CD4/CD8- Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 2000), (5500, 2000), (5500, 5600), (4000, 5600)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4- CD8- Gate
+                "
+0,Patient 68,Treg Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5100, 5500), (8000, 5500), (8000, 8000), (5100, 8000)]
+               	Channel(s): ['FoxP3', 'CD4']
+               	Name: Treg Gate
+                "
+0,Patient 68,Treg1 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4500, 5800), (6800, 5800), (6800, 8000), (4500, 8000)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg1 Gate
+                "
+0,Patient 68,Treg2 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5650, 1000), (8000, 1000), (8000, 5800), (5650, 5800)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg2 Gate
+                "
+0,Patient 68,Treg3 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4200, 2500), (5650, 2500), (5650, 5800), (4200, 5800)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg3 Gate
+                "
+0,Patient 68,CD8 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 4000), (6200, 4000), (6200, 5800), (4000, 5800)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEM
+                "
+0,Patient 68,CD8 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3700, 5800), (6700, 5800), (6700, 8000), (3700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TCM
+                "
+0,Patient 68,CD8 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6700, 5700), (8400, 5700), (8400, 8000), (6700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_naive
+                "
+0,Patient 68,CD8 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6200, 2000), (8400, 2000), (8400, 5700), (6200, 5700)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEMRA
+                "
+0,Patient 68,CD4 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 2000), (5600, 2000), (5600, 5600), (1000, 5600)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEM
+                "
+0,Patient 68,CD4 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 5600), (6100, 5600), (6100, 8000), (1000, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TCM
+                "
+0,Patient 68,CD4 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6100, 5500), (8000, 5500), (8000, 8000), (6100, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_Naive
+                "
+0,Patient 68,CD4 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5800, 1000), (8000, 1000), (8000, 5500), (5800, 5500)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEMRA
+                "
+0,Patient 68,CD20 B Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5900, 4900), (8300, 4900), (8300, 6400), (5900, 6400)]
+               	Channel(s): ['CD20', 'CD3']
+               	Name: CD20 B Cells
+                "
+0,Patient 68,B Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(0, 0), (5600, 0), (5600, 10000), (0, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Naive B Cell
+                "
+0,Patient 68,B Memory Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5600, 0), (10000, 0), (10000, 10000), (5600, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Memory B Cell
+                "
+0,Patient 68,CD33 Myeloid Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5950, 5000), (8000, 5000), (8000, 6400), (5950, 6400)]
+               	Channel(s): ['CD33', 'CD3']
+               	Name: CD33 Myeloid Cell
+                "
+0,Patient 68,Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 7900), (5600, 7900), (5600, 10000), (2000, 10000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Classical Monocyte
+                "
+0,Patient 68,Non-Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5600, 2000), (10000, 2000), (10000, 9000), (5600, 9000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Non-Classical Monocyte
+                "
+0,Patient 69,PBMC Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000000.0, 150000.0), (1600000.0, 150000.0), (2300000.0, 500000.0), (2800000.0, 1000000.0), (2800000.0, 2000000.0), (2500000.0, 2300000.0), (1750000.0, 2500000.0), (750000.0, 375000.0)]
+               	Channel(s): ['FSC-A', 'SSC-A']
+               	Name: PBMC
+                "
+0,Patient 69,Single Cell Gate 1,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(600000.0, 600000.0), (3000000.0, 1700000.0), (2750000.0, 2250000.0), (600000.0, 750000.0)]
+               	Channel(s): ['FSC-A', 'FSC-H']
+               	Name: Single Cells
+                "
+0,Patient 69,Single Cell Gate 2,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(100000.0, 100000.0), (2750000.0, 1500000.0), (2500000.0, 2700000.0), (80000.0, 250000.0)]
+               	Channel(s): ['SSC-A', 'SSC-H']
+               	Name: Single Cells
+                "
+0,Patient 69,Live/Dead Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 0), (6300, 0), (6300, 5000000.0), (2000, 5000000.0)]
+               	Channel(s): ['Live/Dead', 'SSC-A']
+               	Name: Live Dead
+                "
+0,Patient 69,T Cell Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3000, 5800), (6500, 5800), (6500, 8000), (3000, 8000)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: T cell Gate
+                "
+0,Patient 69,CD16 NK Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5900, 5000), (9000, 5000), (9000, 6200), (5900, 6200)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: NK Gate
+                "
+0,Patient 69,CD8 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3800, 6100), (5700, 6100), (5700, 8000), (3800, 8000)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD8 Gate
+                "
+0,Patient 69,CD4 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5500, 0), (8000, 0), (8000, 5800), (5500, 5800)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4 Gate
+                "
+0,Patient 69,CD4/CD8- Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 2000), (5500, 2000), (5500, 5600), (4000, 5600)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4- CD8- Gate
+                "
+0,Patient 69,Treg Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5200, 5500), (8000, 5500), (8000, 8000), (5200, 8000)]
+               	Channel(s): ['FoxP3', 'CD4']
+               	Name: Treg Gate
+                "
+0,Patient 69,Treg1 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4500, 4900), (6800, 4900), (6800, 8000), (4500, 8000)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg1 Gate
+                "
+0,Patient 69,Treg2 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5950, 1000), (8000, 1000), (8000, 4900), (5950, 4900)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg2 Gate
+                "
+0,Patient 69,Treg3 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4200, 2500), (5950, 2500), (5950, 4900), (4200, 4900)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg3 Gate
+                "
+0,Patient 69,CD8 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 4000), (6200, 4000), (6200, 5800), (4000, 5800)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEM
+                "
+0,Patient 69,CD8 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3700, 5800), (6700, 5800), (6700, 8000), (3700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TCM
+                "
+0,Patient 69,CD8 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6700, 5700), (8400, 5700), (8400, 8000), (6700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_naive
+                "
+0,Patient 69,CD8 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6200, 2000), (8400, 2000), (8400, 5700), (6200, 5700)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEMRA
+                "
+0,Patient 69,CD4 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 2000), (5600, 2000), (5600, 5600), (1000, 5600)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEM
+                "
+0,Patient 69,CD4 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 5600), (6100, 5600), (6100, 8000), (1000, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TCM
+                "
+0,Patient 69,CD4 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6100, 5500), (8000, 5500), (8000, 8000), (6100, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_Naive
+                "
+0,Patient 69,CD4 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5800, 1000), (8000, 1000), (8000, 5500), (5800, 5500)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEMRA
+                "
+0,Patient 69,CD20 B Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5700, 4900), (8300, 4900), (8300, 6400), (5700, 6400)]
+               	Channel(s): ['CD20', 'CD3']
+               	Name: CD20 B Cells
+                "
+0,Patient 69,B Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(0, 0), (5200, 0), (5200, 10000), (0, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Naive B Cell
+                "
+0,Patient 69,B Memory Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5200, 0), (10000, 0), (10000, 10000), (5200, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Memory B Cell
+                "
+0,Patient 69,CD33 Myeloid Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6250, 5000), (8000, 5000), (8000, 6200), (6250, 6200)]
+               	Channel(s): ['CD33', 'CD3']
+               	Name: CD33 Myeloid Cell
+                "
+0,Patient 69,Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 8000), (5600, 8000), (5600, 9500), (2000, 9500)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Classical Monocyte
+                "
+0,Patient 69,Non-Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5900, 2000), (10000, 2000), (10000, 9000), (5900, 9000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Non-Classical Monocyte
+                "
+0,Patient 19186-2,PBMC Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000000.0, 150000.0), (1600000.0, 150000.0), (2300000.0, 500000.0), (2800000.0, 1000000.0), (2800000.0, 2000000.0), (2500000.0, 2300000.0), (1750000.0, 2500000.0), (750000.0, 375000.0)]
+               	Channel(s): ['FSC-A', 'SSC-A']
+               	Name: PBMC
+                "
+0,Patient 19186-2,Single Cell Gate 1,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(600000.0, 600000.0), (3000000.0, 1700000.0), (2750000.0, 2250000.0), (600000.0, 750000.0)]
+               	Channel(s): ['FSC-A', 'FSC-H']
+               	Name: Single Cells
+                "
+0,Patient 19186-2,Single Cell Gate 2,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(100000.0, 100000.0), (2750000.0, 1500000.0), (2500000.0, 2700000.0), (80000.0, 250000.0)]
+               	Channel(s): ['SSC-A', 'SSC-H']
+               	Name: Single Cells
+                "
+0,Patient 19186-2,Live/Dead Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 0), (6300, 0), (6300, 5000000.0), (2000, 5000000.0)]
+               	Channel(s): ['Live/Dead', 'SSC-A']
+               	Name: Live Dead
+                "
+0,Patient 19186-2,T Cell Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3000, 5800), (6500, 5800), (6500, 8000), (3000, 8000)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: T cell Gate
+                "
+0,Patient 19186-2,CD16 NK Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5600, 5000), (9000, 5000), (9000, 6200), (5600, 6200)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: NK Gate
+                "
+0,Patient 19186-2,CD8 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3800, 6100), (5700, 6100), (5700, 8000), (3800, 8000)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD8 Gate
+                "
+0,Patient 19186-2,CD4 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5500, 0), (8000, 0), (8000, 5800), (5500, 5800)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4 Gate
+                "
+0,Patient 19186-2,CD4/CD8- Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 2000), (5500, 2000), (5500, 5600), (4000, 5600)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4- CD8- Gate
+                "
+0,Patient 19186-2,Treg Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5100, 5500), (8000, 5500), (8000, 8000), (5100, 8000)]
+               	Channel(s): ['FoxP3', 'CD4']
+               	Name: Treg Gate
+                "
+0,Patient 19186-2,Treg1 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4500, 4900), (6800, 4900), (6800, 8000), (4500, 8000)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg1 Gate
+                "
+0,Patient 19186-2,Treg2 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5550, 1000), (8000, 1000), (8000, 4900), (5550, 4900)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg2 Gate
+                "
+0,Patient 19186-2,Treg3 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4200, 2500), (5750, 2500), (5750, 4900), (4200, 4900)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg3 Gate
+                "
+0,Patient 19186-2,CD8 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 4000), (6200, 4000), (6200, 5800), (4000, 5800)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEM
+                "
+0,Patient 19186-2,CD8 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3700, 5800), (6700, 5800), (6700, 8000), (3700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TCM
+                "
+0,Patient 19186-2,CD8 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6700, 5700), (8400, 5700), (8400, 8000), (6700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_naive
+                "
+0,Patient 19186-2,CD8 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6200, 2000), (8400, 2000), (8400, 5700), (6200, 5700)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEMRA
+                "
+0,Patient 19186-2,CD4 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 2000), (5600, 2000), (5600, 5600), (1000, 5600)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEM
+                "
+0,Patient 19186-2,CD4 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 5600), (6100, 5600), (6100, 8000), (1000, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TCM
+                "
+0,Patient 19186-2,CD4 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6100, 5500), (8000, 5500), (8000, 8000), (6100, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_Naive
+                "
+0,Patient 19186-2,CD4 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5800, 1000), (8000, 1000), (8000, 5500), (5800, 5500)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEMRA
+                "
+0,Patient 19186-2,CD20 B Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5600, 4900), (8300, 4900), (8300, 6400), (5600, 6400)]
+               	Channel(s): ['CD20', 'CD3']
+               	Name: CD20 B Cells
+                "
+0,Patient 19186-2,B Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(0, 0), (5900, 0), (5900, 10000), (0, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Naive B Cell
+                "
+0,Patient 19186-2,B Memory Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5900, 0), (10000, 0), (10000, 10000), (5900, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Memory B Cell
+                "
+0,Patient 19186-2,CD33 Myeloid Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5950, 5000), (8000, 5000), (8000, 6200), (5950, 6200)]
+               	Channel(s): ['CD33', 'CD3']
+               	Name: CD33 Myeloid Cell
+                "
+0,Patient 19186-2,Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 7900), (5600, 7900), (5600, 10000), (2000, 10000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Classical Monocyte
+                "
+0,Patient 19186-2,Non-Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5600, 2000), (10000, 2000), (10000, 9000), (5600, 9000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Non-Classical Monocyte
+                "
+0,Patient 19186-3,PBMC Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000000.0, 150000.0), (1600000.0, 150000.0), (2300000.0, 500000.0), (2800000.0, 1000000.0), (2800000.0, 2000000.0), (2500000.0, 2300000.0), (1750000.0, 2500000.0), (750000.0, 375000.0)]
+               	Channel(s): ['FSC-A', 'SSC-A']
+               	Name: PBMC
+                "
+0,Patient 19186-3,Single Cell Gate 1,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(600000.0, 600000.0), (3000000.0, 1700000.0), (2750000.0, 2250000.0), (600000.0, 750000.0)]
+               	Channel(s): ['FSC-A', 'FSC-H']
+               	Name: Single Cells
+                "
+0,Patient 19186-3,Single Cell Gate 2,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(100000.0, 100000.0), (2750000.0, 1500000.0), (2500000.0, 2700000.0), (80000.0, 250000.0)]
+               	Channel(s): ['SSC-A', 'SSC-H']
+               	Name: Single Cells
+                "
+0,Patient 19186-3,Live/Dead Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 0), (6300, 0), (6300, 5000000.0), (2000, 5000000.0)]
+               	Channel(s): ['Live/Dead', 'SSC-A']
+               	Name: Live Dead
+                "
+0,Patient 19186-3,T Cell Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3000, 6000), (6000, 6000), (6000, 8000), (3000, 8000)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: T cell Gate
+                "
+0,Patient 19186-3,CD16 NK Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5600, 5000), (9000, 5000), (9000, 6200), (5600, 6200)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: NK Gate
+                "
+0,Patient 19186-3,CD8 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3800, 6100), (5700, 6100), (5700, 8000), (3800, 8000)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD8 Gate
+                "
+0,Patient 19186-3,CD4 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5500, 0), (8000, 0), (8000, 5800), (5500, 5800)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4 Gate
+                "
+0,Patient 19186-3,CD4/CD8- Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 2000), (5500, 2000), (5500, 5600), (4000, 5600)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4- CD8- Gate
+                "
+0,Patient 19186-3,Treg Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5300, 5500), (8000, 5500), (8000, 8000), (5300, 8000)]
+               	Channel(s): ['FoxP3', 'CD4']
+               	Name: Treg Gate
+                "
+0,Patient 19186-3,Treg1 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4500, 4900), (6800, 4900), (6800, 8000), (4500, 8000)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg1 Gate
+                "
+0,Patient 19186-3,Treg2 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5650, 1000), (8000, 1000), (8000, 4900), (5650, 4900)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg2 Gate
+                "
+0,Patient 19186-3,Treg3 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4200, 2500), (5750, 2500), (5750, 4900), (4200, 4900)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg3 Gate
+                "
+0,Patient 19186-3,CD8 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 4000), (6200, 4000), (6200, 5800), (4000, 5800)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEM
+                "
+0,Patient 19186-3,CD8 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3700, 5800), (6700, 5800), (6700, 8000), (3700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TCM
+                "
+0,Patient 19186-3,CD8 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6700, 5700), (8400, 5700), (8400, 8000), (6700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_naive
+                "
+0,Patient 19186-3,CD8 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6200, 2000), (8400, 2000), (8400, 5700), (6200, 5700)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEMRA
+                "
+0,Patient 19186-3,CD4 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 2000), (5600, 2000), (5600, 5600), (1000, 5600)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEM
+                "
+0,Patient 19186-3,CD4 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 5600), (6100, 5600), (6100, 8000), (1000, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TCM
+                "
+0,Patient 19186-3,CD4 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6100, 5500), (8000, 5500), (8000, 8000), (6100, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_Naive
+                "
+0,Patient 19186-3,CD4 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5800, 1000), (8000, 1000), (8000, 5500), (5800, 5500)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEMRA
+                "
+0,Patient 19186-3,CD20 B Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5800, 4900), (8300, 4900), (8300, 6400), (5800, 6400)]
+               	Channel(s): ['CD20', 'CD3']
+               	Name: CD20 B Cells
+                "
+0,Patient 19186-3,B Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(0, 0), (5000, 0), (5000, 10000), (0, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Naive B Cell
+                "
+0,Patient 19186-3,B Memory Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5000, 0), (10000, 0), (10000, 10000), (5000, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Memory B Cell
+                "
+0,Patient 19186-3,CD33 Myeloid Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5950, 5000), (8000, 5000), (8000, 6400), (5950, 6400)]
+               	Channel(s): ['CD33', 'CD3']
+               	Name: CD33 Myeloid Cell
+                "
+0,Patient 19186-3,Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 7800), (5600, 7800), (5600, 9500), (2000, 9500)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Classical Monocyte
+                "
+0,Patient 19186-3,Non-Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5400, 2000), (10000, 2000), (10000, 9000), (5400, 9000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Non-Classical Monocyte
+                "
+0,Patient 19186-14,PBMC Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000000.0, 150000.0), (1600000.0, 150000.0), (2300000.0, 500000.0), (2800000.0, 1000000.0), (2800000.0, 2000000.0), (2500000.0, 2300000.0), (1750000.0, 2500000.0), (750000.0, 375000.0)]
+               	Channel(s): ['FSC-A', 'SSC-A']
+               	Name: PBMC
+                "
+0,Patient 19186-14,Single Cell Gate 1,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(600000.0, 600000.0), (3000000.0, 1700000.0), (2750000.0, 2250000.0), (600000.0, 750000.0)]
+               	Channel(s): ['FSC-A', 'FSC-H']
+               	Name: Single Cells
+                "
+0,Patient 19186-14,Single Cell Gate 2,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(100000.0, 100000.0), (2750000.0, 1500000.0), (2500000.0, 2700000.0), (80000.0, 250000.0)]
+               	Channel(s): ['SSC-A', 'SSC-H']
+               	Name: Single Cells
+                "
+0,Patient 19186-14,Live/Dead Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 0), (6300, 0), (6300, 5000000.0), (2000, 5000000.0)]
+               	Channel(s): ['Live/Dead', 'SSC-A']
+               	Name: Live Dead
+                "
+0,Patient 19186-14,T Cell Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3000, 6000), (6500, 6000), (6500, 8000), (3000, 8000)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: T cell Gate
+                "
+0,Patient 19186-14,CD16 NK Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5600, 5000), (9000, 5000), (9000, 6200), (5600, 6200)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: NK Gate
+                "
+0,Patient 19186-14,CD8 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3800, 6100), (5700, 6100), (5700, 8000), (3800, 8000)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD8 Gate
+                "
+0,Patient 19186-14,CD4 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5500, 0), (8000, 0), (8000, 5800), (5500, 5800)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4 Gate
+                "
+0,Patient 19186-14,CD4/CD8- Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 2000), (5500, 2000), (5500, 5600), (4000, 5600)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4- CD8- Gate
+                "
+0,Patient 19186-14,Treg Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5150, 5500), (8000, 5500), (8000, 8000), (5150, 8000)]
+               	Channel(s): ['FoxP3', 'CD4']
+               	Name: Treg Gate
+                "
+0,Patient 19186-14,Treg1 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4500, 4900), (6800, 4900), (6800, 8000), (4500, 8000)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg1 Gate
+                "
+0,Patient 19186-14,Treg2 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5550, 1000), (8000, 1000), (8000, 4900), (5550, 4900)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg2 Gate
+                "
+0,Patient 19186-14,Treg3 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4200, 2500), (5550, 2500), (5550, 4900), (4200, 4900)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg3 Gate
+                "
+0,Patient 19186-14,CD8 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 4000), (6200, 4000), (6200, 5800), (4000, 5800)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEM
+                "
+0,Patient 19186-14,CD8 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3700, 5800), (6700, 5800), (6700, 8000), (3700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TCM
+                "
+0,Patient 19186-14,CD8 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6700, 5700), (8400, 5700), (8400, 8000), (6700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_naive
+                "
+0,Patient 19186-14,CD8 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6200, 2000), (8400, 2000), (8400, 5700), (6200, 5700)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEMRA
+                "
+0,Patient 19186-14,CD4 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 2000), (5600, 2000), (5600, 5600), (1000, 5600)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEM
+                "
+0,Patient 19186-14,CD4 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 5600), (6100, 5600), (6100, 8000), (1000, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TCM
+                "
+0,Patient 19186-14,CD4 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6100, 5500), (8000, 5500), (8000, 8000), (6100, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_Naive
+                "
+0,Patient 19186-14,CD4 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5800, 1000), (8000, 1000), (8000, 5500), (5800, 5500)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEMRA
+                "
+0,Patient 19186-14,CD20 B Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5800, 4900), (8300, 4900), (8300, 6400), (5800, 6400)]
+               	Channel(s): ['CD20', 'CD3']
+               	Name: CD20 B Cells
+                "
+0,Patient 19186-14,B Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(0, 0), (5000, 0), (5000, 10000), (0, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Naive B Cell
+                "
+0,Patient 19186-14,B Memory Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5000, 0), (10000, 0), (10000, 10000), (5000, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Memory B Cell
+                "
+0,Patient 19186-14,CD33 Myeloid Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5950, 5000), (8000, 5000), (8000, 6200), (5950, 6200)]
+               	Channel(s): ['CD33', 'CD3']
+               	Name: CD33 Myeloid Cell
+                "
+0,Patient 19186-14,Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 8100), (5500, 8100), (5500, 9000), (2000, 9000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Classical Monocyte
+                "
+0,Patient 19186-14,Non-Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5500, 2000), (10000, 2000), (10000, 10000), (5500, 10000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Non-Classical Monocyte
+                "
+0,Patient 21368-3,PBMC Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000000.0, 150000.0), (1600000.0, 150000.0), (2300000.0, 500000.0), (2800000.0, 1000000.0), (2800000.0, 2000000.0), (2500000.0, 2300000.0), (1750000.0, 2500000.0), (750000.0, 375000.0)]
+               	Channel(s): ['FSC-A', 'SSC-A']
+               	Name: PBMC
+                "
+0,Patient 21368-3,Single Cell Gate 1,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(600000.0, 600000.0), (3000000.0, 1700000.0), (2750000.0, 2250000.0), (600000.0, 750000.0)]
+               	Channel(s): ['FSC-A', 'FSC-H']
+               	Name: Single Cells
+                "
+0,Patient 21368-3,Single Cell Gate 2,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(100000.0, 100000.0), (2750000.0, 1500000.0), (2500000.0, 2700000.0), (80000.0, 250000.0)]
+               	Channel(s): ['SSC-A', 'SSC-H']
+               	Name: Single Cells
+                "
+0,Patient 21368-3,Live/Dead Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 0), (6400, 0), (6400, 5000000.0), (2000, 5000000.0)]
+               	Channel(s): ['Live/Dead', 'SSC-A']
+               	Name: Live Dead
+                "
+0,Patient 21368-3,T Cell Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3000, 6000), (6100, 6000), (6100, 8000), (3000, 8000)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: T cell Gate
+                "
+0,Patient 21368-3,CD16 NK Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5400, 5000), (9000, 5000), (9000, 6200), (5400, 6200)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: NK Gate
+                "
+0,Patient 21368-3,CD8 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3800, 6100), (5700, 6100), (5700, 8000), (3800, 8000)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD8 Gate
+                "
+0,Patient 21368-3,CD4 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5500, 0), (8000, 0), (8000, 5800), (5500, 5800)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4 Gate
+                "
+0,Patient 21368-3,CD4/CD8- Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 2000), (5500, 2000), (5500, 5600), (4000, 5600)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4- CD8- Gate
+                "
+0,Patient 21368-3,Treg Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5300, 5500), (8000, 5500), (8000, 8000), (5300, 8000)]
+               	Channel(s): ['FoxP3', 'CD4']
+               	Name: Treg Gate
+                "
+0,Patient 21368-3,Treg1 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4500, 4900), (6800, 4900), (6800, 8000), (4500, 8000)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg1 Gate
+                "
+0,Patient 21368-3,Treg2 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5750, 1000), (8000, 1000), (8000, 4900), (5750, 4900)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg2 Gate
+                "
+0,Patient 21368-3,Treg3 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4200, 2500), (5750, 2500), (5750, 4900), (4200, 4900)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg3 Gate
+                "
+0,Patient 21368-3,CD8 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 4000), (6200, 4000), (6200, 5800), (4000, 5800)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEM
+                "
+0,Patient 21368-3,CD8 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3700, 5800), (6700, 5800), (6700, 8000), (3700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TCM
+                "
+0,Patient 21368-3,CD8 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6700, 5700), (8400, 5700), (8400, 8000), (6700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_naive
+                "
+0,Patient 21368-3,CD8 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6200, 2000), (8400, 2000), (8400, 5700), (6200, 5700)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEMRA
+                "
+0,Patient 21368-3,CD4 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 2000), (5600, 2000), (5600, 5600), (1000, 5600)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEM
+                "
+0,Patient 21368-3,CD4 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 5600), (6100, 5600), (6100, 8000), (1000, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TCM
+                "
+0,Patient 21368-3,CD4 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6100, 5500), (8000, 5500), (8000, 8000), (6100, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_Naive
+                "
+0,Patient 21368-3,CD4 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5800, 1000), (8000, 1000), (8000, 5500), (5800, 5500)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEMRA
+                "
+0,Patient 21368-3,CD20 B Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6100, 4900), (8300, 4900), (8300, 6400), (6100, 6400)]
+               	Channel(s): ['CD20', 'CD3']
+               	Name: CD20 B Cells
+                "
+0,Patient 21368-3,B Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(0, 0), (5400, 0), (5400, 10000), (0, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Naive B Cell
+                "
+0,Patient 21368-3,B Memory Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5400, 0), (10000, 0), (10000, 10000), (5400, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Memory B Cell
+                "
+0,Patient 21368-3,CD33 Myeloid Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5950, 5000), (8000, 5000), (8000, 6200), (5950, 6200)]
+               	Channel(s): ['CD33', 'CD3']
+               	Name: CD33 Myeloid Cell
+                "
+0,Patient 21368-3,Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 8050), (5400, 8050), (5400, 10000), (2000, 10000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Classical Monocyte
+                "
+0,Patient 21368-3,Non-Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5400, 2000), (10000, 2000), (10000, 10000), (5400, 10000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Non-Classical Monocyte
+                "
+0,Patient 21368-4,PBMC Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000000.0, 150000.0), (1600000.0, 150000.0), (2300000.0, 500000.0), (2800000.0, 1000000.0), (2800000.0, 2000000.0), (2500000.0, 2300000.0), (1750000.0, 2500000.0), (750000.0, 375000.0)]
+               	Channel(s): ['FSC-A', 'SSC-A']
+               	Name: PBMC
+                "
+0,Patient 21368-4,Single Cell Gate 1,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(600000.0, 600000.0), (3000000.0, 1700000.0), (2750000.0, 2250000.0), (600000.0, 750000.0)]
+               	Channel(s): ['FSC-A', 'FSC-H']
+               	Name: Single Cells
+                "
+0,Patient 21368-4,Single Cell Gate 2,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(100000.0, 100000.0), (2750000.0, 1500000.0), (2500000.0, 2700000.0), (80000.0, 250000.0)]
+               	Channel(s): ['SSC-A', 'SSC-H']
+               	Name: Single Cells
+                "
+0,Patient 21368-4,Live/Dead Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 0), (6300, 0), (6300, 5000000.0), (2000, 5000000.0)]
+               	Channel(s): ['Live/Dead', 'SSC-A']
+               	Name: Live Dead
+                "
+0,Patient 21368-4,T Cell Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3000, 5900), (6100, 5900), (6100, 8000), (3000, 8000)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: T cell Gate
+                "
+0,Patient 21368-4,CD16 NK Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5600, 5000), (9000, 5000), (9000, 6200), (5600, 6200)]
+               	Channel(s): ['CD16', 'CD3']
+               	Name: NK Gate
+                "
+0,Patient 21368-4,CD8 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3800, 6100), (5700, 6100), (5700, 8000), (3800, 8000)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD8 Gate
+                "
+0,Patient 21368-4,CD4 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5500, 0), (8000, 0), (8000, 5800), (5500, 5800)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4 Gate
+                "
+0,Patient 21368-4,CD4/CD8- Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 2000), (5500, 2000), (5500, 5600), (4000, 5600)]
+               	Channel(s): ['CD4', 'CD8']
+               	Name: CD4- CD8- Gate
+                "
+0,Patient 21368-4,Treg Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5100, 5500), (8000, 5500), (8000, 8000), (5100, 8000)]
+               	Channel(s): ['FoxP3', 'CD4']
+               	Name: Treg Gate
+                "
+0,Patient 21368-4,Treg1 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4500, 4900), (6800, 4900), (6800, 8000), (4500, 8000)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg1 Gate
+                "
+0,Patient 21368-4,Treg2 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5850, 1000), (8000, 1000), (8000, 4900), (5850, 4900)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg2 Gate
+                "
+0,Patient 21368-4,Treg3 Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4200, 2500), (5850, 2500), (5850, 4900), (4200, 4900)]
+               	Channel(s): ['FoxP3', 'CD45RA']
+               	Name: Treg3 Gate
+                "
+0,Patient 21368-4,CD8 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4000, 4000), (6200, 4000), (6200, 5800), (4000, 5800)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEM
+                "
+0,Patient 21368-4,CD8 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(3700, 5800), (6700, 5800), (6700, 8000), (3700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TCM
+                "
+0,Patient 21368-4,CD8 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6700, 5700), (8400, 5700), (8400, 8000), (6700, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_naive
+                "
+0,Patient 21368-4,CD8 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6200, 2000), (8400, 2000), (8400, 5700), (6200, 5700)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD8_TEMRA
+                "
+0,Patient 21368-4,CD4 TEM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 2000), (5600, 2000), (5600, 5600), (1000, 5600)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEM
+                "
+0,Patient 21368-4,CD4 TCM Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(1000, 5600), (6100, 5600), (6100, 8000), (1000, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TCM
+                "
+0,Patient 21368-4,CD4 Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(6100, 5500), (8000, 5500), (8000, 8000), (6100, 8000)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_Naive
+                "
+0,Patient 21368-4,CD4 TEMRA Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5800, 1000), (8000, 1000), (8000, 5500), (5800, 5500)]
+               	Channel(s): ['CD45RA', 'CD27']
+               	Name: CD4_TEMRA
+                "
+0,Patient 21368-4,CD20 B Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5500, 4900), (8300, 4900), (8300, 6200), (5500, 6200)]
+               	Channel(s): ['CD20', 'CD3']
+               	Name: CD20 B Cells
+                "
+0,Patient 21368-4,B Naive Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(0, 0), (4900, 0), (4900, 10000), (0, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Naive B Cell
+                "
+0,Patient 21368-4,B Memory Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(4900, 0), (10000, 0), (10000, 10000), (4900, 10000)]
+               	Channel(s): ['CD27', 'CD20']
+               	Name: Memory B Cell
+                "
+0,Patient 21368-4,CD33 Myeloid Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5950, 5000), (8000, 5000), (8000, 6400), (5950, 6400)]
+               	Channel(s): ['CD33', 'CD3']
+               	Name: CD33 Myeloid Cell
+                "
+0,Patient 21368-4,Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(2000, 7750), (5300, 7750), (5300, 9000), (2000, 9000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Classical Monocyte
+                "
+0,Patient 21368-4,Non-Classical Monocyte Gate,"Gate Type: <class 'FlowCytometryTools.core.gates.PolyGate'>
+               	Vertices: [(5300, 2000), (10000, 2000), (10000, 10000), (5300, 10000)]
+               	Channel(s): ['CD16', 'CD14']
+               	Name: Non-Classical Monocyte
+                "

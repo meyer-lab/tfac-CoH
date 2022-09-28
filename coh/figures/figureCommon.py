@@ -7,6 +7,7 @@ import time
 import seaborn as sns
 import matplotlib
 import svgutils.transform as st
+import pandas as pd
 from matplotlib import gridspec, pyplot as plt
 
 matplotlib.use("AGG")
@@ -81,6 +82,50 @@ def genFigure():
 
     exec("from coh.figures." + nameOut + " import makeFigure", globals())
     ff = makeFigure()
-    ff.savefig(fdir + nameOut + ".pdf", dpi=300, bbox_inches="tight", pad_inches=0)
+    ff.savefig(fdir + nameOut + ".svg", dpi=300, bbox_inches="tight", pad_inches=0)
 
     print(f"Figure {sys.argv[1]} is done after {time.time() - start} seconds.\n")
+
+
+status_dict = {"Patient 26": "Healthy",
+                "Patient 28": "Healthy",
+                "Patient 30": "Healthy",
+                "Patient 34": "Healthy",
+                "Patient 35": "Healthy", 
+                "Patient 43": "Healthy", 
+                "Patient 44": "Healthy",
+                "Patient 45": "Healthy", 
+                "Patient 52": "Healthy",
+                "Patient 52A": "Healthy",
+                "Patient 54": "Healthy",
+                "Patient 56": "Healthy",
+                "Patient 58": "Healthy",
+                "Patient 60": "Healthy",
+                "Patient 61": "Healthy",
+                "Patient 62": "Healthy", 
+                "Patient 63": "Healthy", 
+                "Patient 66": "Healthy", 
+                "Patient 68": "Healthy",
+                "Patient 69": "Healthy",
+                "Patient 70": "Healthy", 
+                "Patient 79": "Healthy", 
+                "Patient 4": "BC", 
+                "Patient 8": "BC", 
+                "Patient 406": "BC", 
+                "Patient 10-T1": "BC",
+                "Patient 10-T2": "BC",  
+                "Patient 10-T3": "BC", 
+                "Patient 15-T1": "BC",  
+                "Patient 15-T2": "BC",  
+                "Patient 15-T3": "BC",
+                "Patient 19186-2": "BC",
+                "Patient 19186-3": "BC",
+                "Patient 19186-14": "BC",
+                "Patient 21368-3": "BC",
+                "Patient 21368-4": "BC"}
+
+
+def make_status_DF():
+    statusDF = pd.DataFrame.from_dict(status_dict, orient='index').reset_index()
+    statusDF.columns = ["Patient", "Status"]
+    statusDF.to_csv("coh/data/Patient_Status.csv")
