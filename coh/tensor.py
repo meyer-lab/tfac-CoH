@@ -46,7 +46,7 @@ def plot_tFac_CoH(ax, tFac, CoH_Array, mode, numComps=3, nn=False):
 
     tFacDF = pd.pivot(tFacDF, index="Component", columns=mode, values="Component_Val")
     if mode == "Patient":
-        tFacDF = tFacDF[["Patient 35", "Patient 43", "Patient 44", "Patient 45", "Patient 52", "Patient 54", "Patient 56", "Patient 58", "Patient 63", "Patient 66", "Patient 70", "Patient 79", "Patient 4", "Patient 8", "Patient 406", "Patient 10-T1",  "Patient 10-T2",  "Patient 10-T3", "Patient 15-T1",  "Patient 15-T2",  "Patient 15-T3"]]
+        tFacDF = tFacDF[["Patient 26", "Patient 28", "Patient 30", "Patient 34", "Patient 35", "Patient 43", "Patient 44", "Patient 45", "Patient 52", "Patient 52A", "Patient 54", "Patient 56", "Patient 58", "Patient 60", "Patient 61", "Patient 62", "Patient 63", "Patient 66", "Patient 68", "Patient 69", "Patient 70", "Patient 79", "Patient 4", "Patient 8", "Patient 406", "Patient 10-T1",  "Patient 10-T2",  "Patient 10-T3", "Patient 15-T1", "Patient 15-T2", "Patient 15-T3", "Patient 19186-2", "Patient 19186-3", "Patient 19186-14", "Patient 21368-3", "Patient 21368-4"]]
     if nn:
         sns.heatmap(data=tFacDF, ax=ax, vmin=0, vmax=1)
     else:
@@ -58,7 +58,7 @@ def CoH_LogReg_plot(ax, tFac, CoH_Array, numComps):
     """Plot factor weights for donor BC prediction"""
     coord = CoH_Array.dims.index("Patient")
     mode_facs = tFac[1][coord]
-    Donor_CoH_y = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    Donor_CoH_y = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
     LR_CoH = LogisticRegression(random_state=0).fit(mode_facs, Donor_CoH_y)
     CoH_comp_weights = pd.DataFrame({"Component": np.arange(1, numComps + 1), "Coefficient": LR_CoH.coef_[0]})

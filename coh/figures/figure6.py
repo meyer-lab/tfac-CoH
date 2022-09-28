@@ -25,7 +25,7 @@ def makeFigure():
     #make_flow_df()
     #make_CoH_Tensor(just_signal=True)
 
-    num_comps = 10
+    num_comps = 12
     
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
@@ -41,7 +41,7 @@ def makeFigure():
 
     CoH_DF = pd.read_csv(join(path_here, "data/CoH_Flow_DF.csv"))
     BC_scatter(ax[4], CoH_DF, "pSTAT3", "IL10-50ng")
-    BC_scatter(ax[5], CoH_DF, "pSTAT5", "IFNg-50ng")
+    BC_scatter(ax[5], CoH_DF, "pSTAT5", "IL2-50ng")
 
     return f
 
@@ -86,16 +86,26 @@ def BC_scatter(ax, CoH_DF, marker, cytokine):
     ax.set(title=marker + " in response to " + cytokine, xlabel=marker, ylabel="Count")
 
 
-status_dict = {"Patient 35": "Healthy", 
+status_dict = {"Patient 26": "Healthy",
+                "Patient 28": "Healthy",
+                "Patient 30": "Healthy",
+                "Patient 34": "Healthy",
+                "Patient 35": "Healthy", 
                 "Patient 43": "Healthy", 
                 "Patient 44": "Healthy",
                 "Patient 45": "Healthy", 
                 "Patient 52": "Healthy",
+                "Patient 52A": "Healthy",
                 "Patient 54": "Healthy",
                 "Patient 56": "Healthy",
-                "Patient 58": "Healthy", 
+                "Patient 58": "Healthy",
+                "Patient 60": "Healthy",
+                "Patient 61": "Healthy",
+                "Patient 62": "Healthy", 
                 "Patient 63": "Healthy", 
                 "Patient 66": "Healthy", 
+                "Patient 68": "Healthy",
+                "Patient 69": "Healthy",
                 "Patient 70": "Healthy", 
                 "Patient 79": "Healthy", 
                 "Patient 4": "BC", 
@@ -106,4 +116,9 @@ status_dict = {"Patient 35": "Healthy",
                 "Patient 10-T3": "BC", 
                 "Patient 15-T1": "BC",  
                 "Patient 15-T2": "BC",  
-                "Patient 15-T3": "BC"}
+                "Patient 15-T3": "BC",
+                "Patient 19186-2": "BC",
+                "Patient 19186-3": "BC",
+                "Patient 19186-14": "BC",
+                "Patient 21368-3": "BC",
+                "Patient 21368-4": "BC",}
