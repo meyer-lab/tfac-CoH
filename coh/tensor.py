@@ -2,10 +2,17 @@ import tensorly as tl
 import numpy as np
 import seaborn as sns
 import pandas as pd
+import os
 from tensorly.decomposition import non_negative_parafac, parafac
 from tensorly.cp_tensor import cp_flip_sign
 from tensorpack.cmtf import perform_CP
 from sklearn.linear_model import LogisticRegression
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+from os.path import join
+from sklearn import preprocessing
+
+path_here = os.path.dirname(os.path.dirname(__file__))
 
 
 def factorTensor(tensor, numComps):
@@ -58,9 +65,56 @@ def CoH_LogReg_plot(ax, tFac, CoH_Array, numComps):
     """Plot factor weights for donor BC prediction"""
     coord = CoH_Array.dims.index("Patient")
     mode_facs = tFac[1][coord]
-    Donor_CoH_y = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status.csv"), index_col=0)
+    lb = preprocessing.LabelBinarizer()
+    Donor_CoH_y = lb.fit_transform(status_DF.Status).ravel()
 
     LR_CoH = LogisticRegression(random_state=0).fit(mode_facs, Donor_CoH_y)
     CoH_comp_weights = pd.DataFrame({"Component": np.arange(1, numComps + 1), "Coefficient": LR_CoH.coef_[0]})
     sns.barplot(data=CoH_comp_weights, x="Component", y="Coefficient", color="k", ax=ax)
     print(LR_CoH.score(mode_facs, Donor_CoH_y))
+
+
+def make_alldata_DF(TensorArray, PCA=True):
+    """Returns PCA with score and loadings of COH DataSet"""
+    DF = TensorArray.to_dataframe(name="value").reset_index()
+    if PCA:
+        status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status.csv"), index_col=0)
+        healthy_patients = status_DF.loc[status_DF.Status == "Healthy"]
+        DF = DF.loc[DF.Patient.isin(healthy_patients)]
+    PCAdf = pd.DataFrame()
+    for patient in DF.Patient.unique():
+        patientDF = DF.loc[DF.Patient == patient]
+        patientRow = pd.DataFrame({"Patient": [patient]})
+        for time in DF.Time.unique():
+            for treatment in DF.Treatment.unique():
+                for marker in DF.Marker.unique():
+                    for cell in DF.Cell.unique():
+                        uniqueDF = patientDF.loc[(patientDF.Time == time) & (patientDF.Marker == marker) & (patientDF.Treatment == treatment) & (patientDF.Cell == cell)]
+                        patientRow[time + "_" + treatment + "_"+ marker + "_"+ cell] = uniqueDF.value.values
+        PCAdf = pd.concat([PCAdf, patientRow])
+    if PCA:
+        PCAdf.to_csv(join(path_here, "coh/data/CoH_PCA.csv"))
+    else:
+        PCAdf.to_csv(join(path_here, "coh/data/CoH_Matrix.csv"))
+
+
+def plot_PCA(ax):
+    """Plots CoH PCA"""
+    DF = pd.read_csv(join(path_here, "data/CoH_PCA.csv")).set_index("Patient").drop("Unnamed: 0", axis=1)
+    pcaMat = DF.to_numpy()
+    pca = PCA(n_components=2)
+    scaler = StandardScaler()
+    pcaMat = scaler.fit_transform(np.nan_2_num(pcaMat))
+    scores = pca.fit_transform(pcaMat)
+    loadings = pca.components_
+
+    
+    scoresDF = pd.DataFrame({"Patient": DF.index.values, "Component 1": scores[:, 0], "Component 2": scores[:, 1]})
+    loadingsDF = pd.DataFrame()
+    for i, col in enumerate(DF.columns):
+        vars = col.split("_")
+        loadingsDF = pd.concat([loadingsDF, pd.DataFrame({"Time": [vars[0]], "Treatment": vars[1], "Marker": vars[2], "Cell": vars[3], "Component 1": loadings[0, i], "Component 2": loadings[1, i]})])
+    
+    sns.scatterplot(data=scoresDF, hue="Patient", x="Component 1", y="Component 2", ax=ax[0])
+    sns.scatterplot(data=loadingsDF, x="Component 1", y="Component 2", hue="Treatment", style="Cell", size="Marker", ax=ax[1])
