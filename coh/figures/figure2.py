@@ -10,7 +10,7 @@ from tensorpack.tucker import tucker_decomp
 from tensorpack.plot import reduction, tucker_reduction
 from .figureCommon import subplotLabel, getSetup
 from os.path import join
-from ..tensor import makePCA_df
+from ..tensor import make_alldata_DF
 
 path_here = os.path.dirname(os.path.dirname(__file__))
 
