@@ -25,7 +25,7 @@ def makeFigure():
     num_comps = 4
 
     CoH_Data = xa.open_dataarray(join(path_here, "data/NN CoH Tensor DataSet.nc"))
-    tFacAllM = factorTensor(CoH_Data.values, numComps=num_comps)
+    tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
     cp_normalize(tFacAllM)
     CoH_LogReg_plot(ax[0], tFacAllM, CoH_Data, 4)
     #R2Xplot(ax[0], CoH_Data.values, compNum=8)
