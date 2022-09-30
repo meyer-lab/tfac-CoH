@@ -69,8 +69,7 @@ def CoH_LogReg_plot(ax, tFac, CoH_Array, numComps):
     coord = CoH_Array.dims.index("Patient")
     mode_facs = tFac[1][coord]
     status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status.csv"), index_col=0)
-    lb = preprocessing.LabelBinarizer()
-    Donor_CoH_y = lb.fit_transform(status_DF.Status).ravel()
+    Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes = ['Healthy', 'BC']).flatten()
 
     LR_CoH = LogisticRegression(random_state=0).fit(mode_facs, Donor_CoH_y)
     CoH_comp_weights = pd.DataFrame({"Component": np.arange(1, numComps + 1), "Coefficient": LR_CoH.coef_[0]})
@@ -131,8 +130,7 @@ def BC_status_plot(compNum, CoH_Data, matrixDF, ax):
     accDF = pd.DataFrame()
     status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status.csv"), index_col=0)
     matrixDF = matrixDF.values
-    lb = preprocessing.LabelBinarizer()
-    Donor_CoH_y = lb.fit_transform(status_DF.Status).ravel()
+    Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes = ['Healthy', 'BC']).flatten()
     cv = StratifiedKFold(n_splits=5)
     model = LogisticRegression()
     scoresPCA = cross_val_score(model, matrixDF, Donor_CoH_y, cv=cv)
