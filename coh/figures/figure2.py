@@ -2,6 +2,7 @@
 This creates Figure 1.
 """
 import xarray as xa
+import numpy as np
 import os
 import warnings
 warnings.filterwarnings("ignore")
@@ -29,13 +30,19 @@ def makeFigure():
     #plot_PCA(ax[0:2])
     
     # perform parafac
-    tc = Decomposition(CoH_Data.to_numpy()[0:-15, :, :, :, :], max_rr=12)
+    decomp_data = CoH_Data.to_numpy()
+    nan_index = []
+    for i in range(0, decomp_data.shape[0]):
+        nan_index.append(~np.isnan(decomp_data[i, :, :, :, :]).any())
+    decomp_data = decomp_data[nan_index, :, :, :, :]
+
+    tc = Decomposition(decomp_data, max_rr=12)
     tc.perform_tfac()
     tc.perform_PCA(flattenon=2)
 
     reduction(ax[0], tc)
-    tuck = Decomposition(CoH_Data.to_numpy()[0:-15, :, :, :, :], method=tucker_decomp, max_rr=10)
-    para = Decomposition(CoH_Data.to_numpy()[0:-15, :, :, :, :], max_rr=10)
+    tuck = Decomposition(decomp_data, method=tucker_decomp, max_rr=10)
+    para = Decomposition(decomp_data, max_rr=10)
     tucker_reduction(ax[1], tuck, para)
     #plot_PCA(ax[0:2])
 
