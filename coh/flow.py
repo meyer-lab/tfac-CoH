@@ -7,6 +7,7 @@ from os.path import dirname, join
 from pathlib import Path
 import ast
 import textwrap
+from types import CellType
 import pandas as pd
 import numpy as np
 import warnings
@@ -339,10 +340,10 @@ def make_flow_sc_dataframe():
                         CoH_DF["Time"] = np.tile(time, CoH_DF.shape[0])
                         CoH_DF["Treatment"] = np.tile(treatment, CoH_DF.shape[0])
                         CoH_DF["Patient"] = np.tile([patient], CoH_DF.shape[0])
+                        totalDF = pd.concat([totalDF,CoH_DF])
 
-                    totalDF = pd.concat([totalDF,CoH_DF])
                     print(np.shape(totalDF))
-    
+                    
     totalDF.to_csv(join(path_here, "coh/data/CoH_Flow_SC.nc"))
 
     return totalDF
