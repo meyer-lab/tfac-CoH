@@ -20,5 +20,6 @@ def makeFigure():
     subplotLabel(ax)
     
     CoH_sc_DF = make_flow_sc_dataframe()
+    
 
     return f

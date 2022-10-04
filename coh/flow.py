@@ -355,6 +355,6 @@ def make_flow_sc_dataframe():
 
                     print(np.shape(totalDF))
                     
-    totalDF.to_csv(join(path_here, "coh/data/CoH_Flow_SC.nc"))
+    totalDF.to_csv(join(path_here, "coh/data/CoH_Flow_SC.csv"))
 
     return totalDF
