@@ -24,7 +24,6 @@ def makeFigure():
     subplotLabel(ax)
     #make_flow_df(foldChange=True)
     #make_CoH_Tensor(just_signal=True, foldChange=True)
-
     num_comps = 12
     
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Tensor_DataSet_FC.nc"))
@@ -39,8 +38,9 @@ def makeFigure():
     plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Treatment", numComps=num_comps)
     plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Marker", numComps=num_comps)
 
+
     CoH_DF = pd.read_csv(join(path_here, "data/CoH_Flow_DF_FC.csv"))
-    BC_scatter(ax[4], CoH_DF, "pSTAT3", "IL10-50ng")
-    BC_scatter(ax[5], CoH_DF, "pSTAT5", "IL2-50ng")
+    BC_scatter(ax[4], CoH_DF, "pSTAT3", "IL6-50ng", cells=["CD8+"])
+    BC_scatter(ax[5], CoH_DF, "pSTAT5", "IL2-50ng", cells=["Treg"])
 
     return f

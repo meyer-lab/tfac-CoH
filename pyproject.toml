@@ -21,6 +21,7 @@ tensorpack = {git = "https://github.com/meyer-lab/tensorpack.git", rev = "main"}
 flowcytometrytools = {git = "https://github.com/borcuttjahns/FlowCytometryTools.git"}
 sklearn = "^0.0"
 pathlib = "^1.0.1"
+statannot = "^0.2.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
