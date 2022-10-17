@@ -14,6 +14,7 @@ from sklearn.linear_model import LogisticRegression
 from tensorpack.cmtf import cp_normalize
 from sklearn import preprocessing
 from os.path import join
+from statannot import add_stat_annotation
 
 path_here = os.path.dirname(os.path.dirname(__file__))
 
@@ -125,15 +126,16 @@ def plot_PCA(ax):
     sns.scatterplot(data=loadingsDF, x="Component 1", y="Component 2", hue="Treatment", style="Cell", size="Marker", ax=ax[1])
 
 
-def BC_status_plot(compNum, CoH_Data, matrixDF, ax):
+def BC_status_plot(compNum, CoH_Data, matrixDF, ax, abund=False):
     """Plot 5 fold CV by # components"""
     accDF = pd.DataFrame()
     status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status.csv"), index_col=0)
-    matrixDF = matrixDF.values
-    Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes = ['Healthy', 'BC']).flatten()
-    cv = StratifiedKFold(n_splits=5)
+    Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
+    cv = StratifiedKFold(n_splits=5, random_state=3, shuffle=True)
     model = LogisticRegression()
-    scoresPCA = cross_val_score(model, matrixDF, Donor_CoH_y, cv=cv)
+    if not abund:
+        matrixDF = matrixDF.values
+        scoresPCA = cross_val_score(model, matrixDF, Donor_CoH_y, cv=cv)
     for i in range(5, compNum + 1):
         if i != 14:
             tFacAllM, _ = factorTensor(CoH_Data.values, numComps=i)
@@ -152,18 +154,27 @@ def BC_status_plot(compNum, CoH_Data, matrixDF, ax):
             model = LogisticRegression()
             scoresTFAC = cross_val_score(model, TFAC_X, Donor_CoH_y, cv=cv)
             accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "Tensor Factorization", "Components": [i], "Accuracy (5-fold CV)": np.mean(scoresTFAC)})])
-            accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "All Data", "Components": [i], "Accuracy (5-fold CV)": np.mean(scoresPCA)})])
+            if not abund:
+                accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "All Data", "Components": [i], "Accuracy (5-fold CV)": np.mean(scoresPCA)})])
     accDF = accDF.reset_index(drop=True)
     sns.lineplot(data=accDF, x="Components", y="Accuracy (5-fold CV)", hue="Data Type", ax=ax)
     ax.set(xticks = np.arange(5, compNum + 1))
 
 
-def BC_scatter(ax, CoH_DF, marker, cytokine):
+def BC_scatter(ax, CoH_DF, marker, cytokine, cells=False):
     """Scatters specific responses"""
-    hist_DF = CoH_DF.loc[(CoH_DF.Treatment == cytokine) & (CoH_DF.Marker == marker)]
+    CoH_DF = CoH_DF.loc[(CoH_DF.Time == "15min")]
+    if not cells:
+        hist_DF = CoH_DF.loc[(CoH_DF.Treatment == cytokine) & (CoH_DF.Marker == marker)]
+    else:
+        hist_DF = CoH_DF.loc[(CoH_DF.Treatment == cytokine) & (CoH_DF.Marker == marker) & (CoH_DF["Cell"].isin(cells))]
+    hist_DF = hist_DF.groupby(["Patient", "Marker"]).Mean.mean().reset_index()
     hist_DF["Status"] = hist_DF.replace({"Patient": status_dict}).Patient.values
-    sns.histplot(data=hist_DF, x="Mean", hue="Status", ax=ax)
-    ax.set(title=marker + " in response to " + cytokine, xlabel=marker, ylabel="Count")
+    print(hist_DF)
+    
+    sns.boxplot(data=hist_DF, y="Mean", x="Status", ax=ax)
+    ax.set(title=marker + " in response to " + cytokine, ylabel=marker, xlabel="Status")
+    add_stat_annotation(ax=ax, data=hist_DF, x="Status", y="Mean", test='t-test_ind', order=["Healthy", "BC"], box_pairs=[("Healthy", "BC")], text_format='full', loc='inside', verbose=2)
 
 
 status_dict = {"Patient 26": "Healthy",

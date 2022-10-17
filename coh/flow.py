@@ -203,11 +203,13 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
                             else:
                                 CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker_dict[marker], "Mean": np.nan})])
     if subtract:
+        UntreatedDF = CoH_DF.loc[(CoH_DF.Treatment == "Untreated")]
+        UntreatedDF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_Untreated.csv"))
         CoH_DF.loc[(CoH_DF.Treatment == "Untreated"), "Mean"] = 0
         if foldChange:
             CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_FC.csv"))
         else:
-            CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF.csv"))
+            CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_Basal.csv"))
     else:
         if abundance:
             CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_Abund.csv"))
