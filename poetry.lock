@@ -18,7 +18,7 @@ python-versions = ">=3.5"
 dev = ["cloudpickle", "coverage[toml] (>=5.0.2)", "furo", "hypothesis", "mypy (>=0.900,!=0.940)", "pre-commit", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "sphinx", "sphinx-notfound-page", "zope.interface"]
 docs = ["furo", "sphinx", "sphinx-notfound-page", "zope.interface"]
 tests = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "mypy (>=0.900,!=0.940)", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "zope.interface"]
-tests_no_zope = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "mypy (>=0.900,!=0.940)", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins"]
+tests-no-zope = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "mypy (>=0.900,!=0.940)", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins"]
 
 [[package]]
 name = "colorama"
@@ -85,14 +85,15 @@ develop = false
 decorator = "*"
 fcsparser = ">=0.1.1"
 matplotlib = ">=1.5.3"
+numpy = "*"
 pandas = ">=0.19.0"
 scipy = "*"
 
 [package.source]
 type = "git"
-url = "https://github.com/borcuttjahns/FlowCytometryTools.git"
-reference = "master"
-resolved_reference = "8fe662a698b3b6342d9d87e7d8134a3f1a81dc5a"
+url = "https://github.com/meyer-lab/FlowCytometryToolsFork.git"
+reference = "HEAD"
+resolved_reference = "d363b278c94396ee6c44fc0f43e1640bdeb9d0af"
 
 [[package]]
 name = "fonttools"
@@ -466,7 +467,7 @@ scipy = "*"
 
 [[package]]
 name = "tensorpack"
-version = "0.1.1"
+version = "0.1.2"
 description = "A collection of tensor methods from the Meyer lab."
 category = "main"
 optional = false
@@ -477,7 +478,7 @@ develop = false
 matplotlib = "^3.5.0"
 numpy = "^1.21"
 scikit-learn = "^1.1.2"
-seaborn = "^0.11.2"
+seaborn = ">=0.11.2"
 svgutils = "^0.3.4"
 tensorly = "^0.7"
 tqdm = "^4.62.3"
@@ -487,7 +488,7 @@ xarray = "^2022.6.0"
 type = "git"
 url = "https://github.com/meyer-lab/tensorpack.git"
 reference = "main"
-resolved_reference = "ceddf552829973d8f38cb99d598656b7ab9d55ff"
+resolved_reference = "a26b0692f799b9e6c828f17bffdcea38f42674c5"
 
 [[package]]
 name = "threadpoolctl"
@@ -554,7 +555,7 @@ viz = ["matplotlib", "nc-time-axis", "seaborn"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.9,<3.11"
-content-hash = "cc5f390647b9c3eb63046ee9a0850ed25628e27c2c334922d4adf3b4fcbff8e1"
+content-hash = "ee9adcd0cec69d72e1c3186735e99716dff7d3b71aee87e4869d7cf934874075"
 
 [metadata.files]
 atomicwrites = [
