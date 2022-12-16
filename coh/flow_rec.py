@@ -183,7 +183,8 @@ def make_CoH_Tensor_rec():
 
     # Normalize
     for i, _ in enumerate(markers):
-        tensor[:, :, i][~np.isnan(tensor[:, :, i])] /= np.nanmax(tensor[:, :, i])
+        tensor[:, :, i][~np.isnan(tensor[:, :, i])] -= np.mean(tensor[:, :, i])
+        tensor[:, :, i][~np.isnan(tensor[:, :, i])] /= np.std(tensor[:, :, i])
 
     CoH_xarray = xa.DataArray(tensor, dims=("Patient", "Cell", "Marker"), coords={"Patient": patients, "Cell": cells, "Marker": markers})
 
