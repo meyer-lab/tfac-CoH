@@ -111,6 +111,10 @@ gate_dict = {"T": ["T Cell Gate"],
              "NC Monocyte": ["Non-Classical Monocyte Gate"]}
 
 
+def get_gate_dict():
+    return gate_dict
+
+
 def form_gate(gate):
     """Deconvolutes string flow gate object"""
     vertices = ast.literal_eval(textwrap.dedent(str(gate).split("Vertices: ")[1].split("Channel")[0]))
