@@ -11,6 +11,7 @@ from ..flow import make_flow_df, make_CoH_Tensor, make_flow_sc_dataframe
 
 path_here = dirname(dirname(__file__))
 
+
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
@@ -18,8 +19,7 @@ def makeFigure():
 
     # Add subplot labels
     subplotLabel(ax)
-    
+
     CoH_sc_DF = make_flow_sc_dataframe()
-    
 
     return f
