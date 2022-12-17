@@ -2,37 +2,43 @@
 This creates Figure 1.
 """
 import xarray as xa
-import os
+import numpy as np
+import seaborn as sns
+import pandas as pd
 from tensorpack.cmtf import cp_normalize
 from .figureCommon import subplotLabel, getSetup
-from os.path import join
-from ..flow import make_flow_df, make_CoH_Tensor
-from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH, CoH_LogReg_plot
+from os.path import join, dirname
+from ..tensor import factorTensor, CoH_LogReg_plot, plot_tFac_CoH, make_alldata_DF, BC_status_plot, BC_scatter
+from ..flow import make_flow_df
 
-path_here = os.path.dirname(os.path.dirname(__file__))
+
+path_here = dirname(dirname(__file__))
 
 
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((16, 12), (3, 2))
+    ax, f = getSetup((8, 6), (3, 2))
 
     # Add subplot labels
     subplotLabel(ax)
-    #make_flow_df(subtract=False, abundance=False)
-    #make_CoH_Tensor(subtract=False)
+    # make_flow_df()
+    # make_CoH_Tensor(just_signal=True)
 
-    num_comps = 4
-
-    CoH_Data = xa.open_dataarray(join(path_here, "data/NN CoH Tensor DataSet.nc"))
+    num_comps = 12
+    CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
     cp_normalize(tFacAllM)
-    CoH_LogReg_plot(ax[0], tFacAllM, CoH_Data, 4)
-    #R2Xplot(ax[0], CoH_Data.values, compNum=8)
-    plot_tFac_CoH(ax[1], tFacAllM, CoH_Data, "Patient", numComps=num_comps, nn=False)
-    plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Time", numComps=num_comps, nn=False)
-    plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Treatment", numComps=num_comps, nn=False)
-    plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Cell", numComps=num_comps, nn=False)
-    plot_tFac_CoH(ax[5], tFacAllM, CoH_Data, "Marker", numComps=num_comps, nn=False)
+    make_alldata_DF(CoH_Data, PCA=False)
+    CoH_LogReg_plot(ax[1], tFacAllM, CoH_Data, num_comps)
+    matrix_DF = pd.read_csv(join(path_here, "data/CoH_Matrix.csv"), index_col=0).dropna(axis='columns').set_index("Patient")
+
+    BC_status_plot(10, CoH_Data, matrix_DF, ax[0], abund=False)
+
+    plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Treatment", numComps=num_comps)
+    plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Cell", numComps=num_comps)
+    CoH_DF = pd.read_csv(join(path_here, "data/CoH_Flow_DF.csv"))
+    BC_scatter(ax[4], CoH_DF, "pSTAT3", "IL10-50ng")
+    BC_scatter(ax[5], CoH_DF, "pSTAT5", "IL2-50ng", cells=["Treg", "CD4+", "CD8+"])
 
     return f

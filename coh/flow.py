@@ -144,22 +144,58 @@ def pop_gate(sample, cell_type, patient, gateDF):
 
 def make_flow_df(subtract=True, abundance=False, foldChange=False):
     """Compiles data for all populations for all patients into .csv"""
-    patients = ["Patient 26", "Patient 28", "Patient 30", "Patient 34", "Patient 35", "Patient 43", "Patient 44", "Patient 45", "Patient 52", "Patient 52A", "Patient 54", "Patient 56", "Patient 58", "Patient 60", "Patient 61", "Patient 62", "Patient 63", "Patient 66", "Patient 68", "Patient 69", "Patient 70", "Patient 79", "Patient 4", "Patient 8", "Patient 406", "Patient 10-T1",  "Patient 10-T2",  "Patient 10-T3", "Patient 15-T1", "Patient 15-T2", "Patient 15-T3", "Patient 19186-2", "Patient 19186-3", "Patient 19186-14", "Patient 21368-3", "Patient 21368-4"]
+    patients = [
+        "Patient 26",
+        "Patient 28",
+        "Patient 30",
+        "Patient 34",
+        "Patient 35",
+        "Patient 43",
+        "Patient 44",
+        "Patient 45",
+        "Patient 52",
+        "Patient 52A",
+        "Patient 54",
+        "Patient 56",
+        "Patient 58",
+        "Patient 60",
+        "Patient 61",
+        "Patient 62",
+        "Patient 63",
+        "Patient 66",
+        "Patient 68",
+        "Patient 69",
+        "Patient 70",
+        "Patient 79",
+        "Patient 4",
+        "Patient 8",
+        "Patient 406",
+        "Patient 10-T1",
+        "Patient 10-T2",
+        "Patient 10-T3",
+        "Patient 15-T1",
+        "Patient 15-T2",
+        "Patient 15-T3",
+        "Patient 19186-2",
+        "Patient 19186-3",
+        "Patient 19186-14",
+        "Patient 21368-3",
+        "Patient 21368-4"]
     times = ["15min", "60min"]
     treatments = ["Untreated",
-        "IFNg-1ng",
-        "IFNg-1ng+IL6-1ng",
-        "IFNg-1ng+IL6-50ng",
-        "IFNg-50ng",
-        "IFNg-50ng+IL6-1ng",
-        "IFNg-50ng+IL6-50ng",
-        "IL10-50ng",
-        "IL12-100ng",
-        "IL2-50ng",
-        "IL4-50ng",
-        "IL6-1ng",
-        "IL6-50ng",
-        "TGFB-50ng"]
+                  "IFNg-1ng",
+                  "IFNg-1ng+IL6-1ng",
+                  "IFNg-1ng+IL6-50ng",
+                  "IFNg-50ng",
+                  "IFNg-50ng+IL6-1ng",
+                  "IFNg-50ng+IL6-50ng",
+                  "IL10-50ng",
+                  "IL12-100ng",
+                  "IL2-50ng",
+                  "IL4-50ng",
+                  "IL6-1ng",
+                  "IL6-50ng",
+                  "TGFB-50ng"]
     cell_types = ["T", "CD16 NK", "CD8+", "CD4+", "CD4-/CD8-", "Treg", "Treg 1", "Treg 2", "Treg 3", "CD8 TEM", "CD8 TCM", "CD8 Naive", "CD8 TEMRA",
                   "CD4 TEM", "CD4 TCM", "CD4 Naive", "CD4 TEMRA", "CD20 B", "CD20 B Naive", "CD20 B Memory", "CD33 Myeloid", "Classical Monocyte", "NC Monocyte"]
     gateDF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_Gates.csv")).reset_index().drop("Unnamed: 0", axis=1)
@@ -189,16 +225,20 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
                                 mean = np.mean(mean.values[mean.values < np.quantile(mean.values, 0.995)])
                                 if subtract:
                                     if treatment == "Untreated":
-                                        CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker_dict[marker], "Mean": mean})])
+                                        CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment,
+                                                           "Cell": cell_type, "Marker": marker_dict[marker], "Mean": mean})])
                                         untreatedDF = pd.concat([untreatedDF, pd.DataFrame({"Cell": cell_type, "Marker": marker_dict[marker], "Mean": [mean]})])
                                     else:
                                         subVal = untreatedDF.loc[(untreatedDF["Marker"] == marker_dict[marker]) & (untreatedDF["Cell"] == cell_type)]["Mean"].values
                                         if foldChange:
-                                            CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker_dict[marker], "Mean": (mean / subVal) - 1})])
+                                            CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment,
+                                                               "Cell": cell_type, "Marker": marker_dict[marker], "Mean": (mean / subVal) - 1})])
                                         else:
-                                            CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker_dict[marker], "Mean": mean - subVal})])
+                                            CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment,
+                                                               "Cell": cell_type, "Marker": marker_dict[marker], "Mean": mean - subVal})])
                                 else:
-                                    CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker_dict[marker], "Mean": mean})])
+                                    CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment,
+                                                       "Cell": cell_type, "Marker": marker_dict[marker], "Mean": mean})])
                 else:
                     print("Skipped")
                     for cell_type in cell_types:
@@ -206,7 +246,8 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
                             if abundance:
                                 CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Abundance": np.nan})])
                             else:
-                                CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Marker": marker_dict[marker], "Mean": np.nan})])
+                                CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment,
+                                                   "Cell": cell_type, "Marker": marker_dict[marker], "Mean": np.nan})])
     if subtract:
         UntreatedDF = CoH_DF.loc[(CoH_DF.Treatment == "Untreated")]
         UntreatedDF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_Untreated.csv"))
@@ -214,13 +255,13 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
         if foldChange:
             CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_FC.csv"))
         else:
-            CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_Basal.csv"))
+            CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF.csv"))
     else:
         if abundance:
             CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_Abund.csv"))
         else:
             CoH_DF.to_csv(join(path_here, "coh/data/NN_CoH_Flow_DF.csv"))
-    
+
     return CoH_DF
 
 
@@ -303,19 +344,19 @@ def make_CoH_Tensor_abund():
 
 def make_flow_sc_dataframe():
     """Compiles data for all populations for all patients into .nc"""
-    # patients = ["Patient 26", "Patient 28", "Patient 30", "Patient 34", "Patient 35", "Patient 43", "Patient 44", "Patient 45", "Patient 52", 
-    #             "Patient 52A", "Patient 54", "Patient 56", "Patient 58", "Patient 60", "Patient 61", "Patient 62", "Patient 63", "Patient 66", "Patient 68", 
-    #             "Patient 69", "Patient 70", "Patient 79", "Patient 4", "Patient 8", "Patient 406", "Patient 10-T1",  "Patient 10-T2",  "Patient 10-T3", "Patient 15-T1", 
+    # patients = ["Patient 26", "Patient 28", "Patient 30", "Patient 34", "Patient 35", "Patient 43", "Patient 44", "Patient 45", "Patient 52",
+    #             "Patient 52A", "Patient 54", "Patient 56", "Patient 58", "Patient 60", "Patient 61", "Patient 62", "Patient 63", "Patient 66", "Patient 68",
+    #             "Patient 69", "Patient 70", "Patient 79", "Patient 4", "Patient 8", "Patient 406", "Patient 10-T1",  "Patient 10-T2",  "Patient 10-T3", "Patient 15-T1",
     #             "Patient 15-T2", "Patient 15-T3", "Patient 19186-2", "Patient 19186-3", "Patient 19186-14", "Patient 21368-3", "Patient 21368-4"]
     # times = ["15min", "60min"]
     patients = ['Patient 10-T1', 'Patient 10-T2', 'Patient 10-T3', 'Patient 15-T1',
-        'Patient 15-T2', 'Patient 15-T3', 'Patient 19186-14', 'Patient 19186-2',
-        'Patient 19186-3', 'Patient 21368-3', 'Patient 21368-4', 'Patient 26',
-        'Patient 28', 'Patient 30', 'Patient 34', 'Patient 35', 'Patient 4',
-        'Patient 406', 'Patient 43', 'Patient 44', 'Patient 45', 'Patient 52',
-        'Patient 52A', 'Patient 54', 'Patient 56', 'Patient 58', 'Patient 60',
-        'Patient 61', 'Patient 62', 'Patient 63', 'Patient 66', 'Patient 68',
-        'Patient 69', 'Patient 70', 'Patient 79', 'Patient 8']
+                'Patient 15-T2', 'Patient 15-T3', 'Patient 19186-14', 'Patient 19186-2',
+                'Patient 19186-3', 'Patient 21368-3', 'Patient 21368-4', 'Patient 26',
+                'Patient 28', 'Patient 30', 'Patient 34', 'Patient 35', 'Patient 4',
+                'Patient 406', 'Patient 43', 'Patient 44', 'Patient 45', 'Patient 52',
+                'Patient 52A', 'Patient 54', 'Patient 56', 'Patient 58', 'Patient 60',
+                'Patient 61', 'Patient 62', 'Patient 63', 'Patient 66', 'Patient 68',
+                'Patient 69', 'Patient 70', 'Patient 79', 'Patient 8']
     times = ["15min"]
     # treatments = ["Untreated",
     #     "IFNg-1ng",
@@ -357,11 +398,11 @@ def make_flow_sc_dataframe():
                         CoH_DF["Time"] = np.tile(time, CoH_DF.shape[0])
                         CoH_DF["Treatment"] = np.tile(treatment, CoH_DF.shape[0])
                         CoH_DF["Patient"] = np.tile([patient], CoH_DF.shape[0])
-                        totalDF = pd.concat([totalDF,CoH_DF])
-                        print("CellType:",cell_type, "Shape:", CoH_DF.shape[0])
+                        totalDF = pd.concat([totalDF, CoH_DF])
+                        print("CellType:", cell_type, "Shape:", CoH_DF.shape[0])
 
                     print(np.shape(totalDF))
-                    
+
     totalDF.to_csv(join(path_here, "coh/data/CoH_Flow_SC.csv"))
 
     return totalDF
