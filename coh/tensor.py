@@ -203,12 +203,12 @@ def BC_status_plot(compNum, CoH_Data, matrixDF, ax, abund=False):
     accDF = pd.DataFrame()
     status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status.csv"), index_col=0)
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
-    cv = StratifiedKFold(n_splits=5, random_state=3, shuffle=True)
+    cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
     model = LogisticRegression()
     if not abund:
         matrixDF = matrixDF.values
         scoresPCA = cross_val_score(model, matrixDF, Donor_CoH_y, cv=cv)
-    for i in range(5, compNum + 1):
+    for i in range(10, compNum + 1):
         if i != 14:
             tFacAllM, _ = factorTensor(CoH_Data.values, numComps=i)
             cp_normalize(tFacAllM)
@@ -225,12 +225,12 @@ def BC_status_plot(compNum, CoH_Data, matrixDF, ax, abund=False):
             TFAC_X = tFacDF.transpose().values
             model = LogisticRegression()
             scoresTFAC = cross_val_score(model, TFAC_X, Donor_CoH_y, cv=cv)
-            accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "Tensor Factorization", "Components": [i], "Accuracy (5-fold CV)": np.mean(scoresTFAC)})])
+            accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "Tensor Factorization", "Components": [i], "Accuracy (10-fold CV)": np.mean(scoresTFAC)})])
             if not abund:
-                accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "All Data", "Components": [i], "Accuracy (5-fold CV)": np.mean(scoresPCA)})])
+                accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "All Data", "Components": [i], "Accuracy (10-fold CV)": np.mean(scoresPCA)})])
     accDF = accDF.reset_index(drop=True)
-    sns.lineplot(data=accDF, x="Components", y="Accuracy (5-fold CV)", hue="Data Type", ax=ax)
-    ax.set(xticks=np.arange(5, compNum + 1))
+    sns.lineplot(data=accDF, x="Components", y="Accuracy (10-fold CV)", hue="Data Type", ax=ax)
+    ax.set(xticks=np.arange(10, compNum + 1))
 
 
 def BC_scatter(ax, CoH_DF, marker, cytokine, cells=False):
