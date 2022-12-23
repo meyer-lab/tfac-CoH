@@ -17,13 +17,14 @@ path_here = dirname(dirname(__file__))
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((8, 8), (1, 1))
+    ax, f = getSetup((8, 8), (2, 1))
 
     # Add subplot labels
     subplotLabel(ax)
+    ax[0].axis("off")
 
     CoH_data = pd.read_csv(join(path_here, "data/CoH_Flow_DF.csv"))
-    fullHeatMap(ax[0], CoH_data, ["pSTAT3"], makeDF=False)
+    fullHeatMap(ax[1], CoH_data, ["pSTAT3"], makeDF=False)
 
     return f
 
@@ -75,7 +76,7 @@ def fullHeatMap(ax, respDF, markers, makeDF=True):
             print(patient)
             for cell in respDFhm.Cell.unique():
                 row = pd.DataFrame()
-                row["Patient/Cell"] = [patient + " - " + str(cell) + " (nM)"]
+                row["Patient/Cell"] = [patient + " - " + str(cell)]
                 for time in respDF.Time.unique():
                     normMax = respDFhm.loc[(respDFhm.Patient == patient) & (respDFhm.Cell == cell)].Mean.max()
                     for treatment in respDFhm.Treatment.unique():

@@ -26,20 +26,9 @@ def makeFigure():
     #make_CoH_Tensor(just_signal=True, foldChange=True)
     num_comps = 12
 
-    CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Tensor_DataSet_FC.nc"))
-    tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
-    cp_normalize(tFacAllM)
     # make_alldata_DF(CoH_Data, PCA=False, foldChange=True)
-    CoH_LogReg_plot(ax[1], tFacAllM, CoH_Data, num_comps)
-    matrix_DF = pd.read_csv(join(path_here, "data/CoH_Matrix_FC.csv"), index_col=0).dropna(axis='columns').set_index("Patient")
-
-    BC_status_plot(15, CoH_Data, matrix_DF, ax[0])
-
-    plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Treatment", numComps=num_comps)
-    plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Marker", numComps=num_comps)
-
-    CoH_DF = pd.read_csv(join(path_here, "data/CoH_Flow_DF_FC.csv"))
-    BC_scatter(ax[4], CoH_DF, "pSTAT3", "IL6-50ng", cells=["CD8+"])
-    BC_scatter(ax[5], CoH_DF, "pSTAT5", "IL2-50ng", cells=["Treg"])
+    CoH_DF = pd.read_csv(join(path_here, "data/CoH_Flow_DF.csv"))
+    BC_scatter(ax[0], CoH_DF, "pSTAT3", "IL10-50ng")
+    BC_scatter(ax[1], CoH_DF, "pSTAT5", "IL2-50ng", cells=["Treg", "CD4+", "CD8+"])
 
     return f

@@ -19,14 +19,13 @@ def makeFigure():
     ax, f = getSetup((6, 3), (1, 1))
 
     # Add subplot labels
-    #subplotLabel(ax)
+    # subplotLabel(ax)
 
     num_comps = 12
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
     cp_normalize(tFacAllM)
     f = plot_coh_clust(tFacAllM, CoH_Data, "Patient", numComps=num_comps)
-
 
     return f
 
