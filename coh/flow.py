@@ -250,7 +250,7 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
                                                    "Cell": cell_type, "Marker": marker_dict[marker], "Mean": np.nan})])
     if subtract:
         UntreatedDF = CoH_DF.loc[(CoH_DF.Treatment == "Untreated")]
-        UntreatedDF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_Untreated.csv"))
+        UntreatedDF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_Basal.csv"))
         CoH_DF.loc[(CoH_DF.Treatment == "Untreated"), "Mean"] = 0
         if foldChange:
             CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_FC.csv"))
@@ -265,9 +265,11 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
     return CoH_DF
 
 
-def make_CoH_Tensor(subtract=True, just_signal=False, foldChange=False):
+def make_CoH_Tensor(subtract=True, just_signal=False, foldChange=False, basal=False):
     """Processes RA DataFrame into Xarray Tensor"""
-    if subtract:
+    if basal:
+        CoH_DF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_DF_Basal.csv"))
+    elif subtract:
         if foldChange:
             CoH_DF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_DF_FC.csv"))
         else:
@@ -279,7 +281,7 @@ def make_CoH_Tensor(subtract=True, just_signal=False, foldChange=False):
     times = CoH_DF.Time.unique()
     treatments = CoH_DF.Treatment.unique()
     cells = CoH_DF.Cell.unique()
-    if just_signal or foldChange:
+    if just_signal or foldChange or basal:
         markers = np.array(["pSTAT1", "pSTAT3", "pSTAT4", "pSTAT5", "pSTAT6", "pSmad1-2"])
     else:
         markers = CoH_DF.Marker.unique()
@@ -300,7 +302,9 @@ def make_CoH_Tensor(subtract=True, just_signal=False, foldChange=False):
         tensor[:, :, :, :, i][~np.isnan(tensor[:, :, :, :, i])] /= np.nanmax(tensor[:, :, :, :, i])
 
     CoH_xarray = xa.DataArray(tensor, dims=("Patient", "Time", "Treatment", "Cell", "Marker"), coords={"Patient": patients, "Time": times, "Treatment": treatments, "Cell": cells, "Marker": markers})
-    if subtract:
+    if basal:
+        CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH_Tensor_DataSet_Basal.nc"))
+    elif subtract:
         if foldChange:
             CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH_Tensor_DataSet_FC.nc"))
         else:
@@ -344,11 +348,6 @@ def make_CoH_Tensor_abund():
 
 def make_flow_sc_dataframe():
     """Compiles data for all populations for all patients into .nc"""
-    # patients = ["Patient 26", "Patient 28", "Patient 30", "Patient 34", "Patient 35", "Patient 43", "Patient 44", "Patient 45", "Patient 52",
-    #             "Patient 52A", "Patient 54", "Patient 56", "Patient 58", "Patient 60", "Patient 61", "Patient 62", "Patient 63", "Patient 66", "Patient 68",
-    #             "Patient 69", "Patient 70", "Patient 79", "Patient 4", "Patient 8", "Patient 406", "Patient 10-T1",  "Patient 10-T2",  "Patient 10-T3", "Patient 15-T1",
-    #             "Patient 15-T2", "Patient 15-T3", "Patient 19186-2", "Patient 19186-3", "Patient 19186-14", "Patient 21368-3", "Patient 21368-4"]
-    # times = ["15min", "60min"]
     patients = ['Patient 10-T1', 'Patient 10-T2', 'Patient 10-T3', 'Patient 15-T1',
                 'Patient 15-T2', 'Patient 15-T3', 'Patient 19186-14', 'Patient 19186-2',
                 'Patient 19186-3', 'Patient 21368-3', 'Patient 21368-4', 'Patient 26',
@@ -358,20 +357,6 @@ def make_flow_sc_dataframe():
                 'Patient 61', 'Patient 62', 'Patient 63', 'Patient 66', 'Patient 68',
                 'Patient 69', 'Patient 70', 'Patient 79', 'Patient 8']
     times = ["15min"]
-    # treatments = ["Untreated",
-    #     "IFNg-1ng",
-    #     "IFNg-1ng+IL6-1ng",
-    #     "IFNg-1ng+IL6-50ng",
-    #     "IFNg-50ng",
-    #     "IFNg-50ng+IL6-1ng",
-    #     "IFNg-50ng+IL6-50ng",
-    #     "IL10-50ng",
-    #     "IL12-100ng",
-    #     "IL2-50ng",
-    #     "IL4-50ng",
-    #     "IL6-1ng",
-    #     "IL6-50ng",
-    #     "TGFB-50ng"]
     treatments = ['Untreated', 'IFNg-50ng', 'IL10-50ng', 'IL4-50ng', 'IL2-50ng', 'IL6-50ng']
     cell_types = ["T", "CD16 NK", "CD8+", "CD4+", "CD4-/CD8-", "Treg", "Treg 1", "Treg 2", "Treg 3", "CD8 TEM", "CD8 TCM", "CD8 Naive", "CD8 TEMRA",
                   "CD4 TEM", "CD4 TCM", "CD4 Naive", "CD4 TEMRA", "CD20 B", "CD20 B Naive", "CD20 B Memory", "CD33 Myeloid", "Classical Monocyte", "NC Monocyte"]
