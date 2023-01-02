@@ -151,7 +151,7 @@ def CoH_LogReg_plot(ax, tFac, CoH_Array, numComps):
     print(LR_CoH.score(mode_facs, Donor_CoH_y))
 
 
-def make_alldata_DF(TensorArray, PCA=True, foldChange=False):
+def make_alldata_DF(TensorArray, PCA=True, foldChange=False, basal=False):
     """Returns PCA with score and loadings of COH DataSet"""
     DF = TensorArray.to_dataframe(name="value").reset_index()
     if PCA:
@@ -174,6 +174,8 @@ def make_alldata_DF(TensorArray, PCA=True, foldChange=False):
     else:
         if foldChange:
             PCAdf.to_csv(join(path_here, "coh/data/CoH_Matrix_FC.csv"))
+        elif basal:
+            PCAdf.to_csv(join(path_here, "coh/data/CoH_Matrix_Basal.csv"))
         else:
             PCAdf.to_csv(join(path_here, "coh/data/CoH_Matrix.csv"))
 
@@ -198,7 +200,7 @@ def plot_PCA(ax):
     sns.scatterplot(data=loadingsDF, x="Component 1", y="Component 2", hue="Treatment", style="Cell", size="Marker", ax=ax[1])
 
 
-def BC_status_plot(compNum, CoH_Data, matrixDF, ax, abund=False):
+def BC_status_plot(compNum, CoH_Data, matrixDF, ax, abund=False, basal=False):
     """Plot 5 fold CV by # components"""
     accDF = pd.DataFrame()
     status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status.csv"), index_col=0)
@@ -208,7 +210,11 @@ def BC_status_plot(compNum, CoH_Data, matrixDF, ax, abund=False):
     if not abund:
         matrixDF = matrixDF.values
         scoresPCA = cross_val_score(model, matrixDF, Donor_CoH_y, cv=cv)
-    for i in range(10, compNum + 1):
+    if basal:
+        start_val = 1
+    else:
+        start_val = 5
+    for i in range(start_val, compNum + 1):
         if i != 14:
             tFacAllM, _ = factorTensor(CoH_Data.values, numComps=i)
             cp_normalize(tFacAllM)
@@ -230,7 +236,10 @@ def BC_status_plot(compNum, CoH_Data, matrixDF, ax, abund=False):
                 accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "All Data", "Components": [i], "Accuracy (10-fold CV)": np.mean(scoresPCA)})])
     accDF = accDF.reset_index(drop=True)
     sns.lineplot(data=accDF, x="Components", y="Accuracy (10-fold CV)", hue="Data Type", ax=ax)
-    ax.set(xticks=np.arange(10, compNum + 1))
+    if basal:
+        ax.set(xticks=np.arange(1, compNum + 1))
+    else:
+        ax.set(xticks=np.arange(10, compNum + 1))
 
 
 def BC_scatter(ax, CoH_DF, marker, cytokine, cells=False):

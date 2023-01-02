@@ -23,11 +23,10 @@ def makeFigure():
     # Add subplot labels
     subplotLabel(ax)
     ax[0].axis("off")
-    #make_flow_df(subtract=False, abundance=True, foldChange=False)
+    # make_flow_df(subtract=False, abundance=True, foldChange=False)
     # make_CoH_Tensor_abund()
 
     num_comps = 12
-
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
 
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
