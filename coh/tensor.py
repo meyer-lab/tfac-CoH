@@ -45,7 +45,7 @@ def calcR2X(tensorIn, tensorFac):
     return 1.0 - tErr / np.nanvar(tensorIn)
 
 
-def plot_tFac_CoH(ax, tFac, CoH_Array, mode, numComps=3, nn=False, rec=False):
+def plot_tFac_CoH(ax, tFac, CoH_Array, mode, numComps=3, nn=False, rec=False, cbar=True):
     """Plots tensor factorization of cells"""
     mode_labels = CoH_Array[mode]
     coord = CoH_Array.dims.index(mode)
@@ -135,7 +135,7 @@ def plot_tFac_CoH(ax, tFac, CoH_Array, mode, numComps=3, nn=False, rec=False):
         sns.heatmap(data=tFacDF, ax=ax, vmin=0, vmax=1)
     else:
         cmap = sns.color_palette("vlag", as_cmap=True)
-        sns.heatmap(data=tFacDF, ax=ax, cmap=cmap, vmin=-1, vmax=1)
+        sns.heatmap(data=tFacDF, ax=ax, cmap=cmap, vmin=-1, vmax=1, cbar=cbar)
 
 
 def CoH_LogReg_plot(ax, tFac, CoH_Array, numComps):
@@ -236,10 +236,7 @@ def BC_status_plot(compNum, CoH_Data, matrixDF, ax, abund=False, basal=False):
                 accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "All Data", "Components": [i], "Accuracy (10-fold CV)": np.mean(scoresPCA)})])
     accDF = accDF.reset_index(drop=True)
     sns.lineplot(data=accDF, x="Components", y="Accuracy (10-fold CV)", hue="Data Type", ax=ax)
-    if basal:
-        ax.set(xticks=np.arange(1, compNum + 1))
-    else:
-        ax.set(xticks=np.arange(10, compNum + 1))
+    ax.set(xticks=np.arange(start_val, compNum + 1))
 
 
 def BC_scatter(ax, CoH_DF, marker, cytokine, cells=False):

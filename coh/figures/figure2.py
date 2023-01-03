@@ -32,10 +32,10 @@ def makeFigure():
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
     cp_normalize(tFacAllM)
     R2Xplot(ax[1], CoH_Data.values, compNum=15)
-    plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Patient", numComps=num_comps)
-    plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Time", numComps=num_comps)
-    plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Treatment", numComps=num_comps)
-    plot_tFac_CoH(ax[5], tFacAllM, CoH_Data, "Cell", numComps=num_comps)
-    plot_tFac_CoH(ax[6], tFacAllM, CoH_Data, "Marker", numComps=num_comps)
+    plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Patient", numComps=num_comps, cbar=False)
+    plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Time", numComps=num_comps, cbar=False)
+    plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Treatment", numComps=num_comps, cbar=False)
+    plot_tFac_CoH(ax[5], tFacAllM, CoH_Data, "Cell", numComps=num_comps, cbar=False)
+    plot_tFac_CoH(ax[6], tFacAllM, CoH_Data, "Marker", numComps=num_comps, cbar=False)
 
     return f
