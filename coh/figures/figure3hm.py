@@ -16,7 +16,7 @@ path_here = dirname(dirname(__file__))
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((6, 3), (1, 1))
+    ax, f = getSetup((8, 2), (1, 1))
 
     # Add subplot labels
     # subplotLabel(ax)
@@ -48,5 +48,5 @@ def plot_coh_clust(tFac, CoH_Array, mode, numComps=12):
     col_colors = pd.DataFrame(status.map(lut))
     col_colors["Patient"] = status_df.Patient.values
     col_colors = col_colors.set_index("Patient")
-    f = sns.clustermap(data=tFacDF, robust=True, cmap=cmap, vmin=-1, vmax=1, row_cluster=False, col_colors=col_colors, figsize=(6, 3))
+    f = sns.clustermap(data=tFacDF, robust=True, cmap=cmap, vmin=-1, vmax=1, row_cluster=False, col_colors=col_colors, figsize=(8, 3))
     return f

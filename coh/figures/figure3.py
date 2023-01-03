@@ -10,6 +10,7 @@ from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
 from ..tensor import factorTensor, CoH_LogReg_plot, plot_tFac_CoH, make_alldata_DF, BC_status_plot, BC_scatter
 from ..flow import make_flow_df, make_CoH_Tensor
+import matplotlib.pyplot as plt
 
 
 path_here = dirname(dirname(__file__))
@@ -18,12 +19,13 @@ path_here = dirname(dirname(__file__))
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((8, 6), (3, 4), multz={0: 3})
+    ax, f = getSetup((10, 6), (3, 4), multz={0: 3})
 
     # Add subplot labels
     subplotLabel(ax)
     #make_flow_df()
     #make_CoH_Tensor(basal=True)
+    ax[0].axis("off")
 
     num_comps = 12
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
@@ -35,18 +37,18 @@ def makeFigure():
     BC_status_plot(15, CoH_Data, matrix_DF, ax[1], abund=False)
     CoH_LogReg_plot(ax[2], tFacAllM, CoH_Data, num_comps)
     CoH_Scat_Plot(ax[3], tFacAllM, CoH_Data, "Patient", numComps=num_comps, plot_comps=[8, 11])
-    plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Marker", numComps=num_comps)
+    plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Marker", numComps=num_comps, cbar=False)
 
     num_comps = 4
     CoH_Data_B = xa.open_dataarray(join(path_here, "data/CoH_Tensor_DataSet_Basal.nc"))
-    tFacAllM_B, _ = factorTensor(CoH_Data.values, numComps=num_comps)
+    tFacAllM_B, _ = factorTensor(CoH_Data_B.values, numComps=num_comps)
     cp_normalize(tFacAllM_B)
-    make_alldata_DF(CoH_Data_B, PCA=False, basal=True)
+    # make_alldata_DF(CoH_Data_B, PCA=False, basal=True)
     matrix_DF_B = pd.read_csv(join(path_here, "data/CoH_Matrix_Basal.csv"), index_col=0).dropna(axis='columns').set_index("Patient")
     BC_status_plot(15, CoH_Data_B, matrix_DF_B, ax[5], abund=False, basal=True)
-    CoH_LogReg_plot(ax[6], tFacAllM_B, CoH_Data, num_comps)
+    CoH_LogReg_plot(ax[6], tFacAllM_B, CoH_Data_B, num_comps)
     CoH_Scat_Plot(ax[7], tFacAllM_B, CoH_Data_B, "Patient", numComps=num_comps, plot_comps=[2, 4])
-    plot_tFac_CoH(ax[8], tFacAllM_B, CoH_Data_B, "Marker", numComps=num_comps)
+    plot_tFac_CoH(ax[8], tFacAllM_B, CoH_Data_B, "Marker", numComps=num_comps, cbar=False)
 
     return f
 
