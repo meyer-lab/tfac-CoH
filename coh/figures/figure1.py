@@ -30,7 +30,7 @@ def makeFigure():
     CoH_data = pd.read_csv(join(path_here, "data/CoH_Flow_DF.csv"))
     fullHeatMap(ax[1], CoH_data, [marker], makeDF=False)
     response_ligand_scatter(ax[2], CoH_data, marker)
-    response_cell_scatter(ax[3], CoH_data, "pSTAT5", "IL2-50ng")
+    response_cell_scatter(ax[3], CoH_data, "pSTAT6", "IL4-50ng")
 
     return f
 
@@ -119,7 +119,6 @@ def response_cell_scatter(ax, CoH_DF, marker, treatment):
     """Scatters specific responses"""
     hist_DF = CoH_DF.loc[(CoH_DF.Marker == marker) & (CoH_DF.Treatment == treatment)]
     hist_DF = hist_DF.groupby(["Cell", "Patient"]).Mean.mean().reset_index()
-    print(hist_DF)
 
     sns.boxplot(data=hist_DF, y="Mean", x="Cell", ax=ax)
     ax.set(title="Average Response to " + treatment, ylabel=marker, xlabel="Cell")

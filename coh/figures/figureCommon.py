@@ -4,11 +4,15 @@ This file contains functions that are used in multiple figures.
 from string import ascii_lowercase
 import sys
 import time
+import numpy as np
 import seaborn as sns
 import matplotlib
 import svgutils.transform as st
 import pandas as pd
 from matplotlib import gridspec, pyplot as plt
+from scipy.stats import ttest_ind
+from statannot import add_stat_annotation
+from ..tensor import get_status_dict
 
 matplotlib.use("AGG")
 
@@ -129,3 +133,54 @@ def make_status_DF():
     statusDF = pd.DataFrame.from_dict(status_dict, orient='index').reset_index()
     statusDF.columns = ["Patient", "Status"]
     statusDF.to_csv("coh/data/Patient_Status.csv")
+
+
+def BC_scatter(ax, CoH_DF, marker, cytokine, cells=False):
+    """Scatters specific responses"""
+    CoH_DF = CoH_DF.loc[(CoH_DF.Time == "15min")]
+    if not cells:
+        hist_DF = CoH_DF.loc[(CoH_DF.Treatment == cytokine) & (CoH_DF.Marker == marker)]
+    else:
+        hist_DF = CoH_DF.loc[(CoH_DF.Treatment == cytokine) & (CoH_DF.Marker == marker) & (CoH_DF["Cell"].isin(cells))]
+    hist_DF = hist_DF.groupby(["Patient", "Marker"]).Mean.mean().reset_index()
+    hist_DF["Status"] = hist_DF.replace({"Patient": status_dict}).Patient.values
+
+    sns.boxplot(data=hist_DF, y="Mean", x="Status", ax=ax)
+    ax.set(title=marker + " in response to " + cytokine, ylabel=marker, xlabel="Status")
+    add_stat_annotation(ax=ax, data=hist_DF, x="Status", y="Mean", test='t-test_ind', order=["Healthy", "BC"], box_pairs=[("Healthy", "BC")], text_format='full', loc='inside', verbose=2)
+
+
+def BC_scatter_cells(ax, CoH_DF, marker, cytokine, filter=False):
+    """Scatters specific responses"""
+    CoH_DF = CoH_DF.loc[(CoH_DF.Time == "15min")]
+    status_dict = get_status_dict()
+    hist_DF = CoH_DF.loc[(CoH_DF.Treatment == cytokine) & (CoH_DF.Marker == marker)]
+    hist_DF = hist_DF.groupby(["Cell", "Patient", "Marker"]).Mean.mean().reset_index()
+    hist_DF["Status"] = hist_DF.replace({"Patient": status_dict}).Patient.values
+
+
+    filt_cells = []
+    pvals = []
+    for cell in hist_DF.Cell.unique():
+        BC_samps = hist_DF.loc[(hist_DF.Status == "BC") & (hist_DF.Cell == cell)].Mean.values
+        H_samps = hist_DF.loc[(hist_DF.Status == "Healthy") & (hist_DF.Cell == cell)].Mean.values
+        t_res = ttest_ind(BC_samps, H_samps)
+        if t_res[1] < (0.05 / hist_DF.Cell.unique().size):
+            filt_cells.append(cell)
+            if t_res[1] * hist_DF.Cell.unique().size < 0.0005:
+                pvals.append("***")
+            elif t_res[1] * hist_DF.Cell.unique().size < 0.005:
+                pvals.append("**")
+            elif t_res[1] * hist_DF.Cell.unique().size < 0.05:
+                pvals.append("*")
+    if filter:
+        hist_DF = hist_DF.loc[hist_DF.Cell.isin(filt_cells)]
+
+    sns.boxplot(data=hist_DF, y="Mean", x="Cell", hue="Status", ax=ax)
+    ax.set(title=marker + " in response to " + cytokine, ylabel=marker, xlabel="Status")
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
+    boxpairs = []
+    for cell in hist_DF.Cell.unique():
+        boxpairs.append([(cell, "Healthy"), (cell, "BC")])
+    add_stat_annotation(ax=ax, data=hist_DF, x="Cell", y="Mean", hue="Status", box_pairs=boxpairs, text_annot_custom=pvals, perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(filt_cells)), verbose=0)
+    # add_stat_annotation(ax=ax, data=hist_DF, x="Cell", y="Mean", hue="Status", test='t-test_ind', box_pairs=boxpairs, text_format='star', loc='inside', verbose=2)

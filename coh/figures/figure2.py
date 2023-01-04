@@ -1,5 +1,5 @@
 """
-This creates Figure 1.
+This creates Figure 2, tensor factorization.
 """
 import xarray as xa
 import numpy as np
