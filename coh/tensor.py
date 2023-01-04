@@ -238,23 +238,6 @@ def BC_status_plot(compNum, CoH_Data, matrixDF, ax, abund=False, basal=False):
     sns.lineplot(data=accDF, x="Components", y="Accuracy (10-fold CV)", hue="Data Type", ax=ax)
     ax.set(xticks=np.arange(start_val, compNum + 1))
 
-
-def BC_scatter(ax, CoH_DF, marker, cytokine, cells=False):
-    """Scatters specific responses"""
-    CoH_DF = CoH_DF.loc[(CoH_DF.Time == "15min")]
-    if not cells:
-        hist_DF = CoH_DF.loc[(CoH_DF.Treatment == cytokine) & (CoH_DF.Marker == marker)]
-    else:
-        hist_DF = CoH_DF.loc[(CoH_DF.Treatment == cytokine) & (CoH_DF.Marker == marker) & (CoH_DF["Cell"].isin(cells))]
-    hist_DF = hist_DF.groupby(["Patient", "Marker"]).Mean.mean().reset_index()
-    hist_DF["Status"] = hist_DF.replace({"Patient": status_dict}).Patient.values
-    print(hist_DF)
-
-    sns.boxplot(data=hist_DF, y="Mean", x="Status", ax=ax)
-    ax.set(title=marker + " in response to " + cytokine, ylabel=marker, xlabel="Status")
-    add_stat_annotation(ax=ax, data=hist_DF, x="Status", y="Mean", test='t-test_ind', order=["Healthy", "BC"], box_pairs=[("Healthy", "BC")], text_format='full', loc='inside', verbose=2)
-
-
 status_dict = {"Patient 26": "Healthy",
                "Patient 28": "Healthy",
                "Patient 30": "Healthy",
@@ -291,3 +274,7 @@ status_dict = {"Patient 26": "Healthy",
                "Patient 19186-14": "BC",
                "Patient 21368-3": "BC",
                "Patient 21368-4": "BC"}
+
+def get_status_dict():
+    """Returns status dictionary"""
+    return status_dict

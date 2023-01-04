@@ -1,5 +1,5 @@
 """
-This creates Figure 4.
+This creates Figure S6.
 """
 import xarray as xa
 import numpy as np
@@ -24,16 +24,15 @@ def makeFigure():
     subplotLabel(ax)
     # make_flow_df(foldChange=True)
     #make_CoH_Tensor(just_signal=True, foldChange=True)
-    num_comps = 12
 
     # make_alldata_DF(CoH_Data, PCA=False, foldChange=True)
     CoH_DF = pd.read_csv(join(path_here, "data/CoH_Flow_DF.csv"))
     BC_scatter(ax[0], CoH_DF, "pSTAT3", "IL10-50ng")
     BC_scatter(ax[1], CoH_DF, "pSTAT5", "IL2-50ng")
-    BC_scatter_cells(ax[2], CoH_DF, "pSTAT3", "IL10-50ng", filter=True)
-    BC_scatter_cells(ax[3], CoH_DF, "pSTAT5", "IL2-50ng", filter=True)
+    BC_scatter_cells(ax[2], CoH_DF, "pSTAT3", "IL10-50ng", filter=False)
+    BC_scatter_cells(ax[3], CoH_DF, "pSTAT5", "IL2-50ng", filter=False)
     CoH_DF_B = pd.read_csv(join(path_here, "data/CoH_Flow_DF_Basal.csv"))
-    BC_scatter_cells(ax[4], CoH_DF_B, "pSmad1-2", "Untreated", filter=True)
-    BC_scatter_cells(ax[5], CoH_DF_B, "pSTAT4", "Untreated", filter=True)
+    BC_scatter_cells(ax[4], CoH_DF_B, "pSmad1-2", "Untreated", filter=False)
+    BC_scatter_cells(ax[5], CoH_DF_B, "pSTAT4", "Untreated", filter=False)
 
     return f
