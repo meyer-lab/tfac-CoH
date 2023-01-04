@@ -8,7 +8,7 @@ import pandas as pd
 from tensorpack.cmtf import cp_normalize
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
-from ..tensor import factorTensor, CoH_LogReg_plot, plot_tFac_CoH, make_alldata_DF, BC_status_plot, BC_scatter
+from ..tensor import factorTensor, CoH_LogReg_plot, plot_tFac_CoH, make_alldata_DF, BC_status_plot
 from ..flow import make_flow_df, make_CoH_Tensor
 import matplotlib.pyplot as plt
 import matplotlib.pyplot as plt
