@@ -8,7 +8,9 @@ from .figureCommon import subplotLabel, getSetup
 from os.path import join
 from ..flow import make_flow_df, make_CoH_Tensor
 from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH, CoH_LogReg_plot
+import matplotlib.pyplot as plt
 
+plt.rcParams['svg.fonttype'] = 'none'
 path_here = os.path.dirname(os.path.dirname(__file__))
 
 

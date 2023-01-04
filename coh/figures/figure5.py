@@ -11,7 +11,9 @@ from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
 from ..flow_rec import make_flow_df_rec, make_CoH_Tensor_rec
 from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH, CoH_LogReg_plot
+import matplotlib.pyplot as plt
 
+plt.rcParams['svg.fonttype'] = 'none'
 path_here = dirname(dirname(__file__))
 
 

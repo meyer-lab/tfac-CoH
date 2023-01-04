@@ -10,8 +10,9 @@ from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
 from ..tensor import factorTensor, CoH_LogReg_plot, plot_tFac_CoH, make_alldata_DF, BC_status_plot, BC_scatter
 from ..flow import make_flow_df, make_CoH_Tensor
+import matplotlib.pyplot as plt
 
-
+plt.rcParams['svg.fonttype'] = 'none'
 path_here = dirname(dirname(__file__))
 
 
