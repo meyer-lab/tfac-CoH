@@ -10,21 +10,27 @@ from tensorly.cp_tensor import cp_flip_sign
 from tensorpack.cmtf import cp_normalize, perform_CP
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
+import matplotlib.pyplot as plt
 
+plt.rcParams['svg.fonttype'] = 'none'
 path_here = dirname(dirname(__file__))
+
 
 
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((8, 8), (2, 1))
+    ax, f = getSetup((8, 8), (4, 2), multz={0: 1, 2: 3})
 
     # Add subplot labels
     subplotLabel(ax)
     ax[0].axis("off")
 
+    marker = "pSTAT3"
     CoH_data = pd.read_csv(join(path_here, "data/CoH_Flow_DF.csv"))
-    fullHeatMap(ax[1], CoH_data, ["pSTAT3"], makeDF=False)
+    fullHeatMap(ax[1], CoH_data, [marker], makeDF=False)
+    response_ligand_scatter(ax[2], CoH_data, marker)
+    response_cell_scatter(ax[3], CoH_data, "pSTAT5", "IL2-50ng")
 
     return f
 
@@ -72,9 +78,9 @@ def fullHeatMap(ax, respDF, markers, makeDF=True):
         "Patient 21368-3",
         "Patient 21368-4"]
     if makeDF:
-        for patient in patients:
-            print(patient)
-            for cell in respDFhm.Cell.unique():
+        for cell in respDFhm.Cell.unique():
+            print(cell)
+            for patient in patients:
                 row = pd.DataFrame()
                 row["Patient/Cell"] = [patient + " - " + str(cell)]
                 for time in respDF.Time.unique():
@@ -84,9 +90,9 @@ def fullHeatMap(ax, respDF, markers, makeDF=True):
                             entry = respDFhm.loc[(respDFhm.Patient == patient) & (respDFhm.Treatment == treatment) & (respDFhm.Cell == cell)
                                                  & (respDFhm.Time == time) & (respDFhm.Marker == marker)].Mean.values / normMax
                             if np.isnan(entry):
-                                row[treatment + " - " + str(time) + " hrs"] = 0
+                                row[treatment + " - " + str(time) + " hrs"] = np.nan
                             elif entry.size < 1:
-                                row[treatment + " - " + str(time) + " hrs"] = 0
+                                row[treatment + " - " + str(time) + " hrs"] = np.nan
                             else:
                                 row[treatment + " - " + str(time) + " hrs"] = entry
                 heatmapDF = pd.concat([heatmapDF, row])
@@ -94,5 +100,27 @@ def fullHeatMap(ax, respDF, markers, makeDF=True):
         heatmapDF.to_csv(join(path_here, "data/CoH_Heatmap_DF.csv"))
     else:
         heatmapDF = pd.read_csv(join(path_here, "data/CoH_Heatmap_DF.csv"), index_col=0)
+
     sns.heatmap(data=heatmapDF, vmin=0, vmax=1, ax=ax, cbar_kws={'label': markers[0]})
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
+
+
+def response_ligand_scatter(ax, CoH_DF, marker, cells=False):
+    """Scatters specific responses"""
+    hist_DF = CoH_DF.loc[(CoH_DF.Marker == marker)]
+    hist_DF = hist_DF.groupby(["Treatment", "Patient"]).Mean.mean().reset_index()
+
+    sns.boxplot(data=hist_DF, y="Mean", x="Treatment", ax=ax)
+    ax.set(title="Average " + marker + " Response", ylabel=marker, xlabel="Treament")
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
+
+
+def response_cell_scatter(ax, CoH_DF, marker, treatment):
+    """Scatters specific responses"""
+    hist_DF = CoH_DF.loc[(CoH_DF.Marker == marker) & (CoH_DF.Treatment == treatment)]
+    hist_DF = hist_DF.groupby(["Cell", "Patient"]).Mean.mean().reset_index()
+    print(hist_DF)
+
+    sns.boxplot(data=hist_DF, y="Mean", x="Cell", ax=ax)
+    ax.set(title="Average Response to " + treatment, ylabel=marker, xlabel="Cell")
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")

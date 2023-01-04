@@ -8,8 +8,9 @@ from tensorpack.cmtf import cp_normalize
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
 from ..tensor import factorTensor
+import matplotlib.pyplot as plt
 
-
+plt.rcParams['svg.fonttype'] = 'none'
 path_here = dirname(dirname(__file__))
 
 

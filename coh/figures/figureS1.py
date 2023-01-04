@@ -12,7 +12,9 @@ import numpy as np
 import os
 import warnings
 warnings.filterwarnings("ignore")
+import matplotlib.pyplot as plt
 
+plt.rcParams['svg.fonttype'] = 'none'
 path_here = os.path.dirname(os.path.dirname(__file__))
 
 
