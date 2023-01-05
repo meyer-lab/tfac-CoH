@@ -11,6 +11,7 @@ from os.path import join, dirname
 from ..flow import make_flow_df, make_CoH_Tensor
 from ..tensor import get_status_dict
 import matplotlib.pyplot as plt
+from scipy.stats import spearmanr
 
 plt.rcParams['svg.fonttype'] = 'none'
 path_here = dirname(dirname(__file__))
@@ -19,7 +20,7 @@ path_here = dirname(dirname(__file__))
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((16, 16), (4, 2))
+    ax, f = getSetup((16, 16), (4, 3))
 
     # Add subplot labels
     subplotLabel(ax)
@@ -38,8 +39,13 @@ def makeFigure():
     BC_scatter_cells(ax[5], CoH_DF_B, "pSTAT4", "Untreated", filter=True)
     dysreg_cor_plot(ax[6], CoH_DF, "IL10-50ng", "pSTAT3", "IL2-50ng", "pSTAT5")
     dysreg_cor_plot(ax[7], CoH_DF, "IL10-50ng", "pSTAT3", "Untreated", "pSmad1-2", CoH_DF_B)
+    dysreg_cor_plot(ax[8], CoH_DF, "IL10-50ng", "pSTAT3", "Untreated", "pSTAT4", CoH_DF_B)
+    dysreg_cor_plot(ax[9], CoH_DF, "IL2-50ng", "pSTAT5", "Untreated", "pSmad1-2", CoH_DF_B)
+    dysreg_cor_plot(ax[10], CoH_DF, "IL2-50ng", "pSTAT5", "Untreated", "pSTAT4", CoH_DF_B)
+    dysreg_cor_plot(ax[11], CoH_DF_B, "Untreated", "pSmad1-2", "Untreated", "pSTAT4", CoH_DF_B)
 
     return f
+
 
 def dysreg_cor_plot(ax, CoH_DF, cytokine1, marker1, cytokine2, marker2, CoH_DF_B=False):
     """Plots possible correlation of dysregulation"""
@@ -58,4 +64,15 @@ def dysreg_cor_plot(ax, CoH_DF, cytokine1, marker1, cytokine2, marker2, CoH_DF_B
     CoH_DF2 = CoH_DF2.drop(["Marker", "Cell"], axis=1).rename({"Mean": marker2}, axis=1)
     
     CoH_DF2[marker1] = CoH_DF1[marker1].values
+    Healthy_DF = CoH_DF2.loc[CoH_DF2.Status == "BC"]
+    BC_DF = CoH_DF2.loc[CoH_DF2.Status == "Healthy"]
+    print(marker1, marker2)
+    #print(spearmanr(CoH_DF2[marker1], CoH_DF2[marker2]), " Overall")
+    #print(spearmanr(Healthy_DF[marker1], Healthy_DF[marker2]), " Healthy")
+    #print(spearmanr(BC_DF[marker1], BC_DF[marker2]), " BC")
+
     sns.scatterplot(data=CoH_DF2, x=marker1, y=marker2, hue="Status", ax=ax)
+    #ax.text(5, np.amax(CoH_DF2[marker2].values) * 1.1, str(spearmanr(CoH_DF2[marker1], CoH_DF2[marker2])[0]) + " Overall Spearman")
+    #ax.text(5, np.amax(CoH_DF2[marker2].values) * 1, str(spearmanr(Healthy_DF[marker1], Healthy_DF[marker2])[0]) + " Healthy Spearman")
+    #ax.text(5, np.amax(CoH_DF2[marker2].values) * 0.9, str(spearmanr(BC_DF[marker1], BC_DF[marker2])[0]) + " BC Spearman")
+    ax.set(xlabel=marker1 + " response to " + cytokine1, ylabel=marker2 + " response to " + cytokine2)
