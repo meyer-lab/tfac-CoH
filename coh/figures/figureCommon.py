@@ -173,6 +173,11 @@ def BC_scatter_cells(ax, CoH_DF, marker, cytokine, filter=False):
                 pvals.append("**")
             elif t_res[1] * hist_DF.Cell.unique().size < 0.05:
                 pvals.append("*")
+            else:
+                pvals.append("****")
+        else:
+            if not filter:
+                pvals.append("ns")
     if filter:
         hist_DF = hist_DF.loc[hist_DF.Cell.isin(filt_cells)]
 
@@ -182,5 +187,9 @@ def BC_scatter_cells(ax, CoH_DF, marker, cytokine, filter=False):
     boxpairs = []
     for cell in hist_DF.Cell.unique():
         boxpairs.append([(cell, "Healthy"), (cell, "BC")])
-    add_stat_annotation(ax=ax, data=hist_DF, x="Cell", y="Mean", hue="Status", box_pairs=boxpairs, text_annot_custom=pvals, perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(filt_cells)), verbose=0)
+    if filter:
+        add_stat_annotation(ax=ax, data=hist_DF, x="Cell", y="Mean", hue="Status", box_pairs=boxpairs, text_annot_custom=pvals, perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(filt_cells)), verbose=0)
+    else:
+        add_stat_annotation(ax=ax, data=hist_DF, x="Cell", y="Mean", hue="Status", box_pairs=boxpairs, text_annot_custom=pvals, perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(hist_DF.Cell.unique())), verbose=0)
+    # ad
     # add_stat_annotation(ax=ax, data=hist_DF, x="Cell", y="Mean", hue="Status", test='t-test_ind', box_pairs=boxpairs, text_format='star', loc='inside', verbose=2)
