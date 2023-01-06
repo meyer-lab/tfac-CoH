@@ -12,7 +12,7 @@ import pandas as pd
 from matplotlib import gridspec, pyplot as plt
 from scipy.stats import ttest_ind
 from statannot import add_stat_annotation
-from ..tensor import get_status_dict
+from ..tensor import get_status_dict, get_status_dict_rec
 
 matplotlib.use("AGG")
 
@@ -193,3 +193,44 @@ def BC_scatter_cells(ax, CoH_DF, marker, cytokine, filter=False):
         add_stat_annotation(ax=ax, data=hist_DF, x="Cell", y="Mean", hue="Status", box_pairs=boxpairs, text_annot_custom=pvals, perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(hist_DF.Cell.unique())), verbose=0)
     # ad
     # add_stat_annotation(ax=ax, data=hist_DF, x="Cell", y="Mean", hue="Status", test='t-test_ind', box_pairs=boxpairs, text_format='star', loc='inside', verbose=2)
+
+
+def BC_scatter_cells_rec(ax, CoH_DF, marker, filter=False):
+    """Scatters specific responses"""
+    status_dict = get_status_dict_rec()
+    hist_DF = CoH_DF.loc[(CoH_DF.Marker == marker)]
+    hist_DF = hist_DF.groupby(["Cell", "Patient", "Marker"]).Mean.mean().reset_index()
+    hist_DF["Status"] = hist_DF.replace({"Patient": status_dict}).Patient.values
+
+
+    filt_cells = []
+    pvals = []
+    for cell in hist_DF.Cell.unique():
+        BC_samps = hist_DF.loc[(hist_DF.Status == "BC") & (hist_DF.Cell == cell)].Mean.values
+        H_samps = hist_DF.loc[(hist_DF.Status == "Healthy") & (hist_DF.Cell == cell)].Mean.values
+        t_res = ttest_ind(BC_samps, H_samps)
+        if t_res[1] < (0.05 / hist_DF.Cell.unique().size):
+            filt_cells.append(cell)
+            if t_res[1] * hist_DF.Cell.unique().size < 0.0005:
+                pvals.append("***")
+            elif t_res[1] * hist_DF.Cell.unique().size < 0.005:
+                pvals.append("**")
+            elif t_res[1] * hist_DF.Cell.unique().size < 0.05:
+                pvals.append("*")
+            else:
+                pvals.append("****")
+        else:
+            if not filter:
+                pvals.append("ns")
+    if filter:
+        hist_DF = hist_DF.loc[hist_DF.Cell.isin(filt_cells)]
+    sns.boxplot(data=hist_DF, y="Mean", x="Cell", hue="Status", ax=ax)
+    ax.set(title=marker, ylabel=marker, xlabel="Status")
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
+    boxpairs = []
+    for cell in hist_DF.Cell.unique():
+        boxpairs.append([(cell, "Healthy"), (cell, "BC")])
+    if filter:
+        add_stat_annotation(ax=ax, data=hist_DF, x="Cell", y="Mean", hue="Status", box_pairs=boxpairs, text_annot_custom=pvals, perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(filt_cells)), verbose=0)
+    else:
+        add_stat_annotation(ax=ax, data=hist_DF, x="Cell", y="Mean", hue="Status", box_pairs=boxpairs, text_annot_custom=pvals, perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(hist_DF.Cell.unique())), verbose=0)

@@ -27,7 +27,7 @@ def makeFigure():
     # make_flow_df_rec()
     # make_CoH_Tensor_rec()
 
-    num_comps = 12
+    num_comps = 4
 
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Rec.nc"))
     #make_alldata_DF(CoH_Data, PCA=False, basal=True)

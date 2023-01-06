@@ -180,6 +180,21 @@ def make_alldata_DF(TensorArray, PCA=True, foldChange=False, basal=False):
             PCAdf.to_csv(join(path_here, "coh/data/CoH_Matrix.csv"))
 
 
+def make_allrec_DF(RecArray):
+    """Makes all data DF for rec data"""
+    DF = RecArray.to_dataframe(name="value").reset_index()
+    PCAdf = pd.DataFrame()
+    for patient in DF.Patient.unique():
+        patientDF = DF.loc[DF.Patient == patient]
+        patientRow = pd.DataFrame({"Patient": [patient]})
+        for marker in DF.Marker.unique():
+            for cell in DF.Cell.unique():
+                uniqueDF = patientDF.loc[(patientDF.Marker == marker) & (patientDF.Cell == cell)]
+                patientRow[marker + "_" + cell] = uniqueDF.value.values
+        PCAdf = pd.concat([PCAdf, patientRow])
+    PCAdf.to_csv(path_here + "/data/CoH_Matrix_Rec.csv")
+
+
 def plot_PCA(ax):
     """Plots CoH PCA"""
     DF = pd.read_csv(join(path_here, "data/CoH_PCA.csv")).set_index("Patient").drop("Unnamed: 0", axis=1)
