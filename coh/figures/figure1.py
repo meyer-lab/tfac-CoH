@@ -28,7 +28,7 @@ def makeFigure():
 
     marker = "pSTAT3"
     CoH_data = pd.read_csv(join(path_here, "data/CoH_Flow_DF.csv"))
-    fullHeatMap(ax[1], CoH_data, [marker], makeDF=False)
+    fullHeatMap(ax[1], CoH_data, [marker], makeDF=True)
     response_ligand_scatter(ax[2], CoH_data, marker)
     response_cell_scatter(ax[3], CoH_data, "pSTAT6", "IL4-50ng")
 
@@ -83,9 +83,9 @@ def fullHeatMap(ax, respDF, markers, makeDF=True):
             for patient in patients:
                 row = pd.DataFrame()
                 row["Patient/Cell"] = [patient + " - " + str(cell)]
-                for time in respDF.Time.unique():
+                for treatment in respDFhm.Treatment.unique():
                     normMax = respDFhm.loc[(respDFhm.Patient == patient) & (respDFhm.Cell == cell)].Mean.max()
-                    for treatment in respDFhm.Treatment.unique():
+                    for time in respDF.Time.unique():
                         for marker in markers:
                             entry = respDFhm.loc[(respDFhm.Patient == patient) & (respDFhm.Treatment == treatment) & (respDFhm.Cell == cell)
                                                  & (respDFhm.Time == time) & (respDFhm.Marker == marker)].Mean.values / normMax
