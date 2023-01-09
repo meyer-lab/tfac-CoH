@@ -83,9 +83,9 @@ def fullHeatMap(ax, respDF, markers, makeDF=True):
             for patient in patients:
                 row = pd.DataFrame()
                 row["Patient/Cell"] = [patient + " - " + str(cell)]
-                for time in respDF.Time.unique():
+                for treatment in respDFhm.Treatment.unique():
                     normMax = respDFhm.loc[(respDFhm.Patient == patient) & (respDFhm.Cell == cell)].Mean.max()
-                    for treatment in respDFhm.Treatment.unique():
+                    for time in respDF.Time.unique():
                         for marker in markers:
                             entry = respDFhm.loc[(respDFhm.Patient == patient) & (respDFhm.Treatment == treatment) & (respDFhm.Cell == cell)
                                                  & (respDFhm.Time == time) & (respDFhm.Marker == marker)].Mean.values / normMax
