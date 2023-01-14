@@ -281,11 +281,12 @@ def make_CoH_Tensor(subtract=True, just_signal=False, foldChange=False, basal=Fa
 
     if just_signal or foldChange or basal:
         markers = np.array(["pSTAT1", "pSTAT3", "pSTAT4", "pSTAT5", "pSTAT6", "pSmad1-2"])
+        CoH_DF = CoH_DF.loc[CoH_DF.Marker.isin(markers)]
+        markers = CoH_DF.Marker.unique()
     else:
         markers = CoH_DF.Marker.unique()
-
-    CoH_DF = CoH_DF.loc[CoH_DF.Marker.isin(markers)]
-    CoH_DF = CoH_DF.sort_values(["Marker"]).groupby(["Patient", "Time", "Treatment", "Cell", "Marker"]).Mean.mean().reset_index()
+    
+    CoH_DF = CoH_DF.groupby(["Patient", "Time", "Treatment", "Cell", "Marker"], sort=False).Mean.mean().reset_index()
     patients = CoH_DF.Patient.unique()
     times = CoH_DF.Time.unique()
     treatments = CoH_DF.Treatment.unique()
@@ -304,6 +305,10 @@ def make_CoH_Tensor(subtract=True, just_signal=False, foldChange=False, basal=Fa
         tensor[:, :, :, :, i][~np.isnan(tensor[:, :, :, :, i])] /= np.nanmax(tensor[:, :, :, :, i])
 
     CoH_xarray = xa.DataArray(tensor, dims=("Patient", "Time", "Treatment", "Cell", "Marker"), coords={"Patient": patients, "Time": times, "Treatment": treatments, "Cell": cells, "Marker": markers})
+    CoH_xarray = CoH_xarray.reindex(Marker=np.sort(markers))
+    CoH_xarray = CoH_xarray.reindex(Cell=np.sort(cells))
+    CoH_xarray = CoH_xarray.reindex(Treatment=np.sort(treatments))
+
     if basal:
         CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH_Tensor_DataSet_Basal.nc"))
     elif subtract:
