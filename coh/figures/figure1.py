@@ -29,7 +29,7 @@ def makeFigure():
     marker = "pSTAT3"
     CoH_data = pd.read_csv(join(path_here, "data/CoH_Flow_DF.csv"))
     fullHeatMap(ax[1], CoH_data, [marker], makeDF=False)
-    response_ligand_scatter(ax[2], CoH_data, marker)
+    response_ligand_scatter(ax[2], CoH_data, "pSTAT5")
     response_cell_scatter(ax[3], CoH_data, "pSTAT6", "IL4-50ng")
 
     return f

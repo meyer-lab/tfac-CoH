@@ -14,6 +14,7 @@ import warnings
 import xarray as xa
 from copy import copy
 from FlowCytometryTools import PolyGate, FCMeasurement
+import numba
 
 path_here = os.path.dirname(os.path.dirname(__file__))
 
@@ -264,7 +265,7 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
 
     return CoH_DF
 
-
+@numba.jit
 def make_CoH_Tensor(subtract=True, just_signal=False, foldChange=False, basal=False):
     """Processes RA DataFrame into Xarray Tensor"""
     if basal:
