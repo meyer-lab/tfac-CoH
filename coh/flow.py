@@ -281,11 +281,13 @@ def make_CoH_Tensor(subtract=True, just_signal=False, foldChange=False, basal=Fa
 
     if just_signal or foldChange or basal:
         markers = np.array(["pSTAT1", "pSTAT3", "pSTAT4", "pSTAT5", "pSTAT6", "pSmad1-2"])
+        CoH_DF = CoH_DF.loc[CoH_DF.Marker.isin(markers)]
+        CoH_DF = CoH_DF.sort_values(["Marker"]).groupby(["Patient", "Time", "Treatment", "Cell", "Marker"]).Mean.mean().reset_index()
     else:
         markers = CoH_DF.Marker.unique()
+        CoH_DF = CoH_DF.groupby(["Patient", "Time", "Treatment", "Cell", "Marker"]).Mean.mean().reset_index()
 
-    CoH_DF = CoH_DF.loc[CoH_DF.Marker.isin(markers)]
-    CoH_DF = CoH_DF.sort_values(["Marker"]).groupby(["Patient", "Time", "Treatment", "Cell", "Marker"]).Mean.mean().reset_index()
+
     patients = CoH_DF.Patient.unique()
     times = CoH_DF.Time.unique()
     treatments = CoH_DF.Treatment.unique()
