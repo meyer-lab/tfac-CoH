@@ -165,13 +165,13 @@ def BC_scatter_cells(ax, CoH_DF, marker, cytokine, filter=False):
         BC_samps = hist_DF.loc[(hist_DF.Status == "BC") & (hist_DF.Cell == cell)].Mean.values
         H_samps = hist_DF.loc[(hist_DF.Status == "Healthy") & (hist_DF.Cell == cell)].Mean.values
         t_res = ttest_ind(BC_samps, H_samps)
-        if t_res[1] < (0.05 / hist_DF.Cell.unique().size):
+        if t_res[1] < (0.05):
             filt_cells.append(cell)
-            if t_res[1] * hist_DF.Cell.unique().size < 0.0005:
+            if t_res[1] < 0.0005:
                 pvals.append("***")
-            elif t_res[1] * hist_DF.Cell.unique().size < 0.005:
+            elif t_res[1] < 0.005:
                 pvals.append("**")
-            elif t_res[1] * hist_DF.Cell.unique().size < 0.05:
+            elif t_res[1] < 0.05:
                 pvals.append("*")
             else:
                 pvals.append("****")
@@ -209,13 +209,13 @@ def BC_scatter_cells_rec(ax, CoH_DF, marker, filter=False):
         BC_samps = hist_DF.loc[(hist_DF.Status == "BC") & (hist_DF.Cell == cell)].Mean.values
         H_samps = hist_DF.loc[(hist_DF.Status == "Healthy") & (hist_DF.Cell == cell)].Mean.values
         t_res = ttest_ind(BC_samps, H_samps)
-        if t_res[1] < (0.05 / hist_DF.Cell.unique().size):
+        if t_res[1] < (0.05):
             filt_cells.append(cell)
-            if t_res[1] * hist_DF.Cell.unique().size < 0.0005:
+            if t_res[1] < 0.0005:
                 pvals.append("***")
-            elif t_res[1] * hist_DF.Cell.unique().size < 0.005:
+            elif t_res[1] < 0.005:
                 pvals.append("**")
-            elif t_res[1] * hist_DF.Cell.unique().size < 0.05:
+            elif t_res[1] < 0.05:
                 pvals.append("*")
             else:
                 pvals.append("****")
