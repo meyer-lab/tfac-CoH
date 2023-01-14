@@ -12,6 +12,7 @@ import pandas as pd
 import numpy as np
 import warnings
 import xarray as xa
+import itertools
 from copy import copy
 from FlowCytometryTools import PolyGate, FCMeasurement
 
@@ -277,25 +278,26 @@ def make_CoH_Tensor(subtract=True, just_signal=False, foldChange=False, basal=Fa
         CoH_DF.loc[(CoH_DF.Treatment == "Untreated"), "Mean"] = 0
     else:
         CoH_DF = pd.read_csv(join(path_here, "coh/data/NN_CoH_Flow_DF.csv"))
-    patients = CoH_DF.Patient.unique()
-    times = CoH_DF.Time.unique()
-    treatments = CoH_DF.Treatment.unique()
-    cells = CoH_DF.Cell.unique()
+
     if just_signal or foldChange or basal:
         markers = np.array(["pSTAT1", "pSTAT3", "pSTAT4", "pSTAT5", "pSTAT6", "pSmad1-2"])
     else:
         markers = CoH_DF.Marker.unique()
 
+    CoH_DF = CoH_DF.loc[CoH_DF.Marker.isin(markers)]
+    CoH_DF = CoH_DF.sort_values(["Marker"]).groupby(["Patient", "Time", "Treatment", "Cell", "Marker"]).Mean.mean().reset_index()
+    patients = CoH_DF.Patient.unique()
+    times = CoH_DF.Time.unique()
+    treatments = CoH_DF.Treatment.unique()
+    cells = CoH_DF.Cell.unique()
+
     tensor = np.empty((len(patients), len(times), len(treatments), len(cells), len(markers)))
     tensor[:] = np.nan
-    for i, pat in enumerate(patients):
-        print(pat)
-        for j, tim in enumerate(times):
-            for k, treat in enumerate(treatments):
-                for ii, cell in enumerate(cells):
-                    for jj, mark in enumerate(markers):
-                        entry = CoH_DF.loc[(CoH_DF.Patient == pat) & (CoH_DF.Time == tim) & (CoH_DF.Treatment == treat) & (CoH_DF.Cell == cell) & (CoH_DF.Marker == mark)]["Mean"].values
-                        tensor[i, j, k, ii, jj] = np.mean(entry)
+    values_vec = CoH_DF.Mean.values
+
+    for i, combination in enumerate(itertools.product(patients, times, treatments, cells, markers)):
+        coords = [np.where(patients == combination[0])[0][0], np.where(times == combination[1])[0][0], np.where(treatments == combination[2])[0][0], np.where(cells == combination[3])[0][0] , np.where(markers == combination[4])[0][0]]
+        tensor[coords[0], coords[1], coords[2], coords[3], coords[4]] = values_vec[i]
 
     # Normalize
     for i, _ in enumerate(markers):
