@@ -21,7 +21,7 @@ path_here = dirname(dirname(__file__))
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((9, 9), (4, 4), multz={0: 1, 2: 1, 4: 1, 6:1})
+    ax, f = getSetup((12, 9), (3, 4), multz={0: 1, 2: 1, 4: 1, 6:1})
 
     # Add subplot labels
     subplotLabel(ax)
@@ -44,11 +44,10 @@ def makeFigure():
     CoH_DF = pd.read_csv(join(path_here, "data/CoH_Flow_DF.csv"))
     CoH_DF_B = pd.read_csv(join(path_here, "data/CoH_Flow_DF_Basal.csv"))
     dysreg_cor_plot_rec(ax[4], CoH_Data_DF_R, "IL6Ra", "IL10R", "N/A")
-    dysreg_cor_plot_rec(ax[5], CoH_Data_DF_R, "IL6Ra", "TGFB RII", "N/A")
-    dysreg_cor_plot_rec(ax[6], CoH_Data_DF_R, "IL6Ra", "PD_L1", "N/A")
-    dysreg_cor_plot_rec(ax[7], CoH_Data_DF_R, "IL10R", "pSTAT3", "IL10-50ng", CoH_DF)
-    dysreg_cor_plot_rec(ax[8], CoH_Data_DF_R, "IL6Ra", "pSTAT3", "IL10-50ng", CoH_DF)
-    dysreg_cor_plot_rec(ax[9], CoH_Data_DF_R, "IL12RI", "pSTAT4", "Untreated", CoH_DF_B)
+    dysreg_cor_plot_rec(ax[5], CoH_Data_DF_R, "IL6Ra", "PD_L1", "N/A")
+    dysreg_cor_plot_rec(ax[6], CoH_Data_DF_R, "IL10R", "pSTAT3", "IL10-50ng", CoH_DF)
+    dysreg_cor_plot_rec(ax[7], CoH_Data_DF_R, "IL12RI", "pSTAT4", "Untreated", CoH_DF_B)
+
     return f
 
 
@@ -74,10 +73,10 @@ def dysreg_cor_plot_rec(ax, CoH_DF_rec, marker1, marker2, cytokine2, CoH_DF=Fals
     CoH_DF2[marker1] = CoH_DF1[marker1].values
     Healthy_DF = CoH_DF2.loc[CoH_DF2.Status == "BC"]
     BC_DF = CoH_DF2.loc[CoH_DF2.Status == "Healthy"]
-    #print(marker1, marker2)
-    #print(spearmanr(CoH_DF2[marker1], CoH_DF2[marker2]), " Overall")
-    #print(spearmanr(Healthy_DF[marker1], Healthy_DF[marker2]), " Healthy")
-    #print(spearmanr(BC_DF[marker1], BC_DF[marker2]), " BC")
+    print(marker1, marker2)
+    print(spearmanr(CoH_DF2[marker1], CoH_DF2[marker2]), " Overall")
+    print(spearmanr(Healthy_DF[marker1], Healthy_DF[marker2]), " Healthy")
+    print(spearmanr(BC_DF[marker1], BC_DF[marker2]), " BC")
 
     sns.scatterplot(data=CoH_DF2, x=marker1, y=marker2, hue="Status", ax=ax)
     #ax.text(5, np.amax(CoH_DF2[marker2].values) * 1.1, str(spearmanr(CoH_DF2[marker1], CoH_DF2[marker2])[0]) + " Overall Spearman")
