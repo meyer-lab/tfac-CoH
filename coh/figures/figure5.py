@@ -21,7 +21,7 @@ path_here = dirname(dirname(__file__))
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((12, 9), (3, 4), multz={0: 1, 2: 1, 4: 1, 6:1})
+    ax, f = getSetup((36, 27), (3, 4), multz={0: 1, 2: 1, 4: 1, 6:1})
 
     # Add subplot labels
     subplotLabel(ax)
@@ -43,15 +43,16 @@ def makeFigure():
     CoH_Data_DF_R = pd.read_csv(join(path_here, "data/CoH_Rec_DF.csv"))
     CoH_DF = pd.read_csv(join(path_here, "data/CoH_Flow_DF.csv"))
     CoH_DF_B = pd.read_csv(join(path_here, "data/CoH_Flow_DF_Basal.csv"))
-    dysreg_cor_plot_rec(ax[4], CoH_Data_DF_R, "IL6Ra", "IL10R", "N/A")
-    dysreg_cor_plot_rec(ax[5], CoH_Data_DF_R, "IL6Ra", "PD_L1", "N/A")
-    dysreg_cor_plot_rec(ax[6], CoH_Data_DF_R, "IL10R", "pSTAT3", "IL10-50ng", CoH_DF)
-    dysreg_cor_plot_rec(ax[7], CoH_Data_DF_R, "IL12RI", "pSTAT4", "Untreated", CoH_DF_B)
+    #dysreg_cor_plot_rec(ax[4], CoH_Data_DF_R, "IL6Ra", "IL10R", "N/A")
+    #dysreg_cor_plot_rec(ax[5], CoH_Data_DF_R, "IL6Ra", "PD_L1", "N/A")
+    #dysreg_cor_plot_rec(ax[6], CoH_Data_DF_R, "IL10R", "pSTAT3", "IL10-50ng", CoH_DF, cells=["CD8 Naive", "CD8 TCM", "CD8 TEM", "CD8 TEMRA"])
+    #dysreg_cor_plot_rec(ax[7], CoH_Data_DF_R, "IL12RI", "pSTAT4", "Untreated", CoH_DF_B)
 
+    
     return f
 
 
-def dysreg_cor_plot_rec(ax, CoH_DF_rec, marker1, marker2, cytokine2, CoH_DF=False):
+def dysreg_cor_plot_rec(ax, CoH_DF_rec, marker1, marker2, cytokine2, CoH_DF=False, cells=False):
     """Plots possible correlation of dysregulation"""
     status_dict = get_status_dict_rec()
     CoH_DF1 = CoH_DF_rec.loc[(CoH_DF_rec.Marker == marker1)]
@@ -63,11 +64,15 @@ def dysreg_cor_plot_rec(ax, CoH_DF_rec, marker1, marker2, cytokine2, CoH_DF=Fals
         CoH_DF2 = CoH_DF.loc[(CoH_DF.Treatment == cytokine2) & (CoH_DF.Marker == marker2)]
     CoH_DF1 = CoH_DF1.groupby(["Cell", "Patient", "Marker"]).Mean.mean().reset_index()
     CoH_DF1["Status"] = CoH_DF1.replace({"Patient": status_dict}).Patient.values
+    if type(cells) == list:
+        CoH_DF1 = CoH_DF1.loc[CoH_DF1.Cell.isin(cells)]
     CoH_DF1 = CoH_DF1.drop(["Marker", "Cell"], axis=1).rename({"Mean": marker1}, axis=1)
     
 
     CoH_DF2 = CoH_DF2.groupby(["Cell", "Patient", "Marker"]).Mean.mean().reset_index()
     CoH_DF2["Status"] = CoH_DF2.replace({"Patient": status_dict}).Patient.values
+    if type(cells) == list:
+        CoH_DF2 = CoH_DF2.loc[CoH_DF2.Cell.isin(cells)]
     CoH_DF2 = CoH_DF2.drop(["Marker", "Cell"], axis=1).rename({"Mean": marker2}, axis=1)
     
     CoH_DF2[marker1] = CoH_DF1[marker1].values
@@ -79,10 +84,15 @@ def dysreg_cor_plot_rec(ax, CoH_DF_rec, marker1, marker2, cytokine2, CoH_DF=Fals
     print(spearmanr(BC_DF[marker1], BC_DF[marker2]), " BC")
 
     sns.scatterplot(data=CoH_DF2, x=marker1, y=marker2, hue="Status", ax=ax)
-    #ax.text(5, np.amax(CoH_DF2[marker2].values) * 1.1, str(spearmanr(CoH_DF2[marker1], CoH_DF2[marker2])[0]) + " Overall Spearman")
-    #ax.text(5, np.amax(CoH_DF2[marker2].values) * 1, str(spearmanr(Healthy_DF[marker1], Healthy_DF[marker2])[0]) + " Healthy Spearman")
-    #ax.text(5, np.amax(CoH_DF2[marker2].values) * 0.9, str(spearmanr(BC_DF[marker1], BC_DF[marker2])[0]) + " BC Spearman")
     if type(CoH_DF) != pd.DataFrame:
         ax.set(xlabel=marker1, ylabel=marker2)
     else:
         ax.set(xlabel=marker1, ylabel=marker2 + " response to " + cytokine2)
+
+
+def rec_bar(ax, CoH_DF_R, cells, marker):
+    """Use for seeing which patients are diverging, not actual figure"""
+    CoH_DF_R = CoH_DF_R.groupby(["Cell", "Patient", "Marker"]).Mean.mean().reset_index()
+    CoH_DF_R = CoH_DF_R.loc[(CoH_DF_R.Cell.isin(cells)) & (CoH_DF_R.Marker == marker)]
+    sns.barplot(data=CoH_DF_R, x="Patient", y="Mean", ax=ax)
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
