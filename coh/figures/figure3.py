@@ -25,14 +25,14 @@ def makeFigure():
     # Add subplot labels
     subplotLabel(ax)
     #make_flow_df()
-    #make_CoH_Tensor(basal=False)
+    make_CoH_Tensor(basal=True)
     ax[0].axis("off")
 
     num_comps = 12
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
     cp_normalize(tFacAllM)
-    #make_alldata_DF(CoH_Data, PCA=False, basal=True)
+    # make_alldata_DF(CoH_Data, PCA=False, basal=False)
 
     matrix_DF = pd.read_csv(join(path_here, "data/CoH_Matrix.csv"), index_col=0).dropna(axis='columns').set_index("Patient")
     BC_status_plot(15, CoH_Data, matrix_DF, ax[1], abund=False)

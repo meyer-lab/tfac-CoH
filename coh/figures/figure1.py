@@ -63,20 +63,20 @@ def fullHeatMap(ax, respDF, markers, makeDF=True):
         "Patient 69",
         "Patient 70",
         "Patient 79",
-        "Patient 4",
-        "Patient 8",
-        "Patient 406",
-        "Patient 10-T1",
-        "Patient 10-T2",
-        "Patient 10-T3",
-        "Patient 15-T1",
-        "Patient 15-T2",
-        "Patient 15-T3",
         "Patient 19186-2",
         "Patient 19186-3",
+        "Patient 19186-4",
+        "Patient 19186-8",
+        "Patient 19186-10-T1",
+        "Patient 19186-10-T2",
+        "Patient 19186-10-T3",
+        "Patient 19186-15-T1",
+        "Patient 19186-15-T2",
+        "Patient 19186-15-T3",
         "Patient 19186-14",
         "Patient 21368-3",
-        "Patient 21368-4"]
+        "Patient 21368-4"
+        "Patient 406"]
     if makeDF:
         for cell in respDFhm.Cell.unique():
             print(cell)

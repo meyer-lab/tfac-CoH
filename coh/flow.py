@@ -168,20 +168,20 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
         "Patient 69",
         "Patient 70",
         "Patient 79",
-        "Patient 4",
-        "Patient 8",
-        "Patient 406",
-        "Patient 10-T1",
-        "Patient 10-T2",
-        "Patient 10-T3",
-        "Patient 15-T1",
-        "Patient 15-T2",
-        "Patient 15-T3",
         "Patient 19186-2",
         "Patient 19186-3",
+        "Patient 19186-4",
+        "Patient 19186-8",
+        "Patient 19186-10-T1",
+        "Patient 19186-10-T2",
+        "Patient 19186-10-T3",
+        "Patient 19186-15-T1",
+        "Patient 19186-15-T2",
+        "Patient 19186-15-T3",
         "Patient 19186-14",
         "Patient 21368-3",
-        "Patient 21368-4"]
+        "Patient 21368-4",
+        "Patient 406",]
     times = ["15min", "60min"]
     treatments = ["Untreated",
                   "IFNg-1ng",
@@ -355,14 +355,14 @@ def make_CoH_Tensor_abund():
 
 def make_flow_sc_dataframe():
     """Compiles data for all populations for all patients into .nc"""
-    patients = ['Patient 10-T1', 'Patient 10-T2', 'Patient 10-T3', 'Patient 15-T1',
-                'Patient 15-T2', 'Patient 15-T3', 'Patient 19186-14', 'Patient 19186-2',
+    patients = ['Patient 19186-10-T1', 'Patient 19186-10-T2', 'Patient 19186-10-T3', 'Patient 19186-15-T1',
+                'Patient 19186-15-T2', 'Patient 19186-15-T3', 'Patient 19186-14', 'Patient 19186-2',
                 'Patient 19186-3', 'Patient 21368-3', 'Patient 21368-4', 'Patient 26',
-                'Patient 28', 'Patient 30', 'Patient 34', 'Patient 35', 'Patient 4',
+                'Patient 28', 'Patient 30', 'Patient 34', 'Patient 35', 'Patient 19186-4',
                 'Patient 406', 'Patient 43', 'Patient 44', 'Patient 45', 'Patient 52',
                 'Patient 52A', 'Patient 54', 'Patient 56', 'Patient 58', 'Patient 60',
                 'Patient 61', 'Patient 62', 'Patient 63', 'Patient 66', 'Patient 68',
-                'Patient 69', 'Patient 70', 'Patient 79', 'Patient 8']
+                'Patient 69', 'Patient 70', 'Patient 79', 'Patient 19186-8']
     times = ["15min"]
     treatments = ['Untreated', 'IFNg-50ng', 'IL10-50ng', 'IL4-50ng', 'IL2-50ng', 'IL6-50ng']
     cell_types = ["T", "CD16 NK", "CD8+", "CD4+", "CD4-/CD8-", "Treg", "Treg 1", "Treg 2", "Treg 3", "CD8 TEM", "CD8 TCM", "CD8 Naive", "CD8 TEMRA",
