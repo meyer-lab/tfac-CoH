@@ -192,7 +192,7 @@ def make_allrec_DF(RecArray):
                 uniqueDF = patientDF.loc[(patientDF.Marker == marker) & (patientDF.Cell == cell)]
                 patientRow[marker + "_" + cell] = uniqueDF.value.values
         PCAdf = pd.concat([PCAdf, patientRow])
-    PCAdf.to_csv(path_here + "/data/CoH_Matrix_Rec.csv")
+    PCAdf.to_csv(path_here + "/coh/data/CoH_Matrix_Rec.csv")
 
 
 def plot_PCA(ax):
