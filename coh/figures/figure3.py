@@ -25,27 +25,14 @@ def makeFigure():
     # Add subplot labels
     subplotLabel(ax)
     #make_flow_df()
-    #make_CoH_Tensor(basal=False)
+    make_CoH_Tensor(basal=True)
     ax[0].axis("off")
-    gates = pd.read_csv(join(path_here, "data/CoH_Flow_Gates_Receptors.csv"), index_col=0)
-    print(gates)
-    gates = gates.replace({"Patient": rename_dict})
-    print(gates)
-    gates.to_csv(join(path_here, "data/CoH_Flow_Gates_Receptors.csv"))
-
-    gates = pd.read_csv(join(path_here, "data/CoH_Flow_Gates.csv"), index_col=0)
-    print(gates)
-    gates = gates.replace({"Patient": rename_dict})
-    print(gates)
-    gates.to_csv(join(path_here, "data/CoH_Flow_Gates.csv"))
-
-    """
 
     num_comps = 12
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
     cp_normalize(tFacAllM)
-    #make_alldata_DF(CoH_Data, PCA=False, basal=True)
+    # make_alldata_DF(CoH_Data, PCA=False, basal=False)
 
     matrix_DF = pd.read_csv(join(path_here, "data/CoH_Matrix.csv"), index_col=0).dropna(axis='columns').set_index("Patient")
     BC_status_plot(15, CoH_Data, matrix_DF, ax[1], abund=False)
@@ -63,7 +50,6 @@ def makeFigure():
     CoH_LogReg_plot(ax[6], tFacAllM_B, CoH_Data_B, num_comps)
     CoH_Scat_Plot(ax[7], tFacAllM_B, CoH_Data_B, "Patient", numComps=num_comps, plot_comps=[2, 4])
     plot_tFac_CoH(ax[8], tFacAllM_B, CoH_Data_B, "Marker", numComps=num_comps, cbar=False)
-    """
 
     return f
 
@@ -87,13 +73,3 @@ def CoH_Scat_Plot(ax, tFac, CoH_Array, mode, numComps, plot_comps):
     else:
         sns.scatterplot(data=tFacDF, x=plot_comps[0], y=plot_comps[1], ax=ax)
     ax.set(xlabel="Component " + str(plot_comps[0]), ylabel="Component " + str(plot_comps[1]))
-
-
-rename_dict = {"Patient 4": "Patient 19186-4",
-"Patient 8": "Patient 19186-8",
-"Patient 10-T1": "Patient 19186-10-T1",
-"Patient 10-T2": "Patient 19186-10-T2",
-"Patient 10-T3": "Patient 19186-10-T3",
-"Patient 15-T1": "Patient 19186-15-T1",
-"Patient 15-T2": "Patient 19186-15-T2",
-"Patient 15-T3": "Patient 19186-15-T3"}

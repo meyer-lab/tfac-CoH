@@ -25,10 +25,10 @@ def makeFigure():
     # Add subplot labels
     subplotLabel(ax)
     # make_flow_df(foldChange=True)
-    #make_CoH_Tensor(just_signal=True, foldChange=True)
+    # make_CoH_Tensor(just_signal=True, foldChange=True)
     num_comps = 12
 
-    # make_alldata_DF(CoH_Data, PCA=False, foldChange=True)
+    #make_alldata_DF(CoH_Data, PCA=False, foldChange=True)
     CoH_DF = pd.read_csv(join(path_here, "data/CoH_Flow_DF.csv"))
     BC_scatter(ax[0], CoH_DF, "pSTAT3", "IL10-50ng")
     BC_scatter(ax[1], CoH_DF, "pSTAT5", "IL2-50ng")
@@ -76,3 +76,11 @@ def dysreg_cor_plot(ax, CoH_DF, cytokine1, marker1, cytokine2, marker2, CoH_DF_B
     #ax.text(5, np.amax(CoH_DF2[marker2].values) * 1, str(spearmanr(Healthy_DF[marker1], Healthy_DF[marker2])[0]) + " Healthy Spearman")
     #ax.text(5, np.amax(CoH_DF2[marker2].values) * 0.9, str(spearmanr(BC_DF[marker1], BC_DF[marker2])[0]) + " BC Spearman")
     ax.set(xlabel=marker1 + " response to " + cytokine1, ylabel=marker2 + " response to " + cytokine2)
+
+
+def resp_bar(ax, CoH_DF, cells, marker):
+    """Use for seeing which patients are diverging, not actual figure"""
+    CoH_DF = CoH_DF.groupby(["Cell", "Patient", "Marker"]).Mean.mean().reset_index()
+    CoH_DF = CoH_DF.loc[(CoH_DF.Cell.isin(cells)) & (CoH_DF.Marker == marker)]
+    sns.barplot(data=CoH_DF, x="Patient", y="Mean", ax=ax)
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")

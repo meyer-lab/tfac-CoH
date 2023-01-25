@@ -172,7 +172,6 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
         "Patient 19186-3",
         "Patient 19186-4",
         "Patient 19186-8",
-        "Patient 19186-406",
         "Patient 19186-10-T1",
         "Patient 19186-10-T2",
         "Patient 19186-10-T3",
@@ -181,7 +180,8 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
         "Patient 19186-15-T3",
         "Patient 19186-14",
         "Patient 21368-3",
-        "Patient 21368-4"]
+        "Patient 21368-4",
+        "Patient 406",]
     times = ["15min", "60min"]
     treatments = ["Untreated",
                   "IFNg-1ng",
