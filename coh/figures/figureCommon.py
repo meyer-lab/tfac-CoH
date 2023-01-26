@@ -195,6 +195,49 @@ def BC_scatter_cells(ax, CoH_DF, marker, cytokine, filter=False):
     # add_stat_annotation(ax=ax, data=hist_DF, x="Cell", y="Mean", hue="Status", test='t-test_ind', box_pairs=boxpairs, text_format='star', loc='inside', verbose=2)
 
 
+def BC_scatter_ligs(ax, CoH_DF, marker, filter=False):
+    """Scatters specific responses"""
+    CoH_DF = CoH_DF.loc[(CoH_DF.Time == "15min")]
+    status_dict = get_status_dict()
+    hist_DF = CoH_DF.loc[(CoH_DF.Marker == marker)]
+    hist_DF = hist_DF.groupby(["Treatment", "Patient", "Marker"]).Mean.mean().reset_index()
+    hist_DF["Status"] = hist_DF.replace({"Patient": status_dict}).Patient.values
+
+
+    filt_treats = []
+    pvals = []
+    for treat in hist_DF.Treatment.unique():
+        BC_samps = hist_DF.loc[(hist_DF.Status == "BC") & (hist_DF.Treatment == treat)].Mean.values
+        H_samps = hist_DF.loc[(hist_DF.Status == "Healthy") & (hist_DF.Treatment == treat)].Mean.values
+        t_res = ttest_ind(BC_samps, H_samps)
+        if t_res[1] < (0.05):
+            filt_treats.append(treat)
+            if t_res[1] < 0.0005:
+                pvals.append("***")
+            elif t_res[1] < 0.005:
+                pvals.append("**")
+            elif t_res[1] < 0.05:
+                pvals.append("*")
+            else:
+                pvals.append("****")
+        else:
+            if not filter:
+                pvals.append("ns")
+    if filter:
+        hist_DF = hist_DF.loc[hist_DF.Treatment.isin(filt_treats)]
+
+    sns.boxplot(data=hist_DF, y="Mean", x="Treatment", hue="Status", ax=ax)
+    ax.set(title=marker + " Response", ylabel=marker, xlabel="Status")
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
+    boxpairs = []
+    for treat in hist_DF.Treatment.unique():
+        boxpairs.append([(treat, "Healthy"), (treat, "BC")])
+    if filter:
+        add_stat_annotation(ax=ax, data=hist_DF, x="Treatment", y="Mean", hue="Status", box_pairs=boxpairs, text_annot_custom=pvals, perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(filt_treats)), verbose=0)
+    else:
+        add_stat_annotation(ax=ax, data=hist_DF, x="Treatment", y="Mean", hue="Status", box_pairs=boxpairs, text_annot_custom=pvals, perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(hist_DF.Treatment.unique())), verbose=0)
+
+
 def BC_scatter_cells_rec(ax, CoH_DF, marker, filter=False):
     """Scatters specific responses"""
     status_dict = get_status_dict_rec()

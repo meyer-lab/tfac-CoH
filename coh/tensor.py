@@ -130,7 +130,7 @@ def plot_tFac_CoH(ax, tFac, CoH_Array, mode, numComps=3, nn=False, rec=False, cb
                              "Patient 19186-14",
                              "Patient 21368-3",
                              "Patient 21368-4",
-                             "Patient 406",]]
+                             "Patient 406"]]
     if nn:
         sns.heatmap(data=tFacDF, ax=ax, vmin=0, vmax=1)
     else:
