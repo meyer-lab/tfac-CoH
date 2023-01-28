@@ -32,7 +32,7 @@ def makeFigure():
     CoH_DF_B = pd.read_csv(join(path_here, "data/CoH_Flow_DF_Basal.csv"))
     CoH_Data_DF_R = pd.read_csv(join(path_here, "data/CoH_Rec_DF.csv"))
     #dysreg_cor_hm(CoH_DF, CoH_DF_B, ["pSTAT3", "pSTAT5"], ["IL10-50ng", "IL2-50ng"], ["pSmad1-2", "pSTAT4"], ax=ax[0])
-    f = dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_Data_DF_R, ["pSTAT3", "pSTAT5"], ["IL10-50ng", "IL2-50ng"], ["pSmad1-2", "pSTAT4"], ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI"], ax=ax[0], cells=["CD8 Naive", "CD8 TCM", "CD8 TEM", "CD8 TEMRA"])
+    f = dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_Data_DF_R, ["pSTAT3", "pSTAT5", "pSmad1-2"], ["IL10-50ng", "IL2-50ng", "TGFB-50ng"], ["pSmad1-2", "pSTAT4"], ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI"], cells=["CD8 Naive", "CD8 TCM", "CD8 TEM", "CD8 TEMRA"])
     #dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_Data_DF_R, ["pSTAT5", "pSTAT3", "pSmad1-2", "pSTAT3", "pSTAT1"], ["IL2-50ng", "IL6-50ng", "TGFB-50ng", "IL10-50ng", "IFNg-50ng"], ["pSmad1-2"], ["IL2RB", "IL6Ra", "TGFB RII", "IL10R", "IFNg R1"], ax=ax[0])
 
     return f
@@ -64,7 +64,7 @@ def dysreg_cor_hm(CoH_DF, CoH_DF_B, markers_dysreg, cyto_dysreg, markers_dysreg_
     return f
 
 
-def dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_DF_R, markers_dysreg, cyto_dysreg, markers_dysreg_B, markers_dysreg_R, ax, cells=False):
+def dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_DF_R, markers_dysreg, cyto_dysreg, markers_dysreg_B, markers_dysreg_R, cells=False):
     """Plots possible correlation of dysregulation"""
     CoH_DF = CoH_DF.loc[CoH_DF.Patient != "Patient 406"]
     CoH_DF_B = CoH_DF_B.loc[CoH_DF_B.Patient != "Patient 406"]

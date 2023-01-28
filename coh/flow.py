@@ -282,15 +282,17 @@ def make_CoH_Tensor(subtract=True, just_signal=False, foldChange=False, basal=Fa
     if just_signal or foldChange or basal:
         markers = np.array(["pSTAT1", "pSTAT3", "pSTAT4", "pSTAT5", "pSTAT6", "pSmad1-2"])
         CoH_DF = CoH_DF.loc[CoH_DF.Marker.isin(markers)]
-        markers = CoH_DF.Marker.unique()
-    else:
-        markers = CoH_DF.Marker.unique()
     
+    if not basal:
+        treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng"])
+        CoH_DF = CoH_DF.loc[CoH_DF.Treatment.isin(treatments)]
+
     CoH_DF = CoH_DF.groupby(["Patient", "Time", "Treatment", "Cell", "Marker"], sort=False).Mean.mean().reset_index()
     patients = CoH_DF.Patient.unique()
     times = CoH_DF.Time.unique()
     treatments = CoH_DF.Treatment.unique()
     cells = CoH_DF.Cell.unique()
+    markers = CoH_DF.Marker.unique()
 
     tensor = np.empty((len(patients), len(times), len(treatments), len(cells), len(markers)))
     tensor[:] = np.nan

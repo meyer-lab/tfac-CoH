@@ -21,7 +21,7 @@ path_here = dirname(dirname(__file__))
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((12, 9), (3, 4), multz={0: 1, 2: 1, 4: 1, 6:1})
+    ax, f = getSetup((12, 6), (2, 4), multz={0: 1, 2: 1, 4: 1, 6:1})
 
     # Add subplot labels
     subplotLabel(ax)
@@ -40,14 +40,15 @@ def makeFigure():
     for i, rec in enumerate(np.array(["TGFB RII", "PD_L1", "IL6Ra", "IL10R"])):
         BC_scatter_cells_rec(ax[i], CoH_Data_DF_R, rec, filter=filt_list[i])
 
+    """
     CoH_DF = pd.read_csv(join(path_here, "data/CoH_Flow_DF.csv"))
     CoH_DF_B = pd.read_csv(join(path_here, "data/CoH_Flow_DF_Basal.csv"))
     dysreg_cor_plot_rec(ax[4], CoH_Data_DF_R, "IL6Ra", "IL10R", "N/A")
     dysreg_cor_plot_rec(ax[5], CoH_Data_DF_R, "IL6Ra", "PD_L1", "N/A")
     dysreg_cor_plot_rec(ax[6], CoH_Data_DF_R, "IL10R", "pSTAT3", "IL10-50ng", CoH_DF, cells=["CD8 Naive", "CD8 TCM", "CD8 TEM", "CD8 TEMRA"])
     dysreg_cor_plot_rec(ax[7], CoH_Data_DF_R, "IL12RI", "pSTAT4", "Untreated", CoH_DF_B)
+    """
 
-    
     return f
 
 
