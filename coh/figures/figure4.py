@@ -37,7 +37,7 @@ def makeFigure():
     BC_scatter_cells(ax[5], CoH_DF, "pSmad1-2", "TGFB-50ng", filter=False)
     CoH_DF_B = pd.read_csv(join(path_here, "data/CoH_Flow_DF_Basal.csv"))
     BC_scatter_cells(ax[6], CoH_DF_B, "pSmad1-2", "Untreated", filter=True)
-    BC_scatter_cells(ax[7], CoH_DF_B, "pSTAT4", "Untreated", filter=True)
+    BC_scatter_cells(ax[7], CoH_DF_B, "pSTAT1", "Untreated", filter=True)
     """
     dysreg_cor_plot(ax[6], CoH_DF, "IL10-50ng", "pSTAT3", "IL2-50ng", "pSTAT5")
     dysreg_cor_plot(ax[7], CoH_DF, "IL10-50ng", "pSTAT3", "Untreated", "pSmad1-2", CoH_DF_B)

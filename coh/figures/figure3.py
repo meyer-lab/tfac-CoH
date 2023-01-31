@@ -46,7 +46,7 @@ def makeFigure():
     cp_normalize(tFacAllM_B)
     # make_alldata_DF(CoH_Data_B, PCA=False, basal=True)
     matrix_DF_B = pd.read_csv(join(path_here, "data/CoH_Matrix_Basal.csv"), index_col=0).dropna(axis='columns').set_index("Patient")
-    BC_status_plot(12, CoH_Data_B, matrix_DF_B, ax[5], abund=False, basal=True)
+    BC_status_plot(11, CoH_Data_B, matrix_DF_B, ax[5], abund=False, basal=True)
     CoH_LogReg_plot(ax[6], tFacAllM_B, CoH_Data_B, num_comps)
     CoH_Scat_Plot(ax[7], tFacAllM_B, CoH_Data_B, "Patient", numComps=num_comps, plot_comps=[2, 4])
     plot_tFac_CoH(ax[8], tFacAllM_B, CoH_Data_B, "Marker", numComps=num_comps, cbar=False)
