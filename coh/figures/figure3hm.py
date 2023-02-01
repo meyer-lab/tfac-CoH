@@ -22,7 +22,7 @@ def makeFigure():
     # Add subplot labels
     # subplotLabel(ax)
 
-    num_comps = 12
+    num_comps = 10
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
     cp_normalize(tFacAllM)

@@ -28,6 +28,8 @@ def makeFigure():
 
     marker = "pSTAT3"
     CoH_data = pd.read_csv(join(path_here, "data/CoH_Flow_DF.csv"))
+    treatments = ["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng", "Untreated"]
+    CoH_data = CoH_data.loc[CoH_data.Treatment.isin(treatments)]
     fullHeatMap(ax[1], CoH_data, [marker], makeDF=False)
     response_ligand_scatter(ax[2], CoH_data, "pSTAT5")
     response_cell_scatter(ax[3], CoH_data, "pSTAT6", "IL4-50ng")
@@ -85,16 +87,16 @@ def fullHeatMap(ax, respDF, markers, makeDF=True):
                 row["Patient/Cell"] = [patient + " - " + str(cell)]
                 for treatment in respDFhm.Treatment.unique():
                     normMax = respDFhm.loc[(respDFhm.Patient == patient) & (respDFhm.Cell == cell)].Mean.max()
-                    for time in respDF.Time.unique():
+                    for time in ["15min"]:
                         for marker in markers:
                             entry = respDFhm.loc[(respDFhm.Patient == patient) & (respDFhm.Treatment == treatment) & (respDFhm.Cell == cell)
                                                  & (respDFhm.Time == time) & (respDFhm.Marker == marker)].Mean.values / normMax
                             if np.isnan(entry):
-                                row[treatment + " - " + str(time) + " hrs"] = np.nan
+                                row[treatment + " - " + str(time)] = np.nan
                             elif entry.size < 1:
-                                row[treatment + " - " + str(time) + " hrs"] = np.nan
+                                row[treatment + " - " + str(time)] = np.nan
                             else:
-                                row[treatment + " - " + str(time) + " hrs"] = entry
+                                row[treatment + " - " + str(time)] = entry
                 heatmapDF = pd.concat([heatmapDF, row])
         heatmapDF = heatmapDF.set_index("Patient/Cell")
         heatmapDF.to_csv(join(path_here, "data/CoH_Heatmap_DF.csv"))
