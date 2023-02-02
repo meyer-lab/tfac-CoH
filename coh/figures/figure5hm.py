@@ -31,9 +31,17 @@ def makeFigure():
     CoH_DF = pd.read_csv(join(path_here, "data/CoH_Flow_DF.csv"))
     CoH_DF_B = pd.read_csv(join(path_here, "data/CoH_Flow_DF_Basal.csv"))
     CoH_Data_DF_R = pd.read_csv(join(path_here, "data/CoH_Rec_DF.csv"))
-    #dysreg_cor_hm(CoH_DF, CoH_DF_B, ["pSTAT3", "pSTAT5"], ["IL10-50ng", "IL2-50ng"], ["pSmad1-2", "pSTAT4"], ax=ax[0])
-    f = dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_Data_DF_R, ["pSTAT3", "pSTAT5", "pSmad1-2"], ["IL10-50ng", "IL2-50ng", "TGFB-50ng"], ["pSmad1-2", "pSTAT4"], ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI"], cells=["CD8 Naive", "CD8 TCM", "CD8 TEM", "CD8 TEMRA"])
-    #dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_Data_DF_R, ["pSTAT5", "pSTAT3", "pSmad1-2", "pSTAT3", "pSTAT1"], ["IL2-50ng", "IL6-50ng", "TGFB-50ng", "IL10-50ng", "IFNg-50ng"], ["pSmad1-2"], ["IL2RB", "IL6Ra", "TGFB RII", "IL10R", "IFNg R1"], ax=ax[0])
+
+    # CD8
+    # f = dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_Data_DF_R, ["pSTAT3", "pSTAT5", "pSmad1-2"], ["IL10-50ng", "IL2-50ng", "TGFB-50ng"], ["pSmad1-2", "pSTAT4"], ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI"], cells=["CD8 Naive", "CD8 TCM", "CD8 TEM", "CD8 TEMRA"])
+    # CD4
+    # f = dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_Data_DF_R, ["pSTAT3", "pSmad1-2"], ["IL10-50ng", "TGFB-50ng"], ["pSmad1-2", "pSTAT4", "pSTAT1"], ["TGFB RII", "IL10R", "IL6Ra", "IL12RI"], cells=["CD4+"])
+    # Bcell
+    # f = dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_Data_DF_R, ["pSTAT3", "pSTAT5", "pSmad1-2"], ["IL10-50ng", "IL2-50ng", "TGFB-50ng"], ["pSmad1-2", "pSTAT4"], ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI"], cells=["CD20 B"])
+    # Treg
+    #f = dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_Data_DF_R, ["pSTAT3", "pSTAT5", "pSmad1-2"], ["IL10-50ng", "IL2-50ng", "TGFB-50ng"], ["pSmad1-2", "pSTAT4", "pSTAT1"], ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI"], cells=["Treg"])
+    # Monocytes
+    f = dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_Data_DF_R, ["pSTAT3", "pSTAT5", "pSmad1-2"], ["IL10-50ng", "IL2-50ng", "TGFB-50ng"], ["pSmad1-2", "pSTAT4"], ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI", "CD33"], cells=["Classical Monocyte"])
 
     return f
 
@@ -107,5 +115,6 @@ def dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_DF_R, markers_dysreg, cyto_dysreg, mar
 
     print(dysreg_DF)
     # f = sns.heatmap(data=dysreg_DF.corr(), vmin=-1, vmax=1, annot=True, ax=ax)
-    f = sns.clustermap(data=dysreg_DF.corr(), robust=True, vmin=-1, vmax=1, row_cluster=True, col_cluster=True, annot=True, figsize=(8, 8))
+    cmap = sns.color_palette("vlag", as_cmap=True)
+    f = sns.clustermap(data=dysreg_DF.corr(), robust=True, vmin=-1, vmax=1, row_cluster=True, col_cluster=True, annot=True, cmap=cmap, figsize=(8, 8))
     return f

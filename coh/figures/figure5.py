@@ -28,16 +28,13 @@ def makeFigure():
     #make_flow_df_rec()
     #make_CoH_Tensor_rec()
 
-    num_comps = 8
-
-    CoH_Data_R = xa.open_dataarray(join(path_here, "data/CoH_Rec.nc"))
     #make_allrec_DF(CoH_Data_R)
     #matrix_DF_R = pd.read_csv(join(path_here, "data/CoH_Matrix_Rec.csv"), index_col=0).dropna(axis='columns').set_index("Patient")
     #BC_status_plot_rec(20, CoH_Data_R, matrix_DF_R, ax[1])
     CoH_Data_DF_R = pd.read_csv(join(path_here, "data/CoH_Rec_DF.csv"))
-    filt_list = [True, True, True, False]
+    filt_list = [False, True, True, True]
 
-    for i, rec in enumerate(np.array(["TGFB RII", "PD_L1", "IL6Ra", "IL10R"])):
+    for i, rec in enumerate(np.array(["IL10R", "TGFB RII", "PD_L1", "IL6Ra"])):
         BC_scatter_cells_rec(ax[i], CoH_Data_DF_R, rec, filter=filt_list[i])
 
     """
