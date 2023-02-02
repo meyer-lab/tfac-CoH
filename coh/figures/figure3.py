@@ -29,16 +29,16 @@ def makeFigure():
     ax[0].axis("off")
 
     num_comps = 10
-    #CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
-    #tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
-    #cp_normalize(tFacAllM)
+    CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
+    tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
+    cp_normalize(tFacAllM)
     # make_alldata_DF(CoH_Data, PCA=False, basal=False)
 
-    #matrix_DF = pd.read_csv(join(path_here, "data/CoH_Matrix.csv"), index_col=0).dropna(axis='columns').set_index("Patient")
-    #BC_status_plot(11, CoH_Data, matrix_DF, ax[1], abund=False)
-    #CoH_LogReg_plot(ax[2], tFacAllM, CoH_Data, num_comps)
-    #CoH_Scat_Plot(ax[3], tFacAllM, CoH_Data, "Patient", numComps=num_comps, plot_comps=[4, 9])
-    #plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Marker", numComps=num_comps, cbar=False)
+    matrix_DF = pd.read_csv(join(path_here, "data/CoH_Matrix.csv"), index_col=0).dropna(axis='columns').set_index("Patient")
+    BC_status_plot(11, CoH_Data, matrix_DF, ax[1], abund=False)
+    CoH_LogReg_plot(ax[2], tFacAllM, CoH_Data, num_comps)
+    CoH_Scat_Plot(ax[3], tFacAllM, CoH_Data, "Patient", numComps=num_comps, plot_comps=[4, 9])
+    plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Marker", numComps=num_comps, cbar=False)
 
     num_comps = 4
     CoH_Data_B = xa.open_dataarray(join(path_here, "data/CoH_Tensor_DataSet_Basal.nc"))
