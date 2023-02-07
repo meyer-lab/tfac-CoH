@@ -32,7 +32,7 @@ def makeFigure():
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
     cp_normalize(tFacAllM)
-    print(np.count_nonzero(np.isnan(CoH_Data.data)) / CoH_Data.data.size)
+
     # make_alldata_DF(CoH_Data, PCA=False, basal=False)
 
     matrix_DF = pd.read_csv(join(path_here, "data/CoH_Matrix.csv"), index_col=0).dropna(axis='columns').set_index("Patient")

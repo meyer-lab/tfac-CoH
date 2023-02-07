@@ -21,8 +21,8 @@ def makeFigure():
 
     # Add subplot labels
     subplotLabel(ax)
-    make_flow_df(subtract=True, abundance=False, foldChange=True)
-    make_CoH_Tensor(subtract=True, foldChange=True)
+    #make_flow_df(subtract=True, abundance=False, foldChange=True)
+    #make_CoH_Tensor(subtract=True, foldChange=True)
 
     num_comps = 12
 
