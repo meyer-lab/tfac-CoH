@@ -21,8 +21,8 @@ def makeFigure():
 
     # Add subplot labels
     subplotLabel(ax)
-    #make_flow_df(subtract=False, abundance=False)
-    # make_CoH_Tensor(subtract=False)
+    #make_flow_df(subtract=True, abundance=False, foldChange=True)
+    #make_CoH_Tensor(subtract=True, foldChange=True)
 
     num_comps = 12
 
@@ -30,7 +30,7 @@ def makeFigure():
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
     cp_normalize(tFacAllM)
     CoH_LogReg_plot(ax[0], tFacAllM, CoH_Data, num_comps)
-    #R2Xplot(ax[0], CoH_Data.values, compNum=8)
+    R2Xplot(ax[0], CoH_Data.values, compNum=8)
     plot_tFac_CoH(ax[1], tFacAllM, CoH_Data, "Patient", numComps=num_comps, nn=False)
     plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Time", numComps=num_comps, nn=False)
     plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Treatment", numComps=num_comps, nn=False)
