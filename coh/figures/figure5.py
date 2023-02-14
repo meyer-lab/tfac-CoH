@@ -21,7 +21,7 @@ path_here = dirname(dirname(__file__))
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((12, 6), (2, 4), multz={0: 1, 2: 1, 4: 1, 6:1})
+    ax, f = getSetup((12, 6), (2, 3))
 
     # Add subplot labels
     subplotLabel(ax)
@@ -32,9 +32,9 @@ def makeFigure():
     #matrix_DF_R = pd.read_csv(join(path_here, "data/CoH_Matrix_Rec.csv"), index_col=0).dropna(axis='columns').set_index("Patient")
     #BC_status_plot_rec(20, CoH_Data_R, matrix_DF_R, ax[1])
     CoH_Data_DF_R = pd.read_csv(join(path_here, "data/CoH_Rec_DF.csv"))
-    filt_list = [False, True, True, True]
+    filt_list = [False, True, True, True, True, True]
 
-    for i, rec in enumerate(np.array(["IL10R", "TGFB RII", "PD_L1", "IL6Ra"])):
+    for i, rec in enumerate(np.array(["IL10R", "IL2RB", "IL12RI", "TGFB RII", "PD_L1", "IL6Ra"])):
         BC_scatter_cells_rec(ax[i], CoH_Data_DF_R, rec, filter=filt_list[i])
 
     """
