@@ -45,7 +45,9 @@ def makeFigure():
     CoH_Data_B = xa.open_dataarray(join(path_here, "data/CoH_Tensor_DataSet_Basal.nc"))
     tFacAllM_B, _ = factorTensor(CoH_Data_B.values, numComps=num_comps)
     cp_normalize(tFacAllM_B)
+
     # make_alldata_DF(CoH_Data_B, PCA=False, basal=True)
+
     matrix_DF_B = pd.read_csv(join(path_here, "data/CoH_Matrix_Basal.csv"), index_col=0).dropna(axis='columns').set_index("Patient")
     BC_status_plot(11, CoH_Data_B, matrix_DF_B, ax[5], abund=False, basal=True)
     CoH_LogReg_plot(ax[6], tFacAllM_B, CoH_Data_B, num_comps)

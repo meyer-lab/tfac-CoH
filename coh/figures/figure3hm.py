@@ -8,6 +8,7 @@ from tensorpack.cmtf import cp_normalize
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
 from ..tensor import factorTensor
+from ..flow import make_flow_df, make_CoH_Tensor
 import matplotlib.pyplot as plt
 
 plt.rcParams['svg.fonttype'] = 'none'
@@ -21,12 +22,14 @@ def makeFigure():
 
     # Add subplot labels
     # subplotLabel(ax)
+    # make_CoH_Tensor(just_signal=True, basal=False)
 
     num_comps = 10
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
     cp_normalize(tFacAllM)
     f = plot_coh_clust(tFacAllM, CoH_Data, "Patient", numComps=num_comps)
+    
 
     return f
 

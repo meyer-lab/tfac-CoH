@@ -261,12 +261,8 @@ def BC_status_plot_rec(compNum, CoH_Data, matrixDF, ax):
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
     cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
     model = LogisticRegression()
-    print(matrixDF.columns[58])
-    print(matrixDF.columns[239])
     matrixDF = matrixDF.values
     scoresPCA = cross_val_score(model, matrixDF, Donor_CoH_y, cv=cv)
-    print(model.fit(matrixDF, Donor_CoH_y).coef_[0][239])
-    print(scoresPCA)
     start_val = 1
     for i in range(start_val, compNum + 1):
         tFacAllM, _ = factorTensor(CoH_Data.values, numComps=i)
