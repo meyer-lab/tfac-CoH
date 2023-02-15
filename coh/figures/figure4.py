@@ -32,7 +32,7 @@ def makeFigure():
     BC_scatter(ax[0], CoH_DF, "pSTAT3", "IL10-50ng")
     BC_scatter(ax[1], CoH_DF, "pSTAT5", "IL2-50ng")
     BC_scatter(ax[2], CoH_DF, "pSmad1-2", "TGFB-50ng")
-    BC_scatter_cells(ax[3], CoH_DF, "pSTAT3", "IL6-50ng", filter=True)
+    BC_scatter_cells(ax[3], CoH_DF, "pSTAT3", "IL10-50ng", filter=True)
     BC_scatter_cells(ax[4], CoH_DF, "pSTAT5", "IL2-50ng", filter=True)
     BC_scatter_cells(ax[5], CoH_DF, "pSmad1-2", "TGFB-50ng", filter=False)
     CoH_DF_B = pd.read_csv(join(path_here, "data/CoH_Flow_DF_Basal.csv"))

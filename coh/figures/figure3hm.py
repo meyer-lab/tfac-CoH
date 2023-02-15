@@ -22,7 +22,7 @@ def makeFigure():
 
     # Add subplot labels
     # subplotLabel(ax)
-    make_CoH_Tensor(just_signal=True, basal=False)
+    # make_CoH_Tensor(just_signal=True, basal=False)
 
     num_comps = 10
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
