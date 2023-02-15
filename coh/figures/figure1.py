@@ -104,9 +104,7 @@ def fullHeatMap(ax, respDF, respDF_I, markers, makeDF=True):
                             #print(entry)
                             row[treatment + " - " + str(time)] = entry
                 heatmapDF = pd.concat([heatmapDF, row])
-        heatmapDF["Untreated - 15 min"] = 0
         heatmapDF = heatmapDF.set_index("Patient/Cell")
-        heatmapDF.to_csv(join(path_here, "data/CoH_Heatmap_DF.csv"))
     else:
         heatmapDF = pd.read_csv(join(path_here, "data/CoH_Heatmap_DF.csv"), index_col=0)
 
