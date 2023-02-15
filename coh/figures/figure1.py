@@ -30,21 +30,24 @@ def makeFigure():
 
     marker = "pSTAT3"
 
-    CoH_data = make_impute_DF()
+    CoH_data = pd.read_csv(join(path_here, "data/CoH_Flow_DF.csv"))
+    CoH_data_I = make_impute_DF()
     treatments = ["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng", "Untreated"]
     CoH_data = CoH_data.loc[CoH_data.Treatment.isin(treatments)]
-    fullHeatMap(ax[1], CoH_data, [marker], makeDF=False)
+    fullHeatMap(ax[1], CoH_data, CoH_data_I, [marker], makeDF=False)
     response_ligand_scatter(ax[2], CoH_data, "pSTAT5")
     response_cell_scatter(ax[3], CoH_data, "pSTAT6", "IL4-50ng")
 
     return f
 
 
-def fullHeatMap(ax, respDF, markers, makeDF=True):
+def fullHeatMap(ax, respDF, respDF_I, markers, makeDF=True):
     """Plots the various affinities for IL-2 Muteins"""
     heatmapDF = pd.DataFrame()
     respDFhm = copy(respDF)
     respDFhm = respDFhm.groupby(["Patient", "Cell", "Time", "Treatment", "Marker"]).Mean.mean().reset_index()
+    respDFhm_I = copy(respDF_I)
+    respDFhm_I = respDFhm_I.groupby(["Patient", "Cell", "Time", "Treatment", "Marker"]).Mean.mean().reset_index()
     patients = [
         "Patient 26",
         "Patient 28",
@@ -80,7 +83,7 @@ def fullHeatMap(ax, respDF, markers, makeDF=True):
         "Patient 19186-15-T3",
         "Patient 19186-14",
         "Patient 21368-3",
-        "Patient 21368-4"
+        "Patient 21368-4",
         "Patient 406"]
     if makeDF:
         for cell in respDFhm.Cell.unique():
@@ -94,12 +97,12 @@ def fullHeatMap(ax, respDF, markers, makeDF=True):
                         for marker in markers:
                             entry = respDFhm.loc[(respDFhm.Patient == patient) & (respDFhm.Treatment == treatment) & (respDFhm.Cell == cell)
                                                  & (respDFhm.Time == time) & (respDFhm.Marker == marker)].Mean.values / normMax
-                            if np.isnan(entry):
-                                row[treatment + " - " + str(time)] = np.nan
-                            elif entry.size < 1:
-                                row[treatment + " - " + str(time)] = np.nan
-                            else:
-                                row[treatment + " - " + str(time)] = entry
+                            if np.isnan(entry) or entry.size < 1:
+                                entry = respDFhm_I.loc[(respDFhm_I.Patient == patient) & (respDFhm_I.Treatment == treatment) & (respDFhm_I.Cell == cell)
+                                                        & (respDFhm_I.Time == time) & (respDFhm_I.Marker == marker)].Mean.values / normMax
+                            #print(cell, patient, marker, treatment, time)
+                            #print(entry)
+                            row[treatment + " - " + str(time)] = entry
                 heatmapDF = pd.concat([heatmapDF, row])
         heatmapDF["Untreated - 15 min"] = 0
         heatmapDF = heatmapDF.set_index("Patient/Cell")
