@@ -4,7 +4,7 @@ import seaborn as sns
 import pandas as pd
 import os
 from tensorly.decomposition import non_negative_parafac, parafac
-from tensorly.cp_tensor import cp_flip_sign
+from tensorly.cp_tensor import cp_flip_sign, cp_to_tensor
 from tensorpack.cmtf import perform_CP
 from sklearn.linear_model import LogisticRegression
 from sklearn.decomposition import PCA
@@ -15,6 +15,7 @@ from tensorpack.cmtf import cp_normalize
 from sklearn import preprocessing
 from os.path import join
 from statannot import add_stat_annotation
+from tlviz.model_evaluation import core_consistency
 
 path_here = os.path.dirname(os.path.dirname(__file__))
 
@@ -37,6 +38,21 @@ def R2Xplot(ax, tensor, compNum):
 
     ax.scatter(np.arange(1, compNum + 1), varHold, c='k', s=20.)
     ax.set(title="R2X", ylabel="Variance Explained", xlabel="Number of Components", ylim=(0, 1), xlim=(0, compNum + 0.5), xticks=np.arange(0, compNum + 1))
+
+
+def core_cons_plot(ax, tensor, compNum):
+    """Creates R2X plot for non-neg CP tensor decomposition"""
+    ccHold = np.zeros(compNum)
+    for i in range(1, compNum + 1):
+        print(i)
+        tfac, _ = factorTensor(tensor, i)
+        cp_normalize(tfac)
+        X = cp_to_tensor(tfac)
+        CC = core_consistency(tfac, X, True)
+        ccHold[i - 1] = CC / 100
+
+    ax.scatter(np.arange(1, compNum + 1), ccHold, c='k', s=20.)
+    ax.set(title="Core Consistency", ylabel="Core Consistency", xlabel="Number of Components", ylim=(0, 1), xlim=(0, compNum + 0.5), xticks=np.arange(0, compNum + 1))
 
 
 def calcR2X(tensorIn, tensorFac):
