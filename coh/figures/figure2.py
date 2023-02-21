@@ -10,7 +10,7 @@ from tensorpack.cmtf import cp_normalize, perform_CP
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
 from ..flow import make_flow_df, make_CoH_Tensor, make_CoH_Tensor_abund
-from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH
+from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH, core_cons_plot
 
 path_here = dirname(dirname(__file__))
 
@@ -32,6 +32,7 @@ def makeFigure():
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
     cp_normalize(tFacAllM)
     R2Xplot(ax[1], CoH_Data.values, compNum=15)
+    #core_cons_plot(ax[1], CoH_Data.values, compNum=11)
     plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Patient", numComps=num_comps, cbar=False)
     plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Time", numComps=num_comps, cbar=False)
     plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Treatment", numComps=num_comps, cbar=False)
