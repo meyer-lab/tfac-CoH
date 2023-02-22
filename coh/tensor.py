@@ -16,6 +16,7 @@ from sklearn import preprocessing
 from os.path import join
 from statannot import add_stat_annotation
 from tlviz.model_evaluation import core_consistency
+from copy import copy
 
 path_here = os.path.dirname(os.path.dirname(__file__))
 
@@ -43,12 +44,16 @@ def R2Xplot(ax, tensor, compNum):
 def core_cons_plot(ax, tensor, compNum):
     """Creates R2X plot for non-neg CP tensor decomposition"""
     ccHold = np.zeros(compNum)
+    tfac, _ = factorTensor(tensor, 1)
+    X_I = cp_to_tensor(tfac)
+    X = tensor
+    X[np.isnan(X)] = X_I[np.isnan(X)]
     for i in range(1, compNum + 1):
         print(i)
-        tfac, _ = factorTensor(tensor, i)
-        cp_normalize(tfac)
-        X = cp_to_tensor(tfac)
+        tfac, _ = factorTensor(X, i)
+        tfac = cp_normalize(tfac)
         CC = core_consistency(tfac, X, True)
+        print(CC)
         ccHold[i - 1] = CC / 100
 
     ax.scatter(np.arange(1, compNum + 1), ccHold, c='k', s=20.)
