@@ -44,7 +44,7 @@ def R2Xplot(ax, tensor, compNum):
 def core_cons_plot(ax, tensor, compNum):
     """Creates R2X plot for non-neg CP tensor decomposition"""
     ccHold = np.zeros(compNum)
-    tfac, _ = factorTensor(tensor, 1)
+    tfac, _ = factorTensor(tensor, 10)
     X_I = cp_to_tensor(tfac)
     X = tensor
     X[np.isnan(X)] = X_I[np.isnan(X)]
