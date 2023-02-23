@@ -7,11 +7,8 @@ import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.stats import spearmanr
-from tensorly.cp_tensor import cp_flip_sign
-from tensorpack.cmtf import cp_normalize, perform_CP
 from .figureCommon import subplotLabel, getSetup, BC_scatter_cells_rec
 from os.path import join, dirname
-from ..flow_rec import make_flow_df_rec, make_CoH_Tensor_rec
 from ..tensor import CoH_LogReg_plot, BC_status_plot_rec, get_status_dict_rec, make_allrec_DF
 
 plt.rcParams['svg.fonttype'] = 'none'

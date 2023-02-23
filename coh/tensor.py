@@ -1,30 +1,27 @@
-import tensorly as tl
+from os.path import join, dirname
 import numpy as np
-import seaborn as sns
 import pandas as pd
-import os
-from tensorly.decomposition import non_negative_parafac, parafac
+import tensorly as tl
+import seaborn as sns
 from tensorly.cp_tensor import cp_flip_sign, cp_to_tensor
-from tensorpack.cmtf import perform_CP
+from tensorly.decomposition import parafac
 from sklearn.linear_model import LogisticRegression
 from sklearn.decomposition import PCA
-from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import StratifiedKFold, cross_val_score
-from sklearn.linear_model import LogisticRegression
-from tensorpack.cmtf import cp_normalize
+from tensorpack.cmtf import cp_normalize, calcR2X
 from sklearn import preprocessing
-from os.path import join
-from statannot import add_stat_annotation
+
 from tlviz.model_evaluation import core_consistency
 
-path_here = os.path.dirname(os.path.dirname(__file__))
+path_here = dirname(dirname(__file__))
 
 
 def factorTensor(tensor, numComps):
     """ Takes Tensor, and mask and returns tensor factorized form. """
-    tfac = perform_CP(tensor, numComps, tol=1e-7, maxiter=1000)
-    R2X = tfac.R2X
+    tfac = parafac(np.nan_to_num(tensor), numComps, mask=np.isnan(tensor), verbose=True, svd_mask_repeats=0, linesearch=True)
+    R2X = calcR2X(tensor, tfac)
     tfac = cp_flip_sign(tfac)
+    tfac = cp_normalize(tfac)
     return tfac, R2X
 
 
@@ -46,7 +43,6 @@ def core_cons_plot(ax, tensor, compNum):
     for i in range(1, compNum + 1):
         print(i)
         tfac, _ = factorTensor(tensor, i)
-        cp_normalize(tfac)
         X = cp_to_tensor(tfac)
         CC = core_consistency(tfac, X, True)
         ccHold[i - 1] = CC / 100
@@ -216,8 +212,8 @@ def plot_PCA(ax):
     DF = pd.read_csv(join(path_here, "data/CoH_PCA.csv")).set_index("Patient").drop("Unnamed: 0", axis=1)
     pcaMat = DF.to_numpy()
     pca = PCA(n_components=2)
-    scaler = StandardScaler()
-    pcaMat = scaler.fit_transform(np.nan_2_num(pcaMat))
+    scaler = preprocessing.StandardScaler()
+    pcaMat = scaler.fit_transform(np.nan_to_num(pcaMat))
     scores = pca.fit_transform(pcaMat)
     loadings = pca.components_
 
@@ -231,16 +227,21 @@ def plot_PCA(ax):
     sns.scatterplot(data=loadingsDF, x="Component 1", y="Component 2", hue="Treatment", style="Cell", size="Marker", ax=ax[1])
 
 
+def prediction_model(X, y):
+    cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
+    model = LogisticRegression()
+    scores = cross_val_score(model, X, y, cv=cv)
+    return scores
+
+
 def BC_status_plot(compNum, CoH_Data, matrixDF, ax, abund=False, basal=False):
     """Plot 5 fold CV by # components"""
     accDF = pd.DataFrame()
     status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status.csv"), index_col=0)
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
-    cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
-    model = LogisticRegression()
     if not abund:
         matrixDF = matrixDF.values
-        scoresPCA = cross_val_score(model, matrixDF, Donor_CoH_y, cv=cv)
+        scoresPCA = prediction_model(matrixDF, Donor_CoH_y)
     if basal:
         start_val = 1
     else:
@@ -248,7 +249,6 @@ def BC_status_plot(compNum, CoH_Data, matrixDF, ax, abund=False, basal=False):
     for i in range(start_val, compNum + 1):
         if i != 14:
             tFacAllM, _ = factorTensor(CoH_Data.values, numComps=i)
-            cp_normalize(tFacAllM)
             mode_labels = CoH_Data["Patient"]
             coord = CoH_Data.dims.index("Patient")
             mode_facs = tFacAllM[1][coord]
@@ -260,8 +260,7 @@ def BC_status_plot(compNum, CoH_Data, matrixDF, ax, abund=False, basal=False):
             tFacDF = pd.pivot(tFacDF, index="Component", columns="Patient", values="Component_Val")
             tFacDF = tFacDF[status_DF.Patient]
             TFAC_X = tFacDF.transpose().values
-            model = LogisticRegression()
-            scoresTFAC = cross_val_score(model, TFAC_X, Donor_CoH_y, cv=cv)
+            scoresTFAC = prediction_model(TFAC_X, Donor_CoH_y)
             accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "Tensor Factorization", "Components": [i], "Accuracy (10-fold CV)": np.mean(scoresTFAC)})])
             if not abund:
                 accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "All Data", "Components": [i], "Accuracy (10-fold CV)": np.mean(scoresPCA)})])
@@ -275,14 +274,11 @@ def BC_status_plot_rec(compNum, CoH_Data, matrixDF, ax):
     accDF = pd.DataFrame()
     status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status_Rec.csv"), index_col=0)
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
-    cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
-    model = LogisticRegression()
     matrixDF = matrixDF.values
-    scoresPCA = cross_val_score(model, matrixDF, Donor_CoH_y, cv=cv)
+    scoresPCA = prediction_model(matrixDF, Donor_CoH_y)
     start_val = 1
     for i in range(start_val, compNum + 1):
         tFacAllM, _ = factorTensor(CoH_Data.values, numComps=i)
-        cp_normalize(tFacAllM)
         mode_labels = CoH_Data["Patient"]
         coord = CoH_Data.dims.index("Patient")
         mode_facs = tFacAllM[1][coord]
@@ -294,8 +290,7 @@ def BC_status_plot_rec(compNum, CoH_Data, matrixDF, ax):
         tFacDF = pd.pivot(tFacDF, index="Component", columns="Patient", values="Component_Val")
         tFacDF = tFacDF[status_DF.Patient]
         TFAC_X = tFacDF.transpose().values
-        model = LogisticRegression()
-        scoresTFAC = cross_val_score(model, TFAC_X, Donor_CoH_y, cv=cv)
+        scoresTFAC = prediction_model(TFAC_X, Donor_CoH_y)
         accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "Tensor Factorization", "Components": [i], "Accuracy (10-fold CV)": np.mean(scoresTFAC)})])
         accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "All Data", "Components": [i], "Accuracy (10-fold CV)": np.mean(scoresPCA)})])
     accDF = accDF.reset_index(drop=True)

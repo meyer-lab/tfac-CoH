@@ -5,7 +5,6 @@ import xarray as xa
 import numpy as np
 import seaborn as sns
 import pandas as pd
-from tensorpack.cmtf import cp_normalize
 from .figureCommon import subplotLabel, getSetup, BC_scatter, BC_scatter_cells, BC_scatter_ligs
 from os.path import join, dirname
 from ..flow import make_flow_df, make_CoH_Tensor

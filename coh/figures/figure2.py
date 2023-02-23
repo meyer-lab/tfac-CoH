@@ -2,11 +2,6 @@
 This creates Figure 2, tensor factorization.
 """
 import xarray as xa
-import numpy as np
-import seaborn as sns
-import pandas as pd
-from tensorly.cp_tensor import cp_flip_sign
-from tensorpack.cmtf import cp_normalize, perform_CP
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
 from ..flow import make_flow_df, make_CoH_Tensor, make_CoH_Tensor_abund
@@ -30,7 +25,6 @@ def makeFigure():
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
 
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
-    cp_normalize(tFacAllM)
     R2Xplot(ax[1], CoH_Data.values, compNum=15)
     #core_cons_plot(ax[1], CoH_Data.values, compNum=11)
     plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Patient", numComps=num_comps, cbar=False)
