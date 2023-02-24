@@ -100,8 +100,6 @@ def fullHeatMap(ax, respDF, respDF_I, markers, makeDF=True):
                             if np.isnan(entry) or entry.size < 1:
                                 entry = respDFhm_I.loc[(respDFhm_I.Patient == patient) & (respDFhm_I.Treatment == treatment) & (respDFhm_I.Cell == cell)
                                                         & (respDFhm_I.Marker == marker)].Mean.values / normMax
-                            #print(cell, patient, marker, treatment, time)
-                            #print(entry)
                             row[treatment + " - " + str(time)] = entry
                 heatmapDF = pd.concat([heatmapDF, row])
         heatmapDF = heatmapDF.set_index("Patient/Cell")
