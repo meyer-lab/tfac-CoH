@@ -47,7 +47,7 @@ def fullHeatMap(ax, respDF, respDF_I, markers, makeDF=True):
     respDFhm = copy(respDF)
     respDFhm = respDFhm.groupby(["Patient", "Cell", "Time", "Treatment", "Marker"]).Mean.mean().reset_index()
     respDFhm_I = copy(respDF_I)
-    respDFhm_I = respDFhm_I.groupby(["Patient", "Cell", "Time", "Treatment", "Marker"]).Mean.mean().reset_index()
+    respDFhm_I = respDFhm_I.groupby(["Patient", "Cell", "Treatment", "Marker"]).Mean.mean().reset_index()
     patients = [
         "Patient 26",
         "Patient 28",
@@ -99,9 +99,7 @@ def fullHeatMap(ax, respDF, respDF_I, markers, makeDF=True):
                                                  & (respDFhm.Time == time) & (respDFhm.Marker == marker)].Mean.values / normMax
                             if np.isnan(entry) or entry.size < 1:
                                 entry = respDFhm_I.loc[(respDFhm_I.Patient == patient) & (respDFhm_I.Treatment == treatment) & (respDFhm_I.Cell == cell)
-                                                        & (respDFhm_I.Time == time) & (respDFhm_I.Marker == marker)].Mean.values / normMax
-                            #print(cell, patient, marker, treatment, time)
-                            #print(entry)
+                                                        & (respDFhm_I.Marker == marker)].Mean.values / normMax
                             row[treatment + " - " + str(time)] = entry
                 heatmapDF = pd.concat([heatmapDF, row])
         heatmapDF = heatmapDF.set_index("Patient/Cell")
