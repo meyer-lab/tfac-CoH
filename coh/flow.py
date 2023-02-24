@@ -279,6 +279,8 @@ def make_CoH_Tensor(subtract=True, just_signal=False, foldChange=False, basal=Fa
     else:
         CoH_DF = pd.read_csv(join(path_here, "coh/data/NN_CoH_Flow_DF.csv"))
 
+    CoH_DF = CoH_DF.loc[CoH_DF.Time == "15min"]
+
     if just_signal or foldChange or basal:
         markers = np.array(["pSTAT1", "pSTAT3", "pSTAT4", "pSTAT5", "pSTAT6", "pSmad1-2"])
         CoH_DF = CoH_DF.loc[CoH_DF.Marker.isin(markers)]
@@ -289,24 +291,24 @@ def make_CoH_Tensor(subtract=True, just_signal=False, foldChange=False, basal=Fa
 
     CoH_DF = CoH_DF.groupby(["Patient", "Time", "Treatment", "Cell", "Marker"], sort=False).Mean.mean().reset_index()
     patients = CoH_DF.Patient.unique()
-    times = CoH_DF.Time.unique()
+    times = ["15min"]
     treatments = CoH_DF.Treatment.unique()
     cells = CoH_DF.Cell.unique()
     markers = CoH_DF.Marker.unique()
 
-    tensor = np.empty((len(patients), len(times), len(treatments), len(cells), len(markers)))
+    tensor = np.empty((len(patients), len(treatments), len(cells), len(markers)))
     tensor[:] = np.nan
     values_vec = CoH_DF.Mean.values
 
     for i, combination in enumerate(itertools.product(patients, times, treatments, cells, markers)):
-        coords = [np.where(patients == combination[0])[0][0], np.where(times == combination[1])[0][0], np.where(treatments == combination[2])[0][0], np.where(cells == combination[3])[0][0] , np.where(markers == combination[4])[0][0]]
-        tensor[coords[0], coords[1], coords[2], coords[3], coords[4]] = values_vec[i]
+        coords = [np.where(patients == combination[0])[0][0], np.where(times == combination[1])[0], np.where(treatments == combination[2])[0][0], np.where(cells == combination[3])[0][0] , np.where(markers == combination[4])[0][0]]
+        tensor[coords[0], coords[2], coords[3], coords[4]] = values_vec[i]
 
     # Normalize
     for i, _ in enumerate(markers):
-        tensor[:, :, :, :, i][~np.isnan(tensor[:, :, :, :, i])] /= np.nanmax(tensor[:, :, :, :, i])
+        tensor[:, :, :, i][~np.isnan(tensor[:, :, :, i])] /= np.nanmax(tensor[:, :, :, i])
 
-    CoH_xarray = xa.DataArray(tensor, dims=("Patient", "Time", "Treatment", "Cell", "Marker"), coords={"Patient": patients, "Time": times, "Treatment": treatments, "Cell": cells, "Marker": markers})
+    CoH_xarray = xa.DataArray(tensor, dims=("Patient", "Treatment", "Cell", "Marker"), coords={"Patient": patients, "Treatment": treatments, "Cell": cells, "Marker": markers})
     CoH_xarray = CoH_xarray.reindex(Marker=np.sort(markers))
     CoH_xarray = CoH_xarray.reindex(Cell=np.sort(cells))
     CoH_xarray = CoH_xarray.reindex(Treatment=np.sort(treatments))
