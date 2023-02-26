@@ -160,7 +160,6 @@ def CoH_LogReg_plot(ax, tFac, CoH_Array, numComps):
     LR_CoH = LogisticRegression(random_state=0).fit(mode_facs, Donor_CoH_y)
     CoH_comp_weights = pd.DataFrame({"Component": np.arange(1, numComps + 1), "Coefficient": LR_CoH.coef_[0]})
     sns.barplot(data=CoH_comp_weights, x="Component", y="Coefficient", color="k", ax=ax)
-    print(LR_CoH.score(mode_facs, Donor_CoH_y))
 
 
 def make_alldata_DF(TensorArray, PCA=True, foldChange=False, basal=False):
@@ -234,39 +233,36 @@ def prediction_model(X, y):
     return scores
 
 
-def BC_status_plot(compNum, CoH_Data, matrixDF, ax, abund=False, basal=False):
+def BC_status_plot(compNum, CoH_Data, ax, basal=False):
     """Plot 5 fold CV by # components"""
     accDF = pd.DataFrame()
     status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status.csv"), index_col=0)
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
-    if not abund:
-        matrixDF = matrixDF.values
-        scoresPCA = prediction_model(matrixDF, Donor_CoH_y)
+    cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
+    model = LogisticRegression()
     if basal:
         start_val = 1
     else:
-        start_val = 5
+        start_val = 1
     for i in range(start_val, compNum + 1):
-        if i != 14:
-            tFacAllM, _ = factorTensor(CoH_Data.values, numComps=i)
-            mode_labels = CoH_Data["Patient"]
-            coord = CoH_Data.dims.index("Patient")
-            mode_facs = tFacAllM[1][coord]
-            tFacDF = pd.DataFrame()
+        tFacAllM, _ = factorTensor(CoH_Data.values, numComps=i)
+        cp_normalize(tFacAllM)
+        mode_labels = CoH_Data["Patient"]
+        coord = CoH_Data.dims.index("Patient")
+        mode_facs = tFacAllM[1][coord]
+        tFacDF = pd.DataFrame()
+        for j in range(0, i):
+            tFacDF = pd.concat([tFacDF, pd.DataFrame({"Component_Val": mode_facs[:, j], "Component": (j + 1), "Patient": mode_labels})])
 
-            for j in range(0, i):
-                tFacDF = pd.concat([tFacDF, pd.DataFrame({"Component_Val": mode_facs[:, j], "Component": (j + 1), "Patient": mode_labels})])
-
-            tFacDF = pd.pivot(tFacDF, index="Component", columns="Patient", values="Component_Val")
-            tFacDF = tFacDF[status_DF.Patient]
-            TFAC_X = tFacDF.transpose().values
-            scoresTFAC = prediction_model(TFAC_X, Donor_CoH_y)
-            accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "Tensor Factorization", "Components": [i], "Accuracy (10-fold CV)": np.mean(scoresTFAC)})])
-            if not abund:
-                accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "All Data", "Components": [i], "Accuracy (10-fold CV)": np.mean(scoresPCA)})])
+        tFacDF = pd.pivot(tFacDF, index="Component", columns="Patient", values="Component_Val")
+        tFacDF = tFacDF[status_DF.Patient]
+        TFAC_X = tFacDF.transpose().values
+        model = LogisticRegression()
+        scoresTFAC = cross_val_score(model, TFAC_X, Donor_CoH_y, cv=cv)
+        accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "Tensor Factorization", "Components": [i], "Accuracy (10-fold CV)": np.mean(scoresTFAC)})])
     accDF = accDF.reset_index(drop=True)
     sns.lineplot(data=accDF, x="Components", y="Accuracy (10-fold CV)", hue="Data Type", ax=ax)
-    ax.set(xticks=np.arange(start_val, compNum + 1))
+    ax.set(xticks=np.arange(start_val, compNum + 1), ylim=(0.5, 1))
 
 
 def BC_status_plot_rec(compNum, CoH_Data, matrixDF, ax):
