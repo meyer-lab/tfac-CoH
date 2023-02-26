@@ -1,7 +1,6 @@
 """
 This creates Figure 1.
 """
-from ..tensor import make_alldata_DF
 from os.path import join
 from .figureCommon import subplotLabel, getSetup
 from tensorpack.plot import reduction, tucker_reduction
@@ -35,16 +34,16 @@ def makeFigure():
     decomp_data = CoH_Data.to_numpy()
     nan_index = []
     for i in range(0, decomp_data.shape[0]):
-        nan_index.append(~np.isnan(decomp_data[i, :, :, :, :]).any())
-    decomp_data = decomp_data[nan_index, :, :, :, :]
+        nan_index.append(~np.isnan(decomp_data[i, :, :, :]).any())
+    decomp_data = decomp_data[nan_index, :, :, :]
 
-    tc = Decomposition(decomp_data, max_rr=12)
+    tc = Decomposition(decomp_data, max_rr=8)
     tc.perform_tfac()
     tc.perform_PCA(flattenon=2)
 
     reduction(ax[0], tc)
-    tuck = Decomposition(decomp_data, method=tucker_decomp, max_rr=10)
-    para = Decomposition(decomp_data, max_rr=10)
+    tuck = Decomposition(decomp_data, method=tucker_decomp, max_rr=8)
+    para = Decomposition(decomp_data, max_rr=8)
     tucker_reduction(ax[1], tuck, para)
     # plot_PCA(ax[0:2])
 

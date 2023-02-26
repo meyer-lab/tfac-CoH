@@ -1,19 +1,11 @@
 """
 This creates Figure S8, full panel of receptor comps.
 """
-import xarray as xa
 import numpy as np
-import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
-from statannot import add_stat_annotation
-from scipy.stats import ttest_ind
-from tensorly.cp_tensor import cp_flip_sign
-from tensorpack.cmtf import cp_normalize, perform_CP
 from .figureCommon import subplotLabel, getSetup, BC_scatter_cells_rec
 from os.path import join, dirname
-from ..flow_rec import make_flow_df_rec, make_CoH_Tensor_rec
-from ..tensor import CoH_LogReg_plot, BC_status_plot_rec, get_status_dict_rec, make_allrec_DF
 
 plt.rcParams['svg.fonttype'] = 'none'
 path_here = dirname(dirname(__file__))

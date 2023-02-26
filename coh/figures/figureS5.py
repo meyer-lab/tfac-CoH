@@ -1,13 +1,9 @@
 """
 This creates Figure 8.
 """
-import xarray as xa
-import numpy as np
-import seaborn as sns
-import pandas as pd
 from .figureCommon import subplotLabel, getSetup
-from os.path import join, dirname
-from ..flow import make_flow_df, make_CoH_Tensor, make_flow_sc_dataframe
+from os.path import dirname
+from ..flow import make_flow_sc_dataframe
 import matplotlib.pyplot as plt
 
 plt.rcParams['svg.fonttype'] = 'none'
