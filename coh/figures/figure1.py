@@ -132,7 +132,7 @@ def response_cell_scatter(ax, CoH_DF, marker, treatment):
 
 def make_impute_DF():
     """Imputes data and returns df containing those values"""
-    num_comps = 10
+    num_comps = 5
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
     cp_normalize(tFacAllM)

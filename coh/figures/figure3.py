@@ -2,15 +2,12 @@
 This creates Figure 3, classification analysis.
 """
 import xarray as xa
-import numpy as np
 import seaborn as sns
 import pandas as pd
 from tensorpack.cmtf import cp_normalize
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
 from ..tensor import factorTensor, CoH_LogReg_plot, plot_tFac_CoH, make_alldata_DF, BC_status_plot
-from ..flow import make_flow_df, make_CoH_Tensor
-import matplotlib.pyplot as plt
 import matplotlib.pyplot as plt
 
 plt.rcParams['svg.fonttype'] = 'none'
@@ -28,7 +25,7 @@ def makeFigure():
     # make_CoH_Tensor(basal=True)
     ax[0].axis("off")
 
-    num_comps = 10
+    num_comps = 5
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
     cp_normalize(tFacAllM)
@@ -36,9 +33,9 @@ def makeFigure():
     # make_alldata_DF(CoH_Data, PCA=False, basal=False)
 
     # matrix_DF = pd.read_csv(join(path_here, "data/CoH_Matrix.csv"), index_col=0).dropna(axis='columns').set_index("Patient")
-    BC_status_plot(11, CoH_Data, ax[1])
+    BC_status_plot(8, CoH_Data, ax[1])
     CoH_LogReg_plot(ax[2], tFacAllM, CoH_Data, num_comps)
-    CoH_Scat_Plot(ax[3], tFacAllM, CoH_Data, "Patient", numComps=num_comps, plot_comps=[5, 2])
+    CoH_Scat_Plot(ax[3], tFacAllM, CoH_Data, "Patient", numComps=num_comps, plot_comps=[3, 5])
     plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Marker", numComps=num_comps, cbar=False)
 
     num_comps = 4
