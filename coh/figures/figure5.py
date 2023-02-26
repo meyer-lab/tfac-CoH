@@ -1,7 +1,6 @@
 """
 This creates Figure 5.
 """
-import xarray as xa
 import numpy as np
 import seaborn as sns
 import pandas as pd
@@ -9,7 +8,7 @@ import matplotlib.pyplot as plt
 from scipy.stats import spearmanr
 from .figureCommon import subplotLabel, getSetup, BC_scatter_cells_rec
 from os.path import join, dirname
-from ..tensor import CoH_LogReg_plot, BC_status_plot_rec, get_status_dict_rec, make_allrec_DF
+from ..tensor import get_status_dict_rec
 
 plt.rcParams['svg.fonttype'] = 'none'
 path_here = dirname(dirname(__file__))

@@ -4,7 +4,6 @@ This creates Figure 1.
 import xarray as xa
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
-from ..flow import make_flow_df, make_CoH_Tensor, make_CoH_Tensor_abund
 from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH
 import matplotlib.pyplot as plt
 

@@ -3,10 +3,9 @@ This creates Figure 4.
 """
 import seaborn as sns
 import pandas as pd
-from .figureCommon import subplotLabel, getSetup, BC_scatter, BC_scatter_cells
+from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
 import matplotlib.pyplot as plt
-from scipy.stats import spearmanr
 
 plt.rcParams['svg.fonttype'] = 'none'
 path_here = dirname(dirname(__file__))

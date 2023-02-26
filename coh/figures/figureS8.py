@@ -1,9 +1,7 @@
 """
 This creates Figure S8, full panel of receptor comps.
 """
-import xarray as xa
 import numpy as np
-import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
 from .figureCommon import subplotLabel, getSetup, BC_scatter_cells_rec

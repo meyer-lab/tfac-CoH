@@ -1,13 +1,10 @@
 """
 This creates Figure 4.
 """
-import xarray as xa
-import numpy as np
 import seaborn as sns
 import pandas as pd
-from .figureCommon import subplotLabel, getSetup, BC_scatter, BC_scatter_cells, BC_scatter_ligs
+from .figureCommon import subplotLabel, getSetup, BC_scatter, BC_scatter_cells
 from os.path import join, dirname
-from ..flow import make_flow_df, make_CoH_Tensor
 from ..tensor import get_status_dict
 import matplotlib.pyplot as plt
 from scipy.stats import spearmanr

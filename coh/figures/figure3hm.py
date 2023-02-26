@@ -4,10 +4,9 @@ This creates Figure 3's clustered heat map.
 import xarray as xa
 import pandas as pd
 import seaborn as sns
-from .figureCommon import subplotLabel, getSetup
+from .figureCommon import getSetup
 from os.path import join, dirname
 from ..tensor import factorTensor
-from ..flow import make_flow_df, make_CoH_Tensor
 import matplotlib.pyplot as plt
 
 plt.rcParams['svg.fonttype'] = 'none'

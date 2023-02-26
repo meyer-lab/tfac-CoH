@@ -1,7 +1,6 @@
 """
 This creates Figure 1.
 """
-from ..tensor import make_alldata_DF
 from os.path import join
 from .figureCommon import subplotLabel, getSetup
 from tensorpack.plot import reduction, tucker_reduction
