@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-flist = 1 2 3 4 5
+flist = 1 2 3 4 5 S1 S2 S3 S4 S5
 
 .PHONY: clean test all
 
@@ -12,6 +12,3 @@ output/figure%.svg: coh/figures/figure%.py
 
 clean:
 	rm -rf output
-
-test:
-	poetry run pytest -s -v -x

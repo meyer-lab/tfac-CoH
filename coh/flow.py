@@ -1,13 +1,10 @@
 """
 This file includes various methods for flow cytometry analysis of fixed cells.
 """
-from importlib.abc import PathEntryFinder
-import os
 from os.path import dirname, join
 from pathlib import Path
 import ast
 import textwrap
-from types import CellType
 import pandas as pd
 import numpy as np
 import warnings
@@ -16,7 +13,7 @@ import itertools
 from copy import copy
 from FlowCytometryTools import PolyGate, FCMeasurement
 
-path_here = os.path.dirname(os.path.dirname(__file__))
+path_here = dirname(dirname(__file__))
 
 
 warnings.filterwarnings("ignore")

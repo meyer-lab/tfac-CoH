@@ -8,8 +8,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from copy import copy
 import tensorly as tl
-from tensorly.cp_tensor import cp_flip_sign
-from tensorpack.cmtf import cp_normalize, perform_CP
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
 from ..tensor import factorTensor
@@ -135,7 +133,6 @@ def make_impute_DF():
     num_comps = 5
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
-    cp_normalize(tFacAllM)
     tensor = tl.cp_to_tensor(tFacAllM)
     CoH_Data_I = copy(CoH_Data)
     CoH_Data_I.data = tensor

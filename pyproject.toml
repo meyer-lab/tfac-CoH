@@ -18,7 +18,6 @@ tensorly = "^0.8.0"
 pyarrow = "^6.0.1"
 xarray = "^2022.3.0"
 tensorpack = {git = "https://github.com/meyer-lab/tensorpack.git", rev = "main"}
-sklearn = "^0.0"
 pathlib = "^1.0.1"
 statannot = "^0.2.3"
 flowcytometrytools = {git = "https://github.com/meyer-lab/FlowCytometryToolsFork.git"}

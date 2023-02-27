@@ -4,7 +4,6 @@ This creates Figure 3's clustered heat map.
 import xarray as xa
 import pandas as pd
 import seaborn as sns
-from tensorpack.cmtf import cp_normalize
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
 from ..tensor import factorTensor
@@ -27,7 +26,6 @@ def makeFigure():
     num_comps = 10
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
-    cp_normalize(tFacAllM)
     f = plot_coh_clust(tFacAllM, CoH_Data, "Patient", numComps=num_comps)
     
 

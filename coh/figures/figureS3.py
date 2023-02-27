@@ -2,7 +2,6 @@
 This creates Figure S2. NN Factorization.
 """
 import xarray as xa
-from tensorpack.cmtf import cp_normalize
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
 from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH, CoH_LogReg_plot
@@ -26,7 +25,6 @@ def makeFigure():
 
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Tensor_DataSet_FC.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
-    cp_normalize(tFacAllM)
     CoH_LogReg_plot(ax[0], tFacAllM, CoH_Data, num_comps)
     R2Xplot(ax[0], CoH_Data.values, compNum=8)
     plot_tFac_CoH(ax[1], tFacAllM, CoH_Data, "Patient", numComps=num_comps, nn=False)

@@ -2,7 +2,6 @@
 This creates Figure 1.
 """
 import xarray as xa
-from tensorpack.cmtf import cp_normalize
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
 from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH
@@ -27,7 +26,6 @@ def makeFigure():
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Tensor_DataSet_Basal.nc"))
 
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
-    cp_normalize(tFacAllM)
     R2Xplot(ax[0], CoH_Data.values, compNum=10)
     plot_tFac_CoH(ax[1], tFacAllM, CoH_Data, "Patient", numComps=num_comps)
     plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Time", numComps=num_comps)

@@ -4,7 +4,6 @@ This creates Figure 3, classification analysis.
 import xarray as xa
 import seaborn as sns
 import pandas as pd
-from tensorpack.cmtf import cp_normalize
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
 from ..tensor import factorTensor, CoH_LogReg_plot, plot_tFac_CoH, make_alldata_DF, BC_status_plot
@@ -28,7 +27,6 @@ def makeFigure():
     num_comps = 5
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
-    cp_normalize(tFacAllM)
 
     # make_alldata_DF(CoH_Data, PCA=False, basal=False)
 
@@ -41,7 +39,6 @@ def makeFigure():
     num_comps = 4
     CoH_Data_B = xa.open_dataarray(join(path_here, "data/CoH_Tensor_DataSet_Basal.nc"))
     tFacAllM_B, _ = factorTensor(CoH_Data_B.values, numComps=num_comps)
-    cp_normalize(tFacAllM_B)
 
     # make_alldata_DF(CoH_Data_B, PCA=False, basal=True)
 
