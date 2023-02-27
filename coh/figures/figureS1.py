@@ -3,7 +3,6 @@ This creates Figure 1.
 """
 from os.path import join, dirname
 import xarray as xa
-import matplotlib.pyplot as plt
 from tensorpack.plot import reduction
 from tensorpack import Decomposition
 from .figureCommon import subplotLabel, getSetup

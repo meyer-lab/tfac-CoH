@@ -1,13 +1,10 @@
 """
 This file includes various methods for flow cytometry analysis of fixed cells.
 """
-from importlib.abc import PathEntryFinder
-import os
 from os.path import dirname, join
 from pathlib import Path
 import ast
 import textwrap
-from types import CellType
 import pandas as pd
 import numpy as np
 import warnings
@@ -16,7 +13,7 @@ import itertools
 from copy import copy
 from FlowCytometryTools import PolyGate, FCMeasurement
 
-path_here = os.path.dirname(os.path.dirname(__file__))
+path_here = dirname(dirname(__file__))
 
 
 warnings.filterwarnings("ignore")
@@ -332,27 +329,27 @@ def make_CoH_Tensor_abund():
     """Processes RA DataFrame into Xarray Tensor"""
     CoH_DF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_DF_Abund.csv"))
 
+    treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng"])
+    CoH_DF = CoH_DF.loc[CoH_DF.Treatment.isin(treatments)]
     patients = CoH_DF.Patient.unique()
-    times = CoH_DF.Time.unique()
     treatments = CoH_DF.Treatment.unique()
     cells = CoH_DF.Cell.unique()
 
-    tensor = np.empty((len(patients), len(times), len(treatments), len(cells)))
+    tensor = np.empty((len(patients), len(treatments), len(cells)))
     tensor[:] = np.nan
     for i, pat in enumerate(patients):
         print(pat)
-        for j, tim in enumerate(times):
-            for k, treat in enumerate(treatments):
+        for k, treat in enumerate(treatments):
                 for ii, cell in enumerate(cells):
-                    entry = CoH_DF.loc[(CoH_DF.Patient == pat) & (CoH_DF.Time == tim) & (CoH_DF.Treatment == treat) & (CoH_DF.Cell == cell)]["Abundance"].values
-                    tensor[i, j, k, ii] = np.mean(entry)
+                    entry = CoH_DF.loc[(CoH_DF.Patient == pat) & (CoH_DF.Treatment == treat) & (CoH_DF.Cell == cell) & (CoH_DF.Time == "15min")]["Abundance"].values
+                    tensor[i, k, ii] = np.mean(entry)
 
     # Normalize
     for i, _ in enumerate(cells):
-        tensor[:, :, :, i][~np.isnan(tensor[:, :, :, i])] /= np.nanmax(tensor[:, :, :, i])
-        tensor[:, :, :, i][~np.isnan(tensor[:, :, :, i])] -= np.nanmean(tensor[:, :, :, i])
+        tensor[:, :, i][~np.isnan(tensor[:, :, i])] /= np.nanmax(tensor[:, :, i])
+        tensor[:, :, i][~np.isnan(tensor[:, :, i])] -= np.nanmean(tensor[:, :, i])
 
-    CoH_xarray = xa.DataArray(tensor, dims=("Patient", "Time", "Treatment", "Cell"), coords={"Patient": patients, "Time": times, "Treatment": treatments, "Cell": cells})
+    CoH_xarray = xa.DataArray(tensor, dims=("Patient", "Treatment", "Cell"), coords={"Patient": patients, "Treatment": treatments, "Cell": cells})
     CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH_Tensor_Abundance.nc"))
     return tensor
 

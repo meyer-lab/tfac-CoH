@@ -3,11 +3,9 @@ This creates Figure S8, full panel of receptor comps.
 """
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from .figureCommon import subplotLabel, getSetup, BC_scatter_cells_rec
 from os.path import join, dirname
 
-plt.rcParams['svg.fonttype'] = 'none'
 path_here = dirname(dirname(__file__))
 
 

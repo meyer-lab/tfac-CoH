@@ -2,13 +2,10 @@
 This creates Figure S2. NN Factorization.
 """
 import xarray as xa
-from tensorpack.cmtf import cp_normalize
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
 from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH, CoH_LogReg_plot
-import matplotlib.pyplot as plt
 
-plt.rcParams['svg.fonttype'] = 'none'
 path_here = dirname(dirname(__file__))
 
 
@@ -19,20 +16,16 @@ def makeFigure():
 
     # Add subplot labels
     subplotLabel(ax)
-    #make_flow_df(subtract=True, abundance=False, foldChange=True)
-    #make_CoH_Tensor(subtract=True, foldChange=True)
 
     num_comps = 12
 
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Tensor_DataSet_FC.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
-    cp_normalize(tFacAllM)
     CoH_LogReg_plot(ax[0], tFacAllM, CoH_Data, num_comps)
     R2Xplot(ax[0], CoH_Data.values, compNum=8)
     plot_tFac_CoH(ax[1], tFacAllM, CoH_Data, "Patient", numComps=num_comps, nn=False)
-    plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Time", numComps=num_comps, nn=False)
-    plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Treatment", numComps=num_comps, nn=False)
-    plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Cell", numComps=num_comps, nn=False)
-    plot_tFac_CoH(ax[5], tFacAllM, CoH_Data, "Marker", numComps=num_comps, nn=False)
+    plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Treatment", numComps=num_comps, nn=False)
+    plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Cell", numComps=num_comps, nn=False)
+    plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Marker", numComps=num_comps, nn=False)
 
     return f

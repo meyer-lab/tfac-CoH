@@ -4,9 +4,7 @@ This creates Figure S6.
 import pandas as pd
 from .figureCommon import subplotLabel, getSetup, BC_scatter, BC_scatter_cells
 from os.path import join, dirname
-import matplotlib.pyplot as plt
 
-plt.rcParams['svg.fonttype'] = 'none'
 path_here = dirname(dirname(__file__))
 
 
