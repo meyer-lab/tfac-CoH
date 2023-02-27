@@ -1,4 +1,3 @@
-import tensorly as tl
 import numpy as np
 import seaborn as sns
 import pandas as pd
@@ -43,12 +42,6 @@ def core_cons_plot(ax, tensor, compNum):
 
     ax.scatter(np.arange(1, compNum + 1), ccHold, c='k', s=20.)
     ax.set(title="Core Consistency", ylabel="Core Consistency", xlabel="Number of Components", ylim=(0, 1), xlim=(0, compNum + 0.5), xticks=np.arange(0, compNum + 1))
-
-
-def calcR2X(tensorIn, tensorFac):
-    """ Calculate R2X. """
-    tErr = np.nanvar(tl.cp_to_tensor(tensorFac) - tensorIn)
-    return 1.0 - tErr / np.nanvar(tensorIn)
 
 
 def plot_tFac_CoH(ax, tFac, CoH_Array, mode, numComps=3, nn=False, rec=False, cbar=True):
