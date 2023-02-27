@@ -3,7 +3,6 @@ import numpy as np
 import seaborn as sns
 import pandas as pd
 import os
-from tensorly.decomposition import non_negative_parafac, parafac
 from tensorly.cp_tensor import cp_flip_sign, cp_to_tensor
 from tensorpack.cmtf import perform_CP
 from sklearn.linear_model import LogisticRegression
@@ -14,7 +13,6 @@ from sklearn.linear_model import LogisticRegression
 from tensorpack.cmtf import cp_normalize
 from sklearn import preprocessing
 from os.path import join
-from statannot import add_stat_annotation
 from tlviz.model_evaluation import core_consistency
 
 path_here = os.path.dirname(os.path.dirname(__file__))
@@ -236,12 +234,8 @@ def BC_status_plot(compNum, CoH_Data, ax, basal=False):
     status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status.csv"), index_col=0)
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
     cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
-    model = LogisticRegression()
-    if basal:
-        start_val = 1
-    else:
-        start_val = 1
-    for i in range(start_val, compNum + 1):
+    model = LogisticRegression(penalty="none")
+    for i in range(1, compNum + 1):
         tFacAllM, _ = factorTensor(CoH_Data.values, numComps=i)
         cp_normalize(tFacAllM)
         mode_labels = CoH_Data["Patient"]
@@ -254,12 +248,12 @@ def BC_status_plot(compNum, CoH_Data, ax, basal=False):
         tFacDF = pd.pivot(tFacDF, index="Component", columns="Patient", values="Component_Val")
         tFacDF = tFacDF[status_DF.Patient]
         TFAC_X = tFacDF.transpose().values
-        model = LogisticRegression()
+        model = LogisticRegression(penalty="none")
         scoresTFAC = cross_val_score(model, TFAC_X, Donor_CoH_y, cv=cv)
         accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "Tensor Factorization", "Components": [i], "Accuracy (10-fold CV)": np.mean(scoresTFAC)})])
     accDF = accDF.reset_index(drop=True)
     sns.lineplot(data=accDF, x="Components", y="Accuracy (10-fold CV)", hue="Data Type", ax=ax)
-    ax.set(xticks=np.arange(start_val, compNum + 1), ylim=(0.5, 1))
+    ax.set(xticks=np.arange(1, compNum + 1), ylim=(0.5, 1))
 
 
 def BC_status_plot_rec(compNum, CoH_Data, matrixDF, ax):
@@ -268,11 +262,10 @@ def BC_status_plot_rec(compNum, CoH_Data, matrixDF, ax):
     status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status_Rec.csv"), index_col=0)
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
     cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
-    model = LogisticRegression()
+    model = LogisticRegression(penalty="none")
     matrixDF = matrixDF.values
     scoresPCA = cross_val_score(model, matrixDF, Donor_CoH_y, cv=cv)
-    start_val = 1
-    for i in range(start_val, compNum + 1):
+    for i in range(1, compNum + 1):
         tFacAllM, _ = factorTensor(CoH_Data.values, numComps=i)
         cp_normalize(tFacAllM)
         mode_labels = CoH_Data["Patient"]
@@ -286,13 +279,13 @@ def BC_status_plot_rec(compNum, CoH_Data, matrixDF, ax):
         tFacDF = pd.pivot(tFacDF, index="Component", columns="Patient", values="Component_Val")
         tFacDF = tFacDF[status_DF.Patient]
         TFAC_X = tFacDF.transpose().values
-        model = LogisticRegression()
+        model = LogisticRegression(penalty="none")
         scoresTFAC = cross_val_score(model, TFAC_X, Donor_CoH_y, cv=cv)
         accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "Tensor Factorization", "Components": [i], "Accuracy (10-fold CV)": np.mean(scoresTFAC)})])
         accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "All Data", "Components": [i], "Accuracy (10-fold CV)": np.mean(scoresPCA)})])
     accDF = accDF.reset_index(drop=True)
     sns.lineplot(data=accDF, x="Components", y="Accuracy (10-fold CV)", hue="Data Type", ax=ax)
-    ax.set(xticks=np.arange(start_val, compNum + 1))
+    ax.set(xticks=np.arange(1, compNum + 1))
 
 
 status_dict = {"Patient 26": "Healthy",

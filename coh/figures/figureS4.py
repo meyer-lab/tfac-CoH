@@ -2,14 +2,9 @@
 This creates Figure 1.
 """
 import xarray as xa
-import numpy as np
-import seaborn as sns
-import pandas as pd
-from tensorly.cp_tensor import cp_flip_sign
-from tensorpack.cmtf import cp_normalize, perform_CP
+from tensorpack.cmtf import cp_normalize
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
-from ..flow import make_flow_df, make_CoH_Tensor_abund
 from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH
 import matplotlib.pyplot as plt
 

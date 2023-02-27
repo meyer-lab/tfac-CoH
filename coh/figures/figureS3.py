@@ -2,16 +2,14 @@
 This creates Figure S2. NN Factorization.
 """
 import xarray as xa
-import os
 from tensorpack.cmtf import cp_normalize
 from .figureCommon import subplotLabel, getSetup
-from os.path import join
-from ..flow import make_flow_df, make_CoH_Tensor
+from os.path import join, dirname
 from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH, CoH_LogReg_plot
 import matplotlib.pyplot as plt
 
 plt.rcParams['svg.fonttype'] = 'none'
-path_here = os.path.dirname(os.path.dirname(__file__))
+path_here = dirname(dirname(__file__))
 
 
 def makeFigure():

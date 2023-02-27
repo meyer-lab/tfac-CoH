@@ -2,15 +2,10 @@
 This creates Figure S7, factorization of receptors.
 """
 import xarray as xa
-import numpy as np
-import seaborn as sns
-import pandas as pd
-from tensorly.cp_tensor import cp_flip_sign
-from tensorpack.cmtf import cp_normalize, perform_CP
+from tensorpack.cmtf import cp_normalize
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
-from ..flow_rec import make_flow_df_rec, make_CoH_Tensor_rec
-from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH, CoH_LogReg_plot
+from ..tensor import factorTensor, plot_tFac_CoH, CoH_LogReg_plot
 import matplotlib.pyplot as plt
 
 plt.rcParams['svg.fonttype'] = 'none'
