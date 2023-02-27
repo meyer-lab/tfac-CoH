@@ -16,8 +16,6 @@ def makeFigure():
 
     # Add subplot labels
     subplotLabel(ax)
-    # make_flow_df(subtract=False, abundance=True)
-    # make_CoH_Tensor_abund()
 
     num_comps = 6
 
