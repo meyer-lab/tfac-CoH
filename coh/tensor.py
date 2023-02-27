@@ -19,19 +19,13 @@ def factorTensor(tensor, numComps):
     """ Takes Tensor, and mask and returns tensor factorized form. """
     tfac = perform_CP(tensor, numComps, tol=1e-7, maxiter=1000)
     tfac = cp_normalize(tfac)
-    R2X = tfac.R2X
     tfac = cp_flip_sign(tfac)
-    return tfac, R2X
+    return tfac, tfac.R2X
 
 
 def R2Xplot(ax, tensor, compNum):
     """Creates R2X plot for non-neg CP tensor decomposition"""
-    varHold = np.zeros(compNum)
-    for i in range(1, compNum + 1):
-        print(i)
-        _, R2X = factorTensor(tensor, i)
-        varHold[i - 1] = R2X
-
+    varHold = [factorTensor(tensor, i)[1] for i in range(1, compNum + 1)]
     ax.scatter(np.arange(1, compNum + 1), varHold, c='k', s=20.)
     ax.set(title="R2X", ylabel="Variance Explained", xlabel="Number of Components", ylim=(0, 1), xlim=(0, compNum + 0.5), xticks=np.arange(0, compNum + 1))
 
