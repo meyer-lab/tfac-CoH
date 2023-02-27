@@ -4,20 +4,18 @@ This creates Figure 3's clustered heat map.
 import xarray as xa
 import pandas as pd
 import seaborn as sns
-from .figureCommon import subplotLabel, getSetup
+from .figureCommon import getSetup
 from os.path import join, dirname
 from ..tensor import factorTensor
-from ..flow import make_flow_df, make_CoH_Tensor
-import matplotlib.pyplot as plt
 
-plt.rcParams['svg.fonttype'] = 'none'
+
 path_here = dirname(dirname(__file__))
 
 
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((8, 2), (1, 1))
+    _, f = getSetup((8, 2), (1, 1))
 
     # Add subplot labels
     # subplotLabel(ax)

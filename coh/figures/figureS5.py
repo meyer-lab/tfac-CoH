@@ -4,9 +4,7 @@ This creates Figure 8.
 from .figureCommon import subplotLabel, getSetup
 from os.path import dirname
 from ..flow import make_flow_sc_dataframe
-import matplotlib.pyplot as plt
 
-plt.rcParams['svg.fonttype'] = 'none'
 path_here = dirname(dirname(__file__))
 
 

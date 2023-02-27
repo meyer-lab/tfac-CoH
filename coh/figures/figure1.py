@@ -5,14 +5,13 @@ import xarray as xa
 import numpy as np
 import seaborn as sns
 import pandas as pd
-import matplotlib.pyplot as plt
 from copy import copy
 import tensorly as tl
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
 from ..tensor import factorTensor
 
-plt.rcParams['svg.fonttype'] = 'none'
+
 path_here = dirname(dirname(__file__))
 
 

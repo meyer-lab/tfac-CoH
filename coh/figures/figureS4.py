@@ -5,9 +5,7 @@ import xarray as xa
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
 from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH
-import matplotlib.pyplot as plt
 
-plt.rcParams['svg.fonttype'] = 'none'
 path_here = dirname(dirname(__file__))
 
 
