@@ -18,9 +18,10 @@ path_here = dirname(dirname(__file__))
 def factorTensor(tensor, numComps):
     """ Takes Tensor, and mask and returns tensor factorized form. """
     tfac = perform_CP(tensor, numComps, tol=1e-7, maxiter=1000)
+    R2X = tfac.R2X
     tfac = cp_normalize(tfac)
     tfac = cp_flip_sign(tfac)
-    return tfac, tfac.R2X
+    return tfac, R2X
 
 
 def R2Xplot(ax, tensor, compNum):
