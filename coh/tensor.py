@@ -6,7 +6,7 @@ from tensorpack.cmtf import perform_CP, cp_normalize
 from sklearn.linear_model import LogisticRegression
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import StratifiedKFold, cross_val_score
+from sklearn.model_selection import RepeatedStratifiedKFold, cross_val_score
 from sklearn import preprocessing
 from os.path import join, dirname
 from tlviz.model_evaluation import core_consistency
@@ -144,7 +144,7 @@ def CoH_LogReg_plot(ax, tFac, CoH_Array, numComps):
     status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status.csv"), index_col=0)
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
 
-    LR_CoH = LogisticRegression(random_state=0).fit(mode_facs, Donor_CoH_y)
+    LR_CoH = LogisticRegression(random_state=0, penalty=None).fit(mode_facs, Donor_CoH_y)
     CoH_comp_weights = pd.DataFrame({"Component": np.arange(1, numComps + 1), "Coefficient": LR_CoH.coef_[0]})
     sns.barplot(data=CoH_comp_weights, x="Component", y="Coefficient", color="k", ax=ax)
 
@@ -218,7 +218,7 @@ def BC_status_plot(compNum, CoH_Data, ax, basal=False):
     accDF = pd.DataFrame()
     status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status.csv"), index_col=0)
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
-    cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
+    cv = RepeatedStratifiedKFold(n_splits=10, random_state=42)
     model = LogisticRegression(penalty=None)
     for i in range(1, compNum + 1):
         tFacAllM, _ = factorTensor(CoH_Data.values, numComps=i)
@@ -245,7 +245,7 @@ def BC_status_plot_rec(compNum, CoH_Data, matrixDF, ax):
     accDF = pd.DataFrame()
     status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status_Rec.csv"), index_col=0)
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
-    cv = StratifiedKFold(n_splits=10, shuffle=True, random_state=42)
+    cv = RepeatedStratifiedKFold(n_splits=10, random_state=42)
     model = LogisticRegression(penalty=None)
     matrixDF = matrixDF.values
     scoresPCA = cross_val_score(model, matrixDF, Donor_CoH_y, cv=cv)
