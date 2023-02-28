@@ -9,7 +9,7 @@ from copy import copy
 import tensorly as tl
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
-from ..tensor import factorTensor
+from ..tensor import factorTensor, get_status_dict
 
 
 path_here = dirname(dirname(__file__))
@@ -45,43 +45,7 @@ def fullHeatMap(ax, respDF, respDF_I, markers, makeDF=True):
     respDFhm = respDFhm.groupby(["Patient", "Cell", "Time", "Treatment", "Marker"]).Mean.mean().reset_index()
     respDFhm_I = copy(respDF_I)
     respDFhm_I = respDFhm_I.groupby(["Patient", "Cell", "Treatment", "Marker"]).Mean.mean().reset_index()
-    patients = [
-        "Patient 26",
-        "Patient 28",
-        "Patient 30",
-        "Patient 34",
-        "Patient 35",
-        "Patient 43",
-        "Patient 44",
-        "Patient 45",
-        "Patient 52",
-        "Patient 52A",
-        "Patient 54",
-        "Patient 56",
-        "Patient 58",
-        "Patient 60",
-        "Patient 61",
-        "Patient 62",
-        "Patient 63",
-        "Patient 66",
-        "Patient 68",
-        "Patient 69",
-        "Patient 70",
-        "Patient 79",
-        "Patient 19186-2",
-        "Patient 19186-3",
-        "Patient 19186-4",
-        "Patient 19186-8",
-        "Patient 19186-10-T1",
-        "Patient 19186-10-T2",
-        "Patient 19186-10-T3",
-        "Patient 19186-15-T1",
-        "Patient 19186-15-T2",
-        "Patient 19186-15-T3",
-        "Patient 19186-14",
-        "Patient 21368-3",
-        "Patient 21368-4",
-        "Patient 406"]
+    patients = get_status_dict().keys()
     if makeDF:
         for cell in respDFhm.Cell.unique():
             print(cell)

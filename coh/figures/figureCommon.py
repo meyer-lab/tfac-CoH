@@ -91,46 +91,8 @@ def genFigure():
     print(f"Figure {sys.argv[1]} is done after {time.time() - start} seconds.\n")
 
 
-status_dict = {"Patient 26": "Healthy",
-               "Patient 28": "Healthy",
-               "Patient 30": "Healthy",
-               "Patient 34": "Healthy",
-               "Patient 35": "Healthy",
-               "Patient 43": "Healthy",
-               "Patient 44": "Healthy",
-               "Patient 45": "Healthy",
-               "Patient 52": "Healthy",
-               "Patient 52A": "Healthy",
-               "Patient 54": "Healthy",
-               "Patient 56": "Healthy",
-               "Patient 58": "Healthy",
-               "Patient 60": "Healthy",
-               "Patient 61": "Healthy",
-               "Patient 62": "Healthy",
-               "Patient 63": "Healthy",
-               "Patient 66": "Healthy",
-               "Patient 68": "Healthy",
-               "Patient 69": "Healthy",
-               "Patient 70": "Healthy",
-               "Patient 79": "Healthy",
-               "Patient 19186-4": "BC",
-               "Patient 19186-8": "BC",
-               "Patient 406": "BC",
-               "Patient 19186-10-T1": "BC",
-               "Patient 19186-10-T2": "BC",
-               "Patient 19186-10-T3": "BC",
-               "Patient 19186-15-T1": "BC",
-               "Patient 19186-15-T2": "BC",
-               "Patient 19186-15-T3": "BC",
-               "Patient 19186-2": "BC",
-               "Patient 19186-3": "BC",
-               "Patient 19186-14": "BC",
-               "Patient 21368-3": "BC",
-               "Patient 21368-4": "BC"}
-
-
 def make_status_DF():
-    statusDF = pd.DataFrame.from_dict(status_dict, orient='index').reset_index()
+    statusDF = pd.DataFrame.from_dict(get_status_dict(), orient='index').reset_index()
     statusDF.columns = ["Patient", "Status"]
     statusDF.to_csv("coh/data/Patient_Status.csv")
 
@@ -143,7 +105,7 @@ def BC_scatter(ax, CoH_DF, marker, cytokine, cells=False):
     else:
         hist_DF = CoH_DF.loc[(CoH_DF.Treatment == cytokine) & (CoH_DF.Marker == marker) & (CoH_DF["Cell"].isin(cells))]
     hist_DF = hist_DF.groupby(["Patient", "Marker"]).Mean.mean().reset_index()
-    hist_DF["Status"] = hist_DF.replace({"Patient": status_dict}).Patient.values
+    hist_DF["Status"] = hist_DF.replace({"Patient": get_status_dict()}).Patient.values
 
     sns.boxplot(data=hist_DF, y="Mean", x="Status", ax=ax)
     ax.set(title=marker + " in response to " + cytokine, ylabel=marker, xlabel="Status")
