@@ -105,7 +105,7 @@ def BC_scatter(ax, CoH_DF, marker, cytokine, cells=False):
     else:
         hist_DF = CoH_DF.loc[(CoH_DF.Treatment == cytokine) & (CoH_DF.Marker == marker) & (CoH_DF["Cell"].isin(cells))]
     hist_DF = hist_DF.groupby(["Patient", "Marker"]).Mean.mean().reset_index()
-    hist_DF["Status"] = hist_DF.replace({"Patient": status_dict}).Patient.values
+    hist_DF["Status"] = hist_DF.replace({"Patient": get_status_dict()}).Patient.values
 
     sns.boxplot(data=hist_DF, y="Mean", x="Status", ax=ax)
     ax.set(title=marker + " in response to " + cytokine, ylabel=marker, xlabel="Status")
