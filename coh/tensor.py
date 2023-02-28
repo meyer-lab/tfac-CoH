@@ -1,6 +1,7 @@
 import numpy as np
 import seaborn as sns
 import pandas as pd
+from collections import OrderedDict
 from tensorly.cp_tensor import cp_flip_sign, cp_to_tensor
 from tensorpack.cmtf import perform_CP, cp_normalize
 from sklearn.linear_model import LogisticRegression
@@ -94,42 +95,7 @@ def plot_tFac_CoH(ax, tFac, CoH_Array, mode, numComps=3, nn=False, rec=False, cb
                              "Patient 21368-3",
                              "Patient 21368-4"]]
         else:
-            tFacDF = tFacDF[["Patient 26",
-                             "Patient 28",
-                             "Patient 30",
-                             "Patient 34",
-                             "Patient 35",
-                             "Patient 43",
-                             "Patient 44",
-                             "Patient 45",
-                             "Patient 52",
-                             "Patient 52A",
-                             "Patient 54",
-                             "Patient 56",
-                             "Patient 58",
-                             "Patient 60",
-                             "Patient 61",
-                             "Patient 62",
-                             "Patient 63",
-                             "Patient 66",
-                             "Patient 68",
-                             "Patient 69",
-                             "Patient 70",
-                             "Patient 79",
-                             "Patient 19186-2",
-                             "Patient 19186-3",
-                             "Patient 19186-4",
-                             "Patient 19186-8",
-                             "Patient 19186-10-T1",
-                             "Patient 19186-10-T2",
-                             "Patient 19186-10-T3",
-                             "Patient 19186-15-T1",
-                             "Patient 19186-15-T2",
-                             "Patient 19186-15-T3",
-                             "Patient 19186-14",
-                             "Patient 21368-3",
-                             "Patient 21368-4",
-                             "Patient 406"]]
+            tFacDF = tFacDF[get_status_dict().keys()]
     if nn:
         sns.heatmap(data=tFacDF, ax=ax, vmin=0, vmax=1)
     else:
@@ -271,44 +237,6 @@ def BC_status_plot_rec(compNum, CoH_Data, matrixDF, ax):
     ax.set(xticks=np.arange(1, compNum + 1))
 
 
-status_dict = {"Patient 26": "Healthy",
-               "Patient 28": "Healthy",
-               "Patient 30": "Healthy",
-               "Patient 34": "Healthy",
-               "Patient 35": "Healthy",
-               "Patient 43": "Healthy",
-               "Patient 44": "Healthy",
-               "Patient 45": "Healthy",
-               "Patient 52": "Healthy",
-               "Patient 52A": "Healthy",
-               "Patient 54": "Healthy",
-               "Patient 56": "Healthy",
-               "Patient 58": "Healthy",
-               "Patient 60": "Healthy",
-               "Patient 61": "Healthy",
-               "Patient 62": "Healthy",
-               "Patient 63": "Healthy",
-               "Patient 66": "Healthy",
-               "Patient 68": "Healthy",
-               "Patient 69": "Healthy",
-               "Patient 70": "Healthy",
-               "Patient 79": "Healthy",
-               "Patient 19186-4": "BC",
-               "Patient 19186-8": "BC",
-               "Patient 406": "BC",
-               "Patient 19186-10-T1": "BC",
-               "Patient 19186-10-T2": "BC",
-               "Patient 19186-10-T3": "BC",
-               "Patient 19186-15-T1": "BC",
-               "Patient 19186-15-T2": "BC",
-               "Patient 19186-15-T3": "BC",
-               "Patient 19186-2": "BC",
-               "Patient 19186-3": "BC",
-               "Patient 19186-14": "BC",
-               "Patient 21368-3": "BC",
-               "Patient 21368-4": "BC"}
-
-
 status_dict_rec = {"Patient 26": "Healthy",
                "Patient 28": "Healthy",
                "Patient 30": "Healthy",
@@ -349,7 +277,42 @@ status_dict_rec = {"Patient 26": "Healthy",
 
 def get_status_dict():
     """Returns status dictionary"""
-    return status_dict
+    return OrderedDict([("Patient 26", "Healthy"),
+                        ("Patient 28", "Healthy"),
+                        ("Patient 30", "Healthy"),
+                        ("Patient 34", "Healthy"),
+                        ("Patient 35", "Healthy"),
+                        ("Patient 43", "Healthy"),
+                        ("Patient 44", "Healthy"),
+                        ("Patient 45", "Healthy"),
+                        ("Patient 52", "Healthy"),
+                        ("Patient 52A", "Healthy"),
+                        ("Patient 54", "Healthy"),
+                        ("Patient 56", "Healthy"),
+                        ("Patient 58", "Healthy"),
+                        ("Patient 60", "Healthy"),
+                        ("Patient 61", "Healthy"),
+                        ("Patient 62", "Healthy"),
+                        ("Patient 63", "Healthy"),
+                        ("Patient 66", "Healthy"),
+                        ("Patient 68", "Healthy"),
+                        ("Patient 69", "Healthy"),
+                        ("Patient 70", "Healthy"),
+                        ("Patient 79", "Healthy"),
+                        ("Patient 19186-4", "BC"),
+                        ("Patient 19186-8", "BC"),
+                        ("Patient 406", "BC"),
+                        ("Patient 19186-10-T1", "BC"),
+                        ("Patient 19186-10-T2", "BC"),
+                        ("Patient 19186-10-T3", "BC"),
+                        ("Patient 19186-15-T1", "BC"),
+                        ("Patient 19186-15-T2", "BC"),
+                        ("Patient 19186-15-T3", "BC"),
+                        ("Patient 19186-2", "BC"),
+                        ("Patient 19186-3", "BC"),
+                        ("Patient 19186-14", "BC"),
+                        ("Patient 21368-3", "BC"),
+                        ("Patient 21368-4", "BC")])
 
 
 def get_status_dict_rec():
