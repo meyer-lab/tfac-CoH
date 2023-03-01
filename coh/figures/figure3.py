@@ -64,7 +64,6 @@ def CoH_Scat_Plot(ax, tFac, CoH_Array, mode, numComps, plot_comps):
     if mode == "Patient":
         status_df = pd.read_csv(join(path_here, "data/Patient_Status.csv")).set_index("Patient")
         tFacDF = pd.concat([tFacDF, status_df], axis=1)
-        print(tFacDF)
         sns.scatterplot(data=tFacDF, x=plot_comps[0], y=plot_comps[1], hue="Status", style="Status", ax=ax)
     else:
         sns.scatterplot(data=tFacDF, x=plot_comps[0], y=plot_comps[1], ax=ax)

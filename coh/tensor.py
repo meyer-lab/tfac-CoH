@@ -112,7 +112,7 @@ def CoH_LogReg_plot(ax, tFac, CoH_Array, numComps):
     status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status.csv"), index_col=0)
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
 
-    LR_CoH = LogisticRegression(random_state=0, penalty=None).fit(mode_facs, Donor_CoH_y)
+    LR_CoH = LogisticRegression(random_state=0, penalty='none').fit(mode_facs, Donor_CoH_y)
     CoH_comp_weights = pd.DataFrame({"Component": np.arange(1, numComps + 1), "Coefficient": LR_CoH.coef_[0]})
     sns.barplot(data=CoH_comp_weights, x="Component", y="Coefficient", color="k", ax=ax)
 
@@ -187,7 +187,7 @@ def BC_status_plot(compNum, CoH_Data, ax, basal=False):
     status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status.csv"), index_col=0)
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
     cv = RepeatedStratifiedKFold(n_splits=10, random_state=42)
-    model = LogisticRegression(penalty=None)
+    model = LogisticRegression(penalty='none')
     for i in range(1, compNum + 1):
         tFacAllM, _ = factorTensor(CoH_Data.values, numComps=i)
         mode_labels = CoH_Data["Patient"]
@@ -200,7 +200,7 @@ def BC_status_plot(compNum, CoH_Data, ax, basal=False):
         tFacDF = pd.pivot(tFacDF, index="Component", columns="Patient", values="Component_Val")
         tFacDF = tFacDF[status_DF.Patient]
         TFAC_X = tFacDF.transpose().values
-        model = LogisticRegression(penalty=None)
+        model = LogisticRegression(penalty='none')
         scoresTFAC = cross_val_score(model, TFAC_X, Donor_CoH_y, cv=cv)
         accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "Tensor Factorization", "Components": [i], "Accuracy (10-fold CV)": np.mean(scoresTFAC)})])
     accDF = accDF.reset_index(drop=True)
@@ -214,7 +214,7 @@ def BC_status_plot_rec(compNum, CoH_Data, matrixDF, ax):
     status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status_Rec.csv"), index_col=0)
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
     cv = RepeatedStratifiedKFold(n_splits=10, random_state=42)
-    model = LogisticRegression(penalty=None)
+    model = LogisticRegression(penalty='none')
     matrixDF = matrixDF.values
     scoresPCA = cross_val_score(model, matrixDF, Donor_CoH_y, cv=cv)
     for i in range(1, compNum + 1):
@@ -230,7 +230,7 @@ def BC_status_plot_rec(compNum, CoH_Data, matrixDF, ax):
         tFacDF = pd.pivot(tFacDF, index="Component", columns="Patient", values="Component_Val")
         tFacDF = tFacDF[status_DF.Patient]
         TFAC_X = tFacDF.transpose().values
-        model = LogisticRegression(penalty=None)
+        model = LogisticRegression(penalty='none')
         scoresTFAC = cross_val_score(model, TFAC_X, Donor_CoH_y, cv=cv)
         accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "Tensor Factorization", "Components": [i], "Accuracy (10-fold CV)": np.mean(scoresTFAC)})])
         accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "All Data", "Components": [i], "Accuracy (10-fold CV)": np.mean(scoresPCA)})])

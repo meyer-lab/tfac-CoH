@@ -19,7 +19,7 @@ path_here = dirname(dirname(__file__))
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((8, 8), (4, 2), multz={0: 1, 2: 3})
+    ax, f = getSetup((8, 8), (2, 3), multz={0: 2})
 
     # Add subplot labels
     subplotLabel(ax)
@@ -31,14 +31,14 @@ def makeFigure():
     CoH_data_I = make_impute_DF()
     treatments = ["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng", "Untreated"]
     CoH_data = CoH_data.loc[CoH_data.Treatment.isin(treatments)]
-    fullHeatMap(ax[1], CoH_data, CoH_data_I, [marker], makeDF=False)
-    response_ligand_scatter(ax[2], CoH_data, "pSTAT5")
-    response_cell_scatter(ax[3], CoH_data, "pSTAT6", "IL4-50ng")
+    fullHeatMap(ax[1], CoH_data, CoH_data_I, ["pSTAT3"], cbar=False, makeDF=False)
+    fullHeatMap(ax[2], CoH_data, CoH_data_I, ["pSTAT5"], cbar=False, makeDF=False)
+    fullHeatMap(ax[3], CoH_data, CoH_data_I, ["pSTAT6"], cbar=False, makeDF=False)
 
     return f
 
 
-def fullHeatMap(ax, respDF, respDF_I, markers, makeDF=True):
+def fullHeatMap(ax, respDF, respDF_I, markers, cbar=True, makeDF=True):
     """Plots the various affinities for IL-2 Muteins"""
     heatmapDF = pd.DataFrame()
     respDFhm = copy(respDF)
@@ -63,11 +63,11 @@ def fullHeatMap(ax, respDF, respDF_I, markers, makeDF=True):
                                                         & (respDFhm_I.Marker == marker)].Mean.values / normMax
                             row[treatment + " - " + str(time)] = entry
                 heatmapDF = pd.concat([heatmapDF, row])
-        heatmapDF = heatmapDF.set_index("Patient/Cell")
+        heatmapDF.to_csv(join(path_here, "data/CoH_Heatmap_DF_" + markers[0] + ".csv"))
     else:
-        heatmapDF = pd.read_csv(join(path_here, "data/CoH_Heatmap_DF.csv"), index_col=0)
-
-    sns.heatmap(data=heatmapDF, vmin=0, vmax=1, ax=ax, cbar_kws={'label': markers[0]})
+        heatmapDF = pd.read_csv(join(path_here, "data/CoH_Heatmap_DF_" + markers[0] + ".csv"), index_col=0)
+    heatmapDF = heatmapDF.set_index("Patient/Cell")
+    sns.heatmap(data=heatmapDF, vmin=0, vmax=1, ax=ax, cbar=cbar, cbar_kws={'label': markers[0]}, yticklabels=False)
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
 
 
