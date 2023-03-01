@@ -21,16 +21,17 @@ def makeFigure():
     # subplotLabel(ax)
     # make_CoH_Tensor(just_signal=True, basal=False)
 
-    num_comps = 12
-    CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
+    num_comps = 4
+    #CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
+    CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Rec.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
-    f = plot_coh_clust(tFacAllM, CoH_Data, "Patient", numComps=num_comps)
+    f = plot_coh_clust(tFacAllM, CoH_Data, "Patient", numComps=num_comps, rec=True)
     
 
     return f
 
 
-def plot_coh_clust(tFac, CoH_Array, mode, numComps=12):
+def plot_coh_clust(tFac, CoH_Array, mode, numComps=12, rec=False):
     """Plots tensor factorization of cells"""
     mode_labels = CoH_Array[mode]
     coord = CoH_Array.dims.index(mode)
@@ -42,7 +43,11 @@ def plot_coh_clust(tFac, CoH_Array, mode, numComps=12):
 
     tFacDF = pd.pivot(tFacDF, index="Component", columns=mode, values="Component_Val")
     cmap = sns.color_palette("vlag", as_cmap=True)
-    status_df = pd.read_csv(join(path_here, "data/Patient_Status.csv")).sort_values(by="Patient").reset_index()
+
+    if rec:
+        status_df = pd.read_csv(join(path_here, "data/Patient_Status_Rec.csv")).sort_values(by="Patient").reset_index()
+    else: 
+        status_df = pd.read_csv(join(path_here, "data/Patient_Status.csv")).sort_values(by="Patient").reset_index()
     status = status_df["Status"]
     lut = dict(zip(status.unique(), "rbg"))
     col_colors = pd.DataFrame(status.map(lut))
