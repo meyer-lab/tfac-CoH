@@ -25,8 +25,6 @@ def makeFigure():
     subplotLabel(ax)
     ax[0].axis("off")
 
-    marker = "pSTAT3"
-
     CoH_data = pd.read_csv(join(path_here, "data/CoH_Flow_DF.csv"))
     CoH_data_I = make_impute_DF()
     treatments = ["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng", "Untreated"]
