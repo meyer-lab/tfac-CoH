@@ -1,12 +1,13 @@
 """
-This creates Figure 4.
+This creates Figure 3, classification analysis.
 """
+import xarray as xa
 import seaborn as sns
 import pandas as pd
-from .figureCommon import subplotLabel, getSetup, BC_scatter, BC_scatter_cells
+from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
-from ..tensor import get_status_dict
-from scipy.stats import spearmanr
+from ..tensor import factorTensor, CoH_LogReg_plot, plot_tFac_CoH, make_alldata_DF, BC_status_plot
+
 
 path_here = dirname(dirname(__file__))
 
@@ -14,65 +15,50 @@ path_here = dirname(dirname(__file__))
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((12, 9), (3, 3))
+    ax, f = getSetup((10, 6), (3, 4), multz={0: 3})
 
     # Add subplot labels
     subplotLabel(ax)
-    # make_flow_df(foldChange=True)
-    # make_CoH_Tensor(just_signal=True, foldChange=True)
+    #make_flow_df()
+    # make_CoH_Tensor(basal=True)
+    ax[0].axis("off")
 
-    #make_alldata_DF(CoH_Data, PCA=False, foldChange=True)
-    CoH_DF = pd.read_csv(join(path_here, "data/CoH_Flow_DF.csv"))
-    CoH_DF = CoH_DF.loc[CoH_DF.Time == "15min"]
-    BC_scatter(ax[0], CoH_DF, "pSTAT3", "IL10-50ng")
-    BC_scatter(ax[1], CoH_DF, "pSTAT5", "IL2-50ng")
-    BC_scatter(ax[2], CoH_DF, "pSmad1-2", "TGFB-50ng")
-    BC_scatter_cells(ax[3], CoH_DF, "pSTAT3", "IL10-50ng", filter=True)
-    BC_scatter_cells(ax[4], CoH_DF, "pSTAT5", "IL2-50ng", filter=True)
-    BC_scatter_cells(ax[5], CoH_DF, "pSTAT3", "IL6-50ng", filter=True)
-    CoH_DF_B = pd.read_csv(join(path_here, "data/CoH_Flow_DF_Basal.csv"))
-    CoH_DF_B = CoH_DF_B.loc[CoH_DF_B.Time == "15min"]
-    BC_scatter_cells(ax[6], CoH_DF_B, "pSmad1-2", "Untreated", filter=True)
-    BC_scatter_cells(ax[7], CoH_DF_B, "pSTAT4", "Untreated", filter=True)
-    BC_scatter_cells(ax[8], CoH_DF_B, "pSTAT1", "Untreated", filter=True)
+    num_comps = 12
+    CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
+    tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
+
+    BC_status_plot(13, CoH_Data, ax[1])
+    CoH_LogReg_plot(ax[2], tFacAllM, CoH_Data, num_comps)
+    CoH_Scat_Plot(ax[3], tFacAllM, CoH_Data, "Patient", numComps=num_comps, plot_comps=[2, 9])
+    plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Marker", numComps=num_comps, cbar=False)
+
+    num_comps = 4
+    CoH_Data_R = xa.open_dataarray(join(path_here, "data/CoH_Rec.nc"))
+    tFacAllM_R, _ = factorTensor(CoH_Data_R.values, numComps=num_comps)
+
+    BC_status_plot(5, CoH_Data_R, ax[5], rec=True)
+    CoH_LogReg_plot(ax[6], tFacAllM_R, CoH_Data_R, num_comps)
+    CoH_Scat_Plot(ax[7], tFacAllM_R, CoH_Data_R, "Patient", numComps=num_comps, plot_comps=[1, 2])
+    plot_tFac_CoH(ax[8], tFacAllM_R, CoH_Data_R, "Marker", numComps=num_comps, cbar=False)
 
     return f
 
 
-def dysreg_cor_plot(ax, CoH_DF, cytokine1, marker1, cytokine2, marker2, CoH_DF_B=False):
-    """Plots possible correlation of dysregulation"""
-    status_dict = get_status_dict()
-    CoH_DF1 = CoH_DF.loc[(CoH_DF.Treatment == cytokine1) & (CoH_DF.Marker == marker1)]
-    if type(CoH_DF_B) != pd.DataFrame:
-        CoH_DF2 = CoH_DF.loc[(CoH_DF.Treatment == cytokine2) & (CoH_DF.Marker == marker2)]
+def CoH_Scat_Plot(ax, tFac, CoH_Array, mode, numComps, plot_comps):
+    """Plots bar plot for spec"""
+    mode_labels = CoH_Array[mode]
+    coord = CoH_Array.dims.index(mode)
+    mode_facs = tFac[1][coord]
+    tFacDF = pd.DataFrame()
+
+    for i in range(0, numComps):
+        tFacDF = pd.concat([tFacDF, pd.DataFrame({"Component_Val": mode_facs[:, i], "Component": (i + 1), mode: mode_labels})])
+    tFacDF = tFacDF.loc[tFacDF["Component"].isin(plot_comps)]
+    tFacDF = tFacDF.pivot(index=mode, columns='Component', values='Component_Val')
+    if mode == "Patient":
+        status_df = pd.read_csv(join(path_here, "data/Patient_Status.csv")).set_index("Patient")
+        tFacDF = pd.concat([tFacDF, status_df], axis=1)
+        sns.scatterplot(data=tFacDF, x=plot_comps[0], y=plot_comps[1], hue="Status", style="Status", ax=ax)
     else:
-        CoH_DF2 = CoH_DF_B.loc[(CoH_DF_B.Treatment == cytokine2) & (CoH_DF_B.Marker == marker2)]
-    CoH_DF1 = CoH_DF1.groupby(["Cell", "Patient", "Marker"]).Mean.mean().reset_index()
-    CoH_DF1["Status"] = CoH_DF1.replace({"Patient": status_dict}).Patient.values
-    CoH_DF1 = CoH_DF1.drop(["Marker", "Cell"], axis=1).rename({"Mean": marker1}, axis=1)
-
-    CoH_DF2 = CoH_DF2.groupby(["Cell", "Patient", "Marker"]).Mean.mean().reset_index()
-    CoH_DF2["Status"] = CoH_DF2.replace({"Patient": status_dict}).Patient.values
-    CoH_DF2 = CoH_DF2.drop(["Marker", "Cell"], axis=1).rename({"Mean": marker2}, axis=1)
-    
-    CoH_DF2[marker1] = CoH_DF1[marker1].values
-    Healthy_DF = CoH_DF2.loc[CoH_DF2.Status == "BC"]
-    BC_DF = CoH_DF2.loc[CoH_DF2.Status == "Healthy"]
-    print(marker1, marker2)
-    print(spearmanr(CoH_DF2[marker1], CoH_DF2[marker2]), " Overall")
-    print(spearmanr(Healthy_DF[marker1], Healthy_DF[marker2]), " Healthy")
-    print(spearmanr(BC_DF[marker1], BC_DF[marker2]), " BC")
-
-    sns.scatterplot(data=CoH_DF2, x=marker1, y=marker2, hue="Status", ax=ax)
-    #ax.text(5, np.amax(CoH_DF2[marker2].values) * 1.1, str(spearmanr(CoH_DF2[marker1], CoH_DF2[marker2])[0]) + " Overall Spearman")
-    #ax.text(5, np.amax(CoH_DF2[marker2].values) * 1, str(spearmanr(Healthy_DF[marker1], Healthy_DF[marker2])[0]) + " Healthy Spearman")
-    #ax.text(5, np.amax(CoH_DF2[marker2].values) * 0.9, str(spearmanr(BC_DF[marker1], BC_DF[marker2])[0]) + " BC Spearman")
-    ax.set(xlabel=marker1 + " response to " + cytokine1, ylabel=marker2 + " response to " + cytokine2)
-
-
-def resp_bar(ax, CoH_DF, cells, marker):
-    """Use for seeing which patients are diverging, not actual figure"""
-    CoH_DF = CoH_DF.groupby(["Cell", "Patient", "Marker"]).Mean.mean().reset_index()
-    CoH_DF = CoH_DF.loc[(CoH_DF.Cell.isin(cells)) & (CoH_DF.Marker == marker)]
-    sns.barplot(data=CoH_DF, x="Patient", y="Mean", ax=ax)
-    ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
+        sns.scatterplot(data=tFacDF, x=plot_comps[0], y=plot_comps[1], ax=ax)
+    ax.set(xlabel="Component " + str(plot_comps[0]), ylabel="Component " + str(plot_comps[1]))
