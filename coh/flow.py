@@ -214,8 +214,8 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
     if subtract:
         UntreatedDF = CoH_DF.loc[(CoH_DF.Treatment == "Untreated")]
         UntreatedDF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_Basal.csv"))
-        CoH_DF.loc[(CoH_DF.Treatment == "Untreated"), "Mean"] = 0
         if foldChange:
+            CoH_DF.loc[(CoH_DF.Treatment == "Untreated"), "Mean"] = 0
             CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_FC.csv"))
         else:
             CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF.csv"))
@@ -228,28 +228,25 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
     return CoH_DF
 
 
-def make_CoH_Tensor(subtract=True, just_signal=False, foldChange=False, basal=False):
+def make_CoH_Tensor(just_signal=False, foldChange=False):
     """Processes RA DataFrame into Xarray Tensor"""
-    if basal:
-        CoH_DF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_DF_Basal.csv"))
-    elif subtract:
-        if foldChange:
-            CoH_DF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_DF_FC.csv"))
-        else:
-            CoH_DF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_DF.csv"))
-        CoH_DF.loc[(CoH_DF.Treatment == "Untreated"), "Mean"] = 0
+    if foldChange:
+        CoH_DF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_DF_FC.csv"), index_col=0)
     else:
-        CoH_DF = pd.read_csv(join(path_here, "coh/data/NN_CoH_Flow_DF.csv"))
+        CoH_DF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_DF.csv"), index_col=0)
 
     CoH_DF = CoH_DF.loc[CoH_DF.Time == "15min"]
+    CoH_DF.Treatment = CoH_DF.Treatment.replace(["Untreated"], "Basal")
 
-    if just_signal or foldChange or basal:
+    if just_signal or foldChange:
         markers = np.array(["pSTAT1", "pSTAT3", "pSTAT4", "pSTAT5", "pSTAT6", "pSmad1-2"])
         CoH_DF = CoH_DF.loc[CoH_DF.Marker.isin(markers)]
     
-    if not basal:
+    if foldChange:
         treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng"])
-        CoH_DF = CoH_DF.loc[CoH_DF.Treatment.isin(treatments)]
+    else: 
+        treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng", "Basal"])
+    CoH_DF = CoH_DF.loc[CoH_DF.Treatment.isin(treatments)]
 
     CoH_DF = CoH_DF.groupby(["Patient", "Time", "Treatment", "Cell", "Marker"], sort=False).Mean.mean().reset_index()
     patients = CoH_DF.Patient.unique()
@@ -268,25 +265,26 @@ def make_CoH_Tensor(subtract=True, just_signal=False, foldChange=False, basal=Fa
 
     # Normalize
     for i, _ in enumerate(markers):
-        tensor[:, :, :, i][~np.isnan(tensor[:, :, :, i])] /= np.nanmax(tensor[:, :, :, i])
+        if foldChange:
+            tensor[:, :, :, i][~np.isnan(tensor[:, :, :, i])] -= np.nanmean(tensor[:, :, :, i])
+            tensor[:, :, :, i][~np.isnan(tensor[:, :, :, i])] /= np.nanstd(tensor[:, :, :, i])
+        else:
+            tensor[:, 1::, :, i][~np.isnan(tensor[:, 1::, :, i])] -= np.nanmean(tensor[:, 1::, :, i])
+            tensor[:, 1::, :, i][~np.isnan(tensor[:, 1::, :, i])] /= np.nanstd(tensor[:, 1::, :, i])
+            tensor[:, 0, :, i][~np.isnan(tensor[:, 0, :, i])] -= np.nanmean(tensor[:, 0, :, i])
+            tensor[:, 0, :, i][~np.isnan(tensor[:, 0, :, i])] /= np.nanstd(tensor[:, 0, :, i]) # Basal Separate
+            
 
     CoH_xarray = xa.DataArray(tensor, dims=("Patient", "Treatment", "Cell", "Marker"), coords={"Patient": patients, "Treatment": treatments, "Cell": cells, "Marker": markers})
     CoH_xarray = CoH_xarray.reindex(Marker=np.sort(markers))
     CoH_xarray = CoH_xarray.reindex(Cell=np.sort(cells))
     CoH_xarray = CoH_xarray.reindex(Treatment=np.sort(treatments))
 
-    if basal:
-        CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH_Tensor_DataSet_Basal.nc"))
-    elif subtract:
-        if foldChange:
-            CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH_Tensor_DataSet_FC.nc"))
-        else:
-            if just_signal:
-                CoH_xarray.to_netcdf(join(path_here, "coh/data/CoHTensorDataJustSignal.nc"))
-            else:
-                CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH Tensor DataSet.nc"))
+    if foldChange:
+        CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH_Tensor_DataSet_FC.nc"))
     else:
-        CoH_xarray.to_netcdf(join(path_here, "coh/data/NN CoH Tensor DataSet.nc"))
+        CoH_xarray.to_netcdf(join(path_here, "coh/data/CoHTensorDataJustSignal.nc"))
+
     return tensor
 
 
@@ -311,8 +309,8 @@ def make_CoH_Tensor_abund():
 
     # Normalize
     for i, _ in enumerate(cells):
-        tensor[:, :, i][~np.isnan(tensor[:, :, i])] /= np.nanmax(tensor[:, :, i])
         tensor[:, :, i][~np.isnan(tensor[:, :, i])] -= np.nanmean(tensor[:, :, i])
+        tensor[:, :, i][~np.isnan(tensor[:, :, i])] /= np.nanstd(tensor[:, :, i])
 
     CoH_xarray = xa.DataArray(tensor, dims=("Patient", "Treatment", "Cell"), coords={"Patient": patients, "Treatment": treatments, "Cell": cells})
     CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH_Tensor_Abundance.nc"))

@@ -21,7 +21,7 @@ def makeFigure():
     # subplotLabel(ax)
     # make_CoH_Tensor(just_signal=True, basal=False)
 
-    num_comps = 10
+    num_comps = 12
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
     f = plot_coh_clust(tFacAllM, CoH_Data, "Patient", numComps=num_comps)
