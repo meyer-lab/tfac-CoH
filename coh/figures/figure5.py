@@ -1,13 +1,12 @@
 """
-This creates Figure 3, classification analysis.
+This creates Figure 5, heatmap (clustered factor correlations).
 """
 import xarray as xa
 import seaborn as sns
 import pandas as pd
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
-from ..tensor import factorTensor, CoH_LogReg_plot, plot_tFac_CoH, make_alldata_DF, BC_status_plot
-
+from ..tensor import factorTensor
 
 path_here = dirname(dirname(__file__))
 
@@ -15,26 +14,21 @@ path_here = dirname(dirname(__file__))
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((10, 6), (3, 4), multz={0: 3})
+    ax, f = getSetup((10, 10), (1, 1))
 
     # Add subplot labels
     subplotLabel(ax)
-    #make_flow_df()
-    # make_CoH_Tensor(basal=True)
     ax[0].axis("off")
 
     num_comps = 12
-    CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
+    CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Tensor_DataSet.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
-
 
     num_comps = 4
     CoH_Data_R = xa.open_dataarray(join(path_here, "data/CoH_Rec.nc"))
     tFacAllM_R, _ = factorTensor(CoH_Data_R.values, numComps=num_comps)
 
-    f = CoH_Factor_HM(ax[7], tFacAllM, CoH_Data, tFacAllM_R, CoH_Data_R, sig_comps=[2, 5, 9, 10], rec_comps=[1, 2, 4])
-    #CoH_Factor_HM(ax[7], tFacAllM, CoH_Data, tFacAllM_R, CoH_Data_R, sig_comps=[2, 5, 9, 10], rec_comps=[1, 2, 4])
-
+    f = CoH_Factor_HM(ax[0], tFacAllM, CoH_Data, tFacAllM_R, CoH_Data_R, sig_comps=[2, 5, 9, 10], rec_comps=[1, 2, 4])
 
     return f
 
@@ -53,7 +47,7 @@ def CoH_Factor_HM(ax, tFac, CoH_Array, tFac_R, CoH_Array_R, sig_comps, rec_comps
         tFacDF = pd.concat([tFacDF, pd.DataFrame({"Component_Val": mode_facs[:, i - 1], "Signaling Component": "Sig. Comp " + str(i), "Patient": mode_labels})])
     tFacDF = tFacDF.loc[tFacDF.Patient.isin(BC_Patients)]
     tFacDF = tFacDF.pivot(index="Patient", columns='Signaling Component', values='Component_Val')
-    
+
     mode_labels_R = CoH_Array_R["Patient"]
     coord_R = CoH_Array_R.dims.index("Patient")
     mode_facs_R = tFac_R[1][coord_R]

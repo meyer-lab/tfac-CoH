@@ -1,5 +1,5 @@
 """
-This creates Figure 3, classification analysis.
+This creates Figure 4, classification analysis.
 """
 import xarray as xa
 import seaborn as sns
@@ -7,7 +7,6 @@ import pandas as pd
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
 from ..tensor import factorTensor, CoH_LogReg_plot, plot_tFac_CoH, make_alldata_DF, BC_status_plot
-
 
 path_here = dirname(dirname(__file__))
 
@@ -19,12 +18,10 @@ def makeFigure():
 
     # Add subplot labels
     subplotLabel(ax)
-    #make_flow_df()
-    # make_CoH_Tensor(basal=True)
     ax[0].axis("off")
 
     num_comps = 12
-    CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
+    CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Tensor_DataSet.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
 
     BC_status_plot(13, CoH_Data, ax[1])

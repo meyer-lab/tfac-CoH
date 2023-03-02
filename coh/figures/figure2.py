@@ -1,12 +1,11 @@
 """
-This creates Figure 2, tensor factorization.
+This creates Figure 2, tensor factorization of response data.
 """
 import xarray as xa
 import numpy as np
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
-from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH, core_cons_plot
-from ..flow import make_CoH_Tensor, make_flow_df
+from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH
 
 path_here = dirname(dirname(__file__))
 
@@ -19,11 +18,9 @@ def makeFigure():
     # Add subplot labels
     subplotLabel(ax)
     ax[0].axis("off")
-    # make_flow_df(subtract=True, abundance=False, foldChange=False)
-    # make_CoH_Tensor(just_signal=True)
 
     num_comps = 12
-    CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
+    CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Tensor_DataSet.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
     R2Xplot(ax[1], CoH_Data.values, compNum=15)
     plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Patient", numComps=num_comps, cbar=False)

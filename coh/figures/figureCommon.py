@@ -120,7 +120,6 @@ def BC_scatter_cells(ax, CoH_DF, marker, cytokine, filter=False):
     hist_DF = hist_DF.groupby(["Cell", "Patient", "Marker"]).Mean.mean().reset_index()
     hist_DF["Status"] = hist_DF.replace({"Patient": status_dict}).Patient.values
 
-
     filt_cells = []
     pvals = []
     for cell in hist_DF.Cell.unique():
@@ -150,9 +149,23 @@ def BC_scatter_cells(ax, CoH_DF, marker, cytokine, filter=False):
     for cell in hist_DF.Cell.unique():
         boxpairs.append([(cell, "Healthy"), (cell, "BC")])
     if filter:
-        add_stat_annotation(ax=ax, data=hist_DF, x="Cell", y="Mean", hue="Status", box_pairs=boxpairs, text_annot_custom=pvals, perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(filt_cells)), verbose=0)
+        add_stat_annotation(
+            ax=ax,
+            data=hist_DF,
+            x="Cell",
+            y="Mean",
+            hue="Status",
+            box_pairs=boxpairs,
+            text_annot_custom=pvals,
+            perform_stat_test=False,
+            loc='inside',
+            pvalues=np.tile(
+                0,
+                len(filt_cells)),
+            verbose=0)
     else:
-        add_stat_annotation(ax=ax, data=hist_DF, x="Cell", y="Mean", hue="Status", box_pairs=boxpairs, text_annot_custom=pvals, perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(hist_DF.Cell.unique())), verbose=0)
+        add_stat_annotation(ax=ax, data=hist_DF, x="Cell", y="Mean", hue="Status", box_pairs=boxpairs, text_annot_custom=pvals,
+                            perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(hist_DF.Cell.unique())), verbose=0)
     # ad
     # add_stat_annotation(ax=ax, data=hist_DF, x="Cell", y="Mean", hue="Status", test='t-test_ind', box_pairs=boxpairs, text_format='star', loc='inside', verbose=2)
 
@@ -164,7 +177,6 @@ def BC_scatter_ligs(ax, CoH_DF, marker, filter=False):
     hist_DF = CoH_DF.loc[(CoH_DF.Marker == marker)]
     hist_DF = hist_DF.groupby(["Treatment", "Patient", "Marker"]).Mean.mean().reset_index()
     hist_DF["Status"] = hist_DF.replace({"Patient": status_dict}).Patient.values
-
 
     filt_treats = []
     pvals = []
@@ -195,9 +207,23 @@ def BC_scatter_ligs(ax, CoH_DF, marker, filter=False):
     for treat in hist_DF.Treatment.unique():
         boxpairs.append([(treat, "Healthy"), (treat, "BC")])
     if filter:
-        add_stat_annotation(ax=ax, data=hist_DF, x="Treatment", y="Mean", hue="Status", box_pairs=boxpairs, text_annot_custom=pvals, perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(filt_treats)), verbose=0)
+        add_stat_annotation(
+            ax=ax,
+            data=hist_DF,
+            x="Treatment",
+            y="Mean",
+            hue="Status",
+            box_pairs=boxpairs,
+            text_annot_custom=pvals,
+            perform_stat_test=False,
+            loc='inside',
+            pvalues=np.tile(
+                0,
+                len(filt_treats)),
+            verbose=0)
     else:
-        add_stat_annotation(ax=ax, data=hist_DF, x="Treatment", y="Mean", hue="Status", box_pairs=boxpairs, text_annot_custom=pvals, perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(hist_DF.Treatment.unique())), verbose=0)
+        add_stat_annotation(ax=ax, data=hist_DF, x="Treatment", y="Mean", hue="Status", box_pairs=boxpairs, text_annot_custom=pvals,
+                            perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(hist_DF.Treatment.unique())), verbose=0)
 
 
 def BC_scatter_cells_rec(ax, CoH_DF, marker, filter=False):
@@ -206,7 +232,6 @@ def BC_scatter_cells_rec(ax, CoH_DF, marker, filter=False):
     hist_DF = CoH_DF.loc[(CoH_DF.Marker == marker)]
     hist_DF = hist_DF.groupby(["Cell", "Patient", "Marker"]).Mean.mean().reset_index()
     hist_DF["Status"] = hist_DF.replace({"Patient": status_dict}).Patient.values
-
 
     filt_cells = []
     pvals = []
@@ -236,6 +261,20 @@ def BC_scatter_cells_rec(ax, CoH_DF, marker, filter=False):
     for cell in hist_DF.Cell.unique():
         boxpairs.append([(cell, "Healthy"), (cell, "BC")])
     if filter:
-        add_stat_annotation(ax=ax, data=hist_DF, x="Cell", y="Mean", hue="Status", box_pairs=boxpairs, text_annot_custom=pvals, perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(filt_cells)), verbose=0)
+        add_stat_annotation(
+            ax=ax,
+            data=hist_DF,
+            x="Cell",
+            y="Mean",
+            hue="Status",
+            box_pairs=boxpairs,
+            text_annot_custom=pvals,
+            perform_stat_test=False,
+            loc='inside',
+            pvalues=np.tile(
+                0,
+                len(filt_cells)),
+            verbose=0)
     else:
-        add_stat_annotation(ax=ax, data=hist_DF, x="Cell", y="Mean", hue="Status", box_pairs=boxpairs, text_annot_custom=pvals, perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(hist_DF.Cell.unique())), verbose=0)
+        add_stat_annotation(ax=ax, data=hist_DF, x="Cell", y="Mean", hue="Status", box_pairs=boxpairs, text_annot_custom=pvals,
+                            perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(hist_DF.Cell.unique())), verbose=0)

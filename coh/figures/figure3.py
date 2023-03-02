@@ -1,12 +1,11 @@
 """
-This creates Figure 2, tensor factorization.
+This creates Figure 3, tensor factorization of receptor data.
 """
 import xarray as xa
 import numpy as np
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
-from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH, core_cons_plot
-from ..flow import make_CoH_Tensor, make_flow_df
+from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH
 
 path_here = dirname(dirname(__file__))
 
@@ -19,8 +18,6 @@ def makeFigure():
     # Add subplot labels
     subplotLabel(ax)
     ax[0].axis("off")
-    # make_flow_df(subtract=True, abundance=False, foldChange=False)
-    # make_CoH_Tensor(just_signal=True)
 
     num_comps = 4
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Rec.nc"))

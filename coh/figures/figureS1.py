@@ -1,5 +1,5 @@
 """
-This creates Figure 1.
+This creates Figure S1, dimensionality reduction size check.
 """
 from os.path import join, dirname
 import xarray as xa
@@ -14,12 +14,12 @@ path_here = dirname(dirname(__file__))
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((9, 3), (1, 2))
+    ax, f = getSetup((4.5, 3), (1, 1))
 
     # Add subplot labels
     subplotLabel(ax)
 
-    X = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc")).to_numpy()
+    X = xa.open_dataarray(join(path_here, "data/CoH_Tensor_DataSet.nc")).to_numpy()
 
     tc = Decomposition(X, max_rr=8)
     tc.perform_tfac()

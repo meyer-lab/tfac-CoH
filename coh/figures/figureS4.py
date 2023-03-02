@@ -1,10 +1,9 @@
 """
-This creates Figure 1.
+This creates Figure S4, boxplots of induced responses.
 """
-import xarray as xa
-from .figureCommon import subplotLabel, getSetup
+import pandas as pd
+from .figureCommon import subplotLabel, getSetup, BC_scatter, BC_scatter_cells
 from os.path import join, dirname
-from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH, BC_status_plot, CoH_LogReg_plot
 
 path_here = dirname(dirname(__file__))
 
@@ -12,21 +11,23 @@ path_here = dirname(dirname(__file__))
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((9, 6), (2, 3))
+    ax, f = getSetup((12, 9), (3, 3))
 
     # Add subplot labels
     subplotLabel(ax)
 
-    num_comps = 7
-
-    CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Tensor_Abundance.nc"))
-    tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
-    
-    R2Xplot(ax[0], CoH_Data.values, compNum=8)
-    BC_status_plot(8, CoH_Data, ax[1])
-    CoH_LogReg_plot(ax[2], tFacAllM, CoH_Data, num_comps)
-    plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Patient", numComps=num_comps)
-    plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Treatment", numComps=num_comps)
-    plot_tFac_CoH(ax[5], tFacAllM, CoH_Data, "Cell", numComps=num_comps)
+    CoH_DF = pd.read_csv(join(path_here, "data/CoH_Flow_DF.csv"))
+    CoH_DF = CoH_DF.loc[CoH_DF.Time == "15min"]
+    BC_scatter(ax[0], CoH_DF, "pSTAT3", "IL10-50ng")
+    BC_scatter(ax[1], CoH_DF, "pSTAT5", "IL2-50ng")
+    BC_scatter(ax[2], CoH_DF, "pSmad1-2", "TGFB-50ng")
+    BC_scatter_cells(ax[3], CoH_DF, "pSTAT3", "IL10-50ng", filter=True)
+    BC_scatter_cells(ax[4], CoH_DF, "pSTAT5", "IL2-50ng", filter=True)
+    BC_scatter_cells(ax[5], CoH_DF, "pSTAT3", "IL6-50ng", filter=True)
+    CoH_DF_B = pd.read_csv(join(path_here, "data/CoH_Flow_DF_Basal.csv"))
+    CoH_DF_B = CoH_DF_B.loc[CoH_DF_B.Time == "15min"]
+    BC_scatter_cells(ax[6], CoH_DF_B, "pSmad1-2", "Untreated", filter=True)
+    BC_scatter_cells(ax[7], CoH_DF_B, "pSTAT4", "Untreated", filter=True)
+    BC_scatter_cells(ax[8], CoH_DF_B, "pSTAT1", "Untreated", filter=True)
 
     return f

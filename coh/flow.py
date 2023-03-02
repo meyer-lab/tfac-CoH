@@ -241,10 +241,10 @@ def make_CoH_Tensor(just_signal=False, foldChange=False):
     if just_signal or foldChange:
         markers = np.array(["pSTAT1", "pSTAT3", "pSTAT4", "pSTAT5", "pSTAT6", "pSmad1-2"])
         CoH_DF = CoH_DF.loc[CoH_DF.Marker.isin(markers)]
-    
+
     if foldChange:
         treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng"])
-    else: 
+    else:
         treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng", "Basal"])
     CoH_DF = CoH_DF.loc[CoH_DF.Treatment.isin(treatments)]
 
@@ -260,7 +260,13 @@ def make_CoH_Tensor(just_signal=False, foldChange=False):
     values_vec = CoH_DF.Mean.values
 
     for i, combination in enumerate(itertools.product(patients, times, treatments, cells, markers)):
-        coords = [np.where(patients == combination[0])[0][0], np.where(times == combination[1])[0], np.where(treatments == combination[2])[0][0], np.where(cells == combination[3])[0][0] , np.where(markers == combination[4])[0][0]]
+        coords = [
+            np.where(
+                patients == combination[0])[0][0], np.where(
+                times == combination[1])[0], np.where(
+                treatments == combination[2])[0][0], np.where(
+                    cells == combination[3])[0][0], np.where(
+                        markers == combination[4])[0][0]]
         tensor[coords[0], coords[2], coords[3], coords[4]] = values_vec[i]
 
     # Normalize
@@ -272,8 +278,7 @@ def make_CoH_Tensor(just_signal=False, foldChange=False):
             tensor[:, 1::, :, i][~np.isnan(tensor[:, 1::, :, i])] -= np.nanmean(tensor[:, 1::, :, i])
             tensor[:, 1::, :, i][~np.isnan(tensor[:, 1::, :, i])] /= np.nanstd(tensor[:, 1::, :, i])
             tensor[:, 0, :, i][~np.isnan(tensor[:, 0, :, i])] -= np.nanmean(tensor[:, 0, :, i])
-            tensor[:, 0, :, i][~np.isnan(tensor[:, 0, :, i])] /= np.nanstd(tensor[:, 0, :, i]) # Basal Separate
-            
+            tensor[:, 0, :, i][~np.isnan(tensor[:, 0, :, i])] /= np.nanstd(tensor[:, 0, :, i])  # Basal Separate
 
     CoH_xarray = xa.DataArray(tensor, dims=("Patient", "Treatment", "Cell", "Marker"), coords={"Patient": patients, "Treatment": treatments, "Cell": cells, "Marker": markers})
     CoH_xarray = CoH_xarray.reindex(Marker=np.sort(markers))
@@ -283,7 +288,7 @@ def make_CoH_Tensor(just_signal=False, foldChange=False):
     if foldChange:
         CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH_Tensor_DataSet_FC.nc"))
     else:
-        CoH_xarray.to_netcdf(join(path_here, "coh/data/CoHTensorDataJustSignal.nc"))
+        CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH_Tensor_DataSet.nc"))
 
     return tensor
 
@@ -303,9 +308,9 @@ def make_CoH_Tensor_abund():
     for i, pat in enumerate(patients):
         print(pat)
         for k, treat in enumerate(treatments):
-                for ii, cell in enumerate(cells):
-                    entry = CoH_DF.loc[(CoH_DF.Patient == pat) & (CoH_DF.Treatment == treat) & (CoH_DF.Cell == cell) & (CoH_DF.Time == "15min")]["Abundance"].values
-                    tensor[i, k, ii] = np.mean(entry)
+            for ii, cell in enumerate(cells):
+                entry = CoH_DF.loc[(CoH_DF.Patient == pat) & (CoH_DF.Treatment == treat) & (CoH_DF.Cell == cell) & (CoH_DF.Time == "15min")]["Abundance"].values
+                tensor[i, k, ii] = np.mean(entry)
 
     # Normalize
     for i, _ in enumerate(cells):
