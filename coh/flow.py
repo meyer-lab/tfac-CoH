@@ -292,7 +292,7 @@ def make_CoH_Tensor_abund():
     """Processes RA DataFrame into Xarray Tensor"""
     CoH_DF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_DF_Abund.csv"))
 
-    treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng"])
+    treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng", "Untreated"])
     CoH_DF = CoH_DF.loc[CoH_DF.Treatment.isin(treatments)]
     patients = CoH_DF.Patient.unique()
     treatments = CoH_DF.Treatment.unique()

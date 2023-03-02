@@ -17,8 +17,7 @@ def makeFigure():
     # Add subplot labels
     subplotLabel(ax)
     ax[5].axis("off")
-    # make_flow_df(subtract=False, abundance=True, foldChange=False)
-    # make_CoH_Tensor_abund()
+
 
     num_comps = 4
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Tensor_DataSet_Basal.nc"))

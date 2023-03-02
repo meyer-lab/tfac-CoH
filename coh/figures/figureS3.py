@@ -5,7 +5,6 @@ import xarray as xa
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
 from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH, CoH_LogReg_plot, BC_status_plot
-from ..flow import make_CoH_Tensor
 
 path_here = dirname(dirname(__file__))
 
@@ -17,10 +16,7 @@ def makeFigure():
 
     # Add subplot labels
     subplotLabel(ax)
-    make_CoH_Tensor(just_signal=True, foldChange=True)
-
     num_comps = 8
-
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Tensor_DataSet_FC.nc"))
     
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)

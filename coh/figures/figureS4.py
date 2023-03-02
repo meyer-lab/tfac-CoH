@@ -4,8 +4,7 @@ This creates Figure 1.
 import xarray as xa
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
-from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH, BC_status_plot
-from ..flow import make_CoH_Tensor_abund
+from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH, BC_status_plot, CoH_LogReg_plot
 
 path_here = dirname(dirname(__file__))
 
@@ -17,17 +16,17 @@ def makeFigure():
 
     # Add subplot labels
     subplotLabel(ax)
-    make_CoH_Tensor_abund
 
-    num_comps = 4
+    num_comps = 7
 
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Tensor_Abundance.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
     
     R2Xplot(ax[0], CoH_Data.values, compNum=8)
     BC_status_plot(8, CoH_Data, ax[1])
-    plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Patient", numComps=num_comps)
-    plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Treatment", numComps=num_comps)
-    plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Cell", numComps=num_comps)
+    CoH_LogReg_plot(ax[2], tFacAllM, CoH_Data, num_comps)
+    plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Patient", numComps=num_comps)
+    plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Treatment", numComps=num_comps)
+    plot_tFac_CoH(ax[5], tFacAllM, CoH_Data, "Cell", numComps=num_comps)
 
     return f
