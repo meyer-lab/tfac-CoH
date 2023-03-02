@@ -1,5 +1,5 @@
 """
-This creates Figure 3's clustered heat map.
+This creates Figure 4's clustered heat map.
 """
 import xarray as xa
 import pandas as pd
@@ -7,7 +7,6 @@ import seaborn as sns
 from .figureCommon import getSetup
 from os.path import join, dirname
 from ..tensor import factorTensor
-
 
 path_here = dirname(dirname(__file__))
 
@@ -17,16 +16,11 @@ def makeFigure():
     # Get list of axis objects
     _, f = getSetup((8, 2), (1, 1))
 
-    # Add subplot labels
-    # subplotLabel(ax)
-    # make_CoH_Tensor(just_signal=True, basal=False)
-
     num_comps = 4
-    #CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
+    # CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Tensor_Data.nc""))
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Rec.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
     f = plot_coh_clust(tFacAllM, CoH_Data, "Patient", numComps=num_comps, rec=True)
-    
 
     return f
 
@@ -46,7 +40,7 @@ def plot_coh_clust(tFac, CoH_Array, mode, numComps=12, rec=False):
 
     if rec:
         status_df = pd.read_csv(join(path_here, "data/Patient_Status_Rec.csv")).sort_values(by="Patient").reset_index()
-    else: 
+    else:
         status_df = pd.read_csv(join(path_here, "data/Patient_Status.csv")).sort_values(by="Patient").reset_index()
     status = status_df["Status"]
     lut = dict(zip(status.unique(), "rbg"))

@@ -31,4 +31,3 @@ def makeFigure():
     CoH_LogReg_plot(ax[4], tFacAllM, CoH_Data, num_comps)
 
     return f
-

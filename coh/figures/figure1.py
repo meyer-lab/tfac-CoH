@@ -15,7 +15,6 @@ from ..tensor import factorTensor, get_status_dict
 path_here = dirname(dirname(__file__))
 
 
-
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
@@ -58,7 +57,7 @@ def fullHeatMap(ax, respDF, respDF_I, markers, cbar=True, makeDF=True):
                                                  & (respDFhm.Time == time) & (respDFhm.Marker == marker)].Mean.values / normMax
                             if np.isnan(entry) or entry.size < 1:
                                 entry = respDFhm_I.loc[(respDFhm_I.Patient == patient) & (respDFhm_I.Treatment == treatment) & (respDFhm_I.Cell == cell)
-                                                        & (respDFhm_I.Marker == marker)].Mean.values / normMax
+                                                       & (respDFhm_I.Marker == marker)].Mean.values / normMax
                             row[treatment + " - " + str(time)] = entry
                 heatmapDF = pd.concat([heatmapDF, row])
         heatmapDF.to_csv(join(path_here, "data/CoH_Heatmap_DF_" + markers[0] + ".csv"))
@@ -66,26 +65,6 @@ def fullHeatMap(ax, respDF, respDF_I, markers, cbar=True, makeDF=True):
         heatmapDF = pd.read_csv(join(path_here, "data/CoH_Heatmap_DF_" + markers[0] + ".csv"), index_col=0)
     heatmapDF = heatmapDF.set_index("Patient/Cell")
     sns.heatmap(data=heatmapDF, vmin=0, vmax=1, ax=ax, cbar=cbar, cbar_kws={'label': markers[0]}, yticklabels=False)
-    ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
-
-
-def response_ligand_scatter(ax, CoH_DF, marker, cells=False):
-    """Scatters specific responses"""
-    hist_DF = CoH_DF.loc[(CoH_DF.Marker == marker)]
-    hist_DF = hist_DF.groupby(["Treatment", "Patient"]).Mean.mean().reset_index()
-
-    sns.boxplot(data=hist_DF, y="Mean", x="Treatment", ax=ax)
-    ax.set(title="Average " + marker + " Response", ylabel=marker, xlabel="Treament")
-    ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
-
-
-def response_cell_scatter(ax, CoH_DF, marker, treatment):
-    """Scatters specific responses"""
-    hist_DF = CoH_DF.loc[(CoH_DF.Marker == marker) & (CoH_DF.Treatment == treatment)]
-    hist_DF = hist_DF.groupby(["Cell", "Patient"]).Mean.mean().reset_index()
-
-    sns.boxplot(data=hist_DF, y="Mean", x="Cell", ax=ax)
-    ax.set(title="Average Response to " + treatment, ylabel=marker, xlabel="Cell")
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
 
 
@@ -98,7 +77,8 @@ def make_impute_DF():
     CoH_Data_I = copy(CoH_Data)
     CoH_Data_I.data = tensor
     CoH_Data_DF = CoH_Data_I.to_dataframe(name=["Tensor"])
-    CoH_Data_DF= CoH_Data_DF.reset_index()
+    CoH_Data_DF = CoH_Data_DF.reset_index()
     CoH_Data_DF.columns = CoH_Data_DF.columns.map(''.join)
     CoH_Data_DF = CoH_Data_DF.rename(columns={"Tensor": "Mean"})
+
     return CoH_Data_DF
