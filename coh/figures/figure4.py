@@ -6,7 +6,7 @@ import seaborn as sns
 import pandas as pd
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
-from ..tensor import factorTensor, CoH_LogReg_plot, plot_tFac_CoH, make_alldata_DF, BC_status_plot
+from ..tensor import factorTensor, CoH_LogReg_plot, plot_tFac_CoH, BC_status_plot
 
 path_here = dirname(dirname(__file__))
 
