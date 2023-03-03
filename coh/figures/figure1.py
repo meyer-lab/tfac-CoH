@@ -71,7 +71,7 @@ def fullHeatMap(ax, respDF, respDF_I, markers, cbar=True, makeDF=True):
 def make_impute_DF():
     """Imputes data and returns df containing those values"""
     num_comps = 5
-    CoH_Data = xa.open_dataarray(join(path_here, "data/CoHTensorDataJustSignal.nc"))
+    CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Tensor_DataSet.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
     tensor = tl.cp_to_tensor(tFacAllM)
     CoH_Data_I = copy(CoH_Data)

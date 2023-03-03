@@ -4,6 +4,7 @@ This creates Figure 5, heatmap (clustered factor correlations).
 import xarray as xa
 import seaborn as sns
 import pandas as pd
+import numpy as np
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
 from ..tensor import factorTensor
@@ -60,6 +61,15 @@ def CoH_Factor_HM(ax, tFac, CoH_Array, tFac_R, CoH_Array_R, sig_comps, rec_comps
     tFacDF = tFacDF.drop(index="Patient 406")
 
     plot_DF = tFacDF.join(tFacDF_R, on="Patient")
+
+    cov_DF = plot_DF.cov()
+    Vi = np.linalg.pinv(cov_DF, hermitian=True)  # Inverse covariance matrix
+    Vi_diag = Vi.diagonal()
+    D = np.diag(np.sqrt(1 / Vi_diag))
+    pCor = -1 * (D @ Vi @ D)  # Partial correlation matrix
+    pCor[np.diag_indices_from(pCor)] = 1
+    pCorr_DF = pd.DataFrame(pCor, columns=cov_DF.columns, index=cov_DF.columns)
+
     cmap = sns.color_palette("vlag", as_cmap=True)
-    f = sns.clustermap(data=plot_DF.corr(), robust=True, vmin=-1, vmax=1, row_cluster=True, col_cluster=True, annot=True, cmap=cmap, figsize=(8, 8))
+    f = sns.clustermap(data=pCorr_DF, robust=True, vmin=-1, vmax=1, row_cluster=True, col_cluster=True, annot=True, cmap=cmap, figsize=(8, 8))
     return f
