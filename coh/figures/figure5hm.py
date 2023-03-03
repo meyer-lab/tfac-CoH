@@ -17,10 +17,7 @@ def makeFigure():
 
     # Add subplot labels
     subplotLabel(ax)
-    # make_flow_df(foldChange=True)
-    # make_CoH_Tensor(just_signal=True, foldChange=True)
 
-    #make_alldata_DF(CoH_Data, PCA=False, foldChange=True)
     CoH_DF = pd.read_csv(join(path_here, "data/CoH_Flow_DF.csv"))
     CoH_DF_B = pd.read_csv(join(path_here, "data/CoH_Flow_DF_Basal.csv"))
     CoH_Data_DF_R = pd.read_csv(join(path_here, "data/CoH_Rec_DF.csv"))
