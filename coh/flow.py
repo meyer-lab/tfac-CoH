@@ -235,7 +235,7 @@ def make_CoH_Tensor(just_signal=False, foldChange=False):
     else:
         CoH_DF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_DF.csv"), index_col=0)
 
-    CoH_DF = CoH_DF.loc[CoH_DF.Time == "15min"]
+    #CoH_DF = CoH_DF.loc[CoH_DF.Time == "15min"]
     CoH_DF.Treatment = CoH_DF.Treatment.replace(["Untreated"], "Basal")
 
     if just_signal or foldChange:
@@ -245,12 +245,12 @@ def make_CoH_Tensor(just_signal=False, foldChange=False):
     if foldChange:
         treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng"])
     else:
-        treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng", "Basal"])
+        treatments = CoH_DF.Treatment.unique()#np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng", "Basal"])
     CoH_DF = CoH_DF.loc[CoH_DF.Treatment.isin(treatments)]
 
     CoH_DF = CoH_DF.groupby(["Patient", "Time", "Treatment", "Cell", "Marker"], sort=False).Mean.mean().reset_index()
     patients = CoH_DF.Patient.unique()
-    times = ["15min"]
+    times = ["15min", "60min"]
     treatments = CoH_DF.Treatment.unique()
     cells = CoH_DF.Cell.unique()
     markers = CoH_DF.Marker.unique()
@@ -288,7 +288,7 @@ def make_CoH_Tensor(just_signal=False, foldChange=False):
     if foldChange:
         CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH_Tensor_DataSet_FC.nc"))
     else:
-        CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH_Tensor_DataSet.nc"))
+        CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH_Tensor_DataSet_All.nc"))
 
     return tensor
 

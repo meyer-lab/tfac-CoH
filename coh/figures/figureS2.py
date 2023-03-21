@@ -1,5 +1,5 @@
 """
-This creates Figure S3, factorization of fold-change data.
+This creates Figure S2, factorization of fold-change data.
 """
 import xarray as xa
 from .figureCommon import subplotLabel, getSetup
