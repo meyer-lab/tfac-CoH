@@ -33,7 +33,7 @@ def makeFigure():
     plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Cell", numComps=num_comps, cbar=False)
     plot_tFac_CoH(ax[5], tFacAllM, CoH_Data, "Marker", numComps=num_comps, cbar=False)
 
-    tc = Decomposition(CoH_Data, max_rr=15)
+    tc = Decomposition(CoH_Data.to_numpy(), max_rr=15)
     tc.perform_tfac()
     tc.perform_PCA(flattenon=2)
 
