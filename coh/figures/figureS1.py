@@ -14,16 +14,16 @@ path_here = dirname(dirname(__file__))
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((3, 3), (1, 1))
+    ax, f = getSetup((2.5, 3), (1, 1))
 
     # Add subplot labels
     subplotLabel(ax)
 
-    X = xa.open_dataarray(join(path_here, "data/CoH_Tensor_DataSet.nc")).to_numpy()
+    X = xa.open_dataarray(join(path_here, "data/CoH_Rec.nc")).to_numpy()
 
     tc = Decomposition(X, max_rr=8)
     tc.perform_tfac()
-    tc.perform_PCA(flattenon=2)
+    tc.perform_PCA(flattenon=0)
 
     reduction(ax[0], tc)
 
