@@ -35,7 +35,7 @@ def makeFigure():
 
     tc = Decomposition(CoH_Data.to_numpy(), max_rr=15)
     tc.perform_tfac()
-    tc.perform_PCA(flattenon=2)
+    tc.perform_PCA(flattenon=0)
 
     reduction(ax[6], tc)
 
