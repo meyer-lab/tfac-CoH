@@ -133,6 +133,7 @@ def live_PBMC_gate(sample, patient, gateDF):
 def pop_gate(sample, cell_type, patient, gateDF):
     """Extracts cell population sample"""
     gates = gate_dict[cell_type]
+
     pop_sample = copy(sample)
     for gate_name in gates:
         gate = form_gate(gateDF.loc[(gateDF["Patient"] == patient) & (gateDF["Gate Label"] == gate_name)].Gate.values[0])
