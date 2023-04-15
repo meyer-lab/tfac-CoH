@@ -21,9 +21,10 @@ tensorpack = {git = "https://github.com/meyer-lab/tensorpack.git", rev = "main"}
 pathlib = "^1.0.1"
 statannot = "^0.2.3"
 flowcytometrytools = {git = "https://github.com/meyer-lab/FlowCytometryToolsFork.git"}
-numba = "0.57.0rc1"
 pip = "^23.0.1"
 tensorly-viz = "^0.1.7"
+numba = "0.57.0rc1"
+ipykernel = "^6.22.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
