@@ -24,7 +24,6 @@ flowcytometrytools = {git = "https://github.com/meyer-lab/FlowCytometryToolsFork
 pip = "^23.0.1"
 tensorly-viz = "^0.1.7"
 numba = "0.57.0rc1"
-ipykernel = "^6.22.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
