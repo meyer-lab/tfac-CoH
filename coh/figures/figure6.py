@@ -8,7 +8,7 @@ import pandas as pd
 import scanpy as sc
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
-from ..imports import makeRNAseqDF, importCITE, importRNACITE, makeRNAseqDF_Ann
+from ..imports import importCITE, importRNACITE, makeCITE_Ann, makeAzizi_Ann, process_Azizi, import_Azizi
 import matplotlib.pyplot as plt
 
 
@@ -23,9 +23,21 @@ def makeFigure():
 
     # Add subplot labels
     subplotLabel(ax)
-    makeRNAseqDF_Ann(surface=True)
-    makeRNAseqDF_Ann(surface=False)
-    
+    #makeRNAseqDF_Ann(surface=True)
+    #makeRNAseqDF_Ann(surface=False)
+    #makeAzizi_Ann()
+    #process_Azizi()
+    RNA = import_Azizi(patient="BC04")
+    """
+    sc.pp.pca(RNA, svd_solver='arpack')
+    sc.pp.neighbors(RNA)
+    sc.tl.leiden(RNA, resolution=1)
+    sc.tl.umap(RNA)
+    sc.pl.umap(RNA, color='leiden', legend_loc='on data', title='', frameon=False, ax=ax[0])
+    sc.pl.umap(RNA, color=['batch'], ax=ax[1])
+    sc.pl.umap(RNA, color=['TSPAN13'], ax=ax[3])
+    sc.pl.umap(RNA, color=['CD8B'], ax=ax[2])
+    """
 
     CITE_DF = importCITE()
     CITE_DF_R = importRNACITE()
@@ -48,7 +60,7 @@ def makeFigure():
     sns.histplot(data=B_DF, x="CD274", ax=ax[2])
     ax[2].set(title="B Cells, Surface Data", xlim=(0, 50))
     sns.histplot(data=B_DF_2, x="CD274", ax=ax[3])
-    ax[3].set(title="B Cells, RNA Data", xlim=(0, 5))    
+    ax[3].set(title="B Cells, RNA Data", xlim=(0, 5))
 
     """
     sc.pp.pca(CITE_DF_R, svd_solver='arpack')

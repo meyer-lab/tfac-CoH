@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import numpy as np
 import anndata as ad
+import scanpy as sc
 from scipy.io import mmread
 from scipy.sparse import coo_matrix
 from zipfile import ZipFile
@@ -60,7 +61,7 @@ def makeRNAseqDF(surface=False):
         GeneDF.to_csv(join(path_here, "/opt/CoH/SingleCell/RNAseq.csv.zip"))
 
 
-def makeRNAseqDF_Ann(surface=False):
+def makeCITE_Ann(surface=False):
     """Read data and make AnnData object"""
     RNA = ad.read_h5ad("/opt/CoH/SingleCell/CITE_RNA_raw.h5ad").transpose()
     cellTypesDF = pd.read_csv(join(path_here, "coh/data/SC_seq/CITEcellTypes.csv"))
@@ -87,3 +88,48 @@ def importRNACITE(surface=False):
     else:
         RNA_DF = ad.read_h5ad("/opt/CoH/SingleCell/CITE_RNA.h5ad.gz")
     return RNA_DF
+
+
+def makeAzizi_Ann():
+    """Read data and make AnnData object"""
+    for patient in ["BC01", "BC04"]:
+        dir = "/opt/CoH/SingleCell/Patient_" + patient + "/"
+        fileList = os.listdir(dir)
+        for file in [dir + filename for filename in fileList if filename.endswith(".csv.gz")]:
+            RNA = pd.read_csv(file, index_col=0).fillna(0)
+            RNA_Ann = ad.AnnData(X=RNA)
+            RNA_Ann.write_h5ad(file.split(".")[0] + "_raw.h5ad.gz", compression='gzip')
+
+
+def process_Azizi():
+    """Read AnnData and process"""
+    for patient in ["BC01", "BC04"]:
+        dir = "/opt/CoH/SingleCell/Patient_" + patient + "/"
+        fileList = os.listdir(dir)
+        RNA_list = []
+        for file in [dir + filename for filename in fileList if filename.endswith("raw.h5ad.gz")]:
+            RNA_samp = ad.read_h5ad(file)
+            RNA_samp.obs["batch"] = file.split("_")[2][-1]
+            RNA_list.append(RNA_samp)
+        RNA = ad.concat(RNA_list)
+        RNA.obs_names_make_unique()
+        sc.pp.filter_cells(RNA, min_genes=20)
+        sc.pp.filter_genes(RNA, min_cells=3)
+        RNA.var['mt'] = RNA.var_names.str.startswith('MT-')
+        RNA.var['rp'] = RNA.var_names.str.startswith('RP11-')
+        sc.pp.calculate_qc_metrics(RNA, qc_vars=['mt'], percent_top=None, log1p=False, inplace=True)
+        RNA = RNA[RNA.obs.n_genes_by_counts < 5000, :]
+        RNA = RNA[RNA.obs.pct_counts_mt < 15, :]
+        sc.pp.normalize_total(RNA, target_sum=1e4)
+        sc.pp.log1p(RNA)
+        sc.pp.highly_variable_genes(RNA, min_mean=0.0125, max_mean=3, min_disp=0.5, batch_key='batch')
+        RNA = RNA[:, RNA.var.highly_variable_nbatches >= 2]
+        sc.pp.regress_out(RNA, ['total_counts', 'pct_counts_mt'])
+        sc.pp.combat(RNA)
+        sc.pp.scale(RNA, max_value=10)
+        RNA.write_h5ad(file.split("_")[0] + "_" + patient + "/" + patient + "_processed.h5ad.gz", compression='gzip')
+
+
+def import_Azizi(patient):
+    file = "/opt/CoH/SingleCell/Patient_" + patient + "/" + patient + "_processed.h5ad.gz"
+    return ad.read_h5ad(file)
