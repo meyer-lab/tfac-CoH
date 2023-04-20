@@ -123,13 +123,21 @@ def process_Azizi():
         sc.pp.normalize_total(RNA, target_sum=1e4)
         sc.pp.log1p(RNA)
         sc.pp.highly_variable_genes(RNA, min_mean=0.0125, max_mean=3, min_disp=0.5, batch_key='batch')
-        RNA = RNA[:, RNA.var.highly_variable_nbatches >= 2]
+        if patient == "BC01":
+            RNA = RNA[:, RNA.var.highly_variable_nbatches >= 1]
+        else:
+            RNA = RNA[:, RNA.var.highly_variable_nbatches >= 2]
         sc.pp.regress_out(RNA, ['total_counts', 'pct_counts_mt'])
         sc.pp.combat(RNA)
         sc.pp.scale(RNA, max_value=10)
         RNA.write_h5ad(file.split("_")[0] + "_" + patient + "/" + patient + "_processed.h5ad.gz", compression='gzip')
 
 
-def import_Azizi(patient):
-    file = "/opt/CoH/SingleCell/Patient_" + patient + "/" + patient + "_processed.h5ad.gz"
-    return ad.read_h5ad(file)
+def import_Azizi(patient, annotated=False):
+    if annotated:
+        file = "/opt/CoH/SingleCell/Patient_" + patient + "/" + patient + "_processed_annot.h5ad.gz"
+    else:
+        file = "/opt/CoH/SingleCell/Patient_" + patient + "/" + patient + "_processed.h5ad.gz"
+    RNA = ad.read_h5ad(file)
+    RNA.uns['log1p']["base"] = None
+    return RNA
