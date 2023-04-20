@@ -25,19 +25,6 @@ def makeFigure():
     subplotLabel(ax)
     #makeRNAseqDF_Ann(surface=True)
     #makeRNAseqDF_Ann(surface=False)
-    #makeAzizi_Ann()
-    #process_Azizi()
-    RNA = import_Azizi(patient="BC04")
-    """
-    sc.pp.pca(RNA, svd_solver='arpack')
-    sc.pp.neighbors(RNA)
-    sc.tl.leiden(RNA, resolution=1)
-    sc.tl.umap(RNA)
-    sc.pl.umap(RNA, color='leiden', legend_loc='on data', title='', frameon=False, ax=ax[0])
-    sc.pl.umap(RNA, color=['batch'], ax=ax[1])
-    sc.pl.umap(RNA, color=['TSPAN13'], ax=ax[3])
-    sc.pl.umap(RNA, color=['CD8B'], ax=ax[2])
-    """
 
     CITE_DF = importCITE()
     CITE_DF_R = importRNACITE()
@@ -62,16 +49,52 @@ def makeFigure():
     sns.histplot(data=B_DF_2, x="CD274", ax=ax[3])
     ax[3].set(title="B Cells, RNA Data", xlim=(0, 5))
 
-    """
-    sc.pp.pca(CITE_DF_R, svd_solver='arpack')
-    sc.pp.neighbors(CITE_DF_R)
-    sc.tl.leiden(CITE_DF_R, resolution=0.75)
-    sc.tl.umap(CITE_DF_R)
-    sc.pp.subsample(CITE_DF_R, fraction=0.1, random_state=0)
-    sc.pl.umap(CITE_DF_R, color='leiden', legend_loc='on data', title='', frameon=False, ax=ax[0])
-    sc.pl.umap(CITE_DF_R, color='CellType1', legend_loc='on data', title='', frameon=False, ax=ax[1])
-    sc.pl.umap(CITE_DF_R, color='CellType2', legend_loc='on data', title='', frameon=False, ax=ax[2])
-    sc.pl.umap(CITE_DF_R, color='CellType3', legend_loc='on data', title='', frameon=False, ax=ax[3])
-    """
-
     return f
+
+
+marker_genes = {
+    'Monocytes': [
+        'CD14',
+        'CD33',
+        'LYZ',
+        'LGALS3',
+        'CSF1R',
+        'ITGAX',
+        'HLA-DRB1'],
+    'Dendritic Cells': [
+        'LAD1',
+        'LAMP3',
+        'TSPAN13',
+        'CLIC2',
+        'FLT3'],
+    'B-cells': [
+        'MS4A1',
+        'CD19',
+        'CD79A'],
+    'T-helpers': [
+        'TNF',
+        'TNFRSF18',
+        'IFNG',
+        'IL2RA',
+        'BATF'],
+    'T cells': [
+        'CD27',
+        'CD69',
+        'CD2',
+        'CD3D',
+        'CXCR3',
+        'CCL5',
+        'IL7R',
+        'CXCL8',
+        'GZMK'],
+    'Natural Killers': [
+        'NKG7',
+        'GNLY',
+        'PRF1',
+        'FCGR3A',
+        'NCAM1',
+        'TYROBP'],
+    'CD8': [
+        'CD8A',
+        'CD8B']
+}
