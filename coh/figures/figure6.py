@@ -25,22 +25,6 @@ def makeFigure():
     subplotLabel(ax)
     #makeRNAseqDF_Ann(surface=True)
     #makeRNAseqDF_Ann(surface=False)
-    #makeAzizi_Ann()
-    #process_Azizi()
-    RNA = import_Azizi(patient="BC04")
-   
-    sc.pp.pca(RNA, svd_solver='arpack')
-    sc.pp.neighbors(RNA)
-    sc.tl.leiden(RNA, resolution=0.6)
-    sc.tl.umap(RNA)
-    sc.pl.umap(RNA, color='leiden', legend_loc='on data', title='', frameon=False, ax=ax[0])
-    sc.tl.rank_genes_groups(RNA, groupby='leiden', method='wilcoxon')
-    marker_matches = sc.tl.marker_gene_overlap(RNA, marker_genes)
-    print(marker_matches)
-    sc.pl.umap(RNA, color=['batch'], ax=ax[1])
-    sc.pl.umap(RNA, color=['CD8B'], ax=ax[3])
-    sc.pl.umap(RNA, color=['CD19'], ax=ax[2])
-    """
 
     CITE_DF = importCITE()
     CITE_DF_R = importRNACITE()
@@ -64,19 +48,6 @@ def makeFigure():
     ax[2].set(title="B Cells, Surface Data", xlim=(0, 50))
     sns.histplot(data=B_DF_2, x="CD274", ax=ax[3])
     ax[3].set(title="B Cells, RNA Data", xlim=(0, 5))
-
-    """
-    """
-    sc.pp.pca(CITE_DF_R, svd_solver='arpack')
-    sc.pp.neighbors(CITE_DF_R)
-    sc.tl.leiden(CITE_DF_R, resolution=0.75)
-    sc.tl.umap(CITE_DF_R)
-    sc.pp.subsample(CITE_DF_R, fraction=0.1, random_state=0)
-    sc.pl.umap(CITE_DF_R, color='leiden', legend_loc='on data', title='', frameon=False, ax=ax[0])
-    sc.pl.umap(CITE_DF_R, color='CellType1', legend_loc='on data', title='', frameon=False, ax=ax[1])
-    sc.pl.umap(CITE_DF_R, color='CellType2', legend_loc='on data', title='', frameon=False, ax=ax[2])
-    sc.pl.umap(CITE_DF_R, color='CellType3', legend_loc='on data', title='', frameon=False, ax=ax[3])
-    """
 
     return f
 
