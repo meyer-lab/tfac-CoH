@@ -96,7 +96,9 @@ def makeAzizi_Ann():
         dir = "/opt/CoH/SingleCell/Patient_" + patient + "/"
         fileList = os.listdir(dir)
         for file in [dir + filename for filename in fileList if filename.endswith(".csv.gz")]:
+            print(file)
             RNA = pd.read_csv(file, index_col=0).fillna(0)
+            CD274 = RNA.CD274
             RNA_Ann = ad.AnnData(X=RNA)
             RNA_Ann.write_h5ad(file.split(".")[0] + "_raw.h5ad.gz", compression='gzip')
 
@@ -113,6 +115,7 @@ def process_Azizi():
             RNA_list.append(RNA_samp)
         RNA = ad.concat(RNA_list)
         RNA.obs_names_make_unique()
+        CD274 = RNA[:, RNA.var_names == "CD274"].to_df()
         sc.pp.filter_cells(RNA, min_genes=20)
         sc.pp.filter_genes(RNA, min_cells=3)
         RNA.var['mt'] = RNA.var_names.str.startswith('MT-')
@@ -123,6 +126,8 @@ def process_Azizi():
         sc.pp.normalize_total(RNA, target_sum=1e4)
         sc.pp.log1p(RNA)
         sc.pp.highly_variable_genes(RNA, min_mean=0.0125, max_mean=3, min_disp=0.5, batch_key='batch')
+        RNA.var.highly_variable_nbatches.update(pd.Series([10], index=["CD274"]))
+        RNA.write_h5ad(file.split("_")[0] + "_" + patient + "/" + patient + "_unfilt.h5ad.gz", compression='gzip')
         if patient == "BC01":
             RNA = RNA[:, RNA.var.highly_variable_nbatches >= 1]
         else:
@@ -133,11 +138,18 @@ def process_Azizi():
         RNA.write_h5ad(file.split("_")[0] + "_" + patient + "/" + patient + "_processed.h5ad.gz", compression='gzip')
 
 
-def import_Azizi(patient, annotated=False):
+def import_Azizi_Filt(patient, annotated=False):
     if annotated:
         file = "/opt/CoH/SingleCell/Patient_" + patient + "/" + patient + "_processed_annot.h5ad.gz"
     else:
         file = "/opt/CoH/SingleCell/Patient_" + patient + "/" + patient + "_processed.h5ad.gz"
+    RNA = ad.read_h5ad(file)
+    RNA.uns['log1p']["base"] = None
+    return RNA
+
+
+def import_Azizi_Unfilt(patient):
+    file = "/opt/CoH/SingleCell/Patient_" + patient + "/" + patient + "_unfilt_ann.h5ad.gz"
     RNA = ad.read_h5ad(file)
     RNA.uns['log1p']["base"] = None
     return RNA
