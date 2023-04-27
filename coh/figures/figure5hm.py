@@ -23,11 +23,11 @@ def makeFigure():
     CoH_Data_DF_R = pd.read_csv(join(path_here, "data/CoH_Rec_DF.csv"))
 
     # CD8
-    f = dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_Data_DF_R, ["pSTAT3", "pSTAT5"], ["IL10-50ng", "IL2-50ng"], ["pSmad1-2", "pSTAT4"], ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI", "IL2RB"], cells=["CD8+"])
+    #f = dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_Data_DF_R, ["pSTAT3", "pSTAT5"], ["IL10-50ng", "IL2-50ng"], ["pSmad1-2", "pSTAT4"], ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI", "IL2RB"], cells=["CD8+"])
     # CD4
     # f = dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_Data_DF_R, ["pSTAT3"], ["IL10-50ng"], ["pSmad1-2", "pSTAT4", "pSTAT1"], ["TGFB RII", "IL10R", "IL6Ra", "IL12RI", "IFNg R1"], cells=["CD4+"])
     # Bcell
-    # f = dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_Data_DF_R, ["pSTAT3", "pSTAT5", "pSmad1-2"], ["IL10-50ng", "IL2-50ng", "TGFB-50ng"], ["pSmad1-2", "pSTAT4"], ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI", "IL2RB", "IL2Ra"], cells=["CD20 B"])
+    f = dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_Data_DF_R, ["pSTAT3", "pSTAT5"], ["IL10-50ng", "IL2-50ng"], ["pSmad1-2", "pSTAT4"], ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI", "IL2RB", "IL2Ra"], cells=["CD20 B"])
     # Treg
     # f = dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_Data_DF_R, ["pSTAT3", "pSTAT5", "pSmad1-2"], ["IL10-50ng", "IL2-50ng", "TGFB-50ng"], ["pSmad1-2", "pSTAT4", "pSTAT1"], ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI", "IL2RB", "IL2Ra", "IFNg R1"], cells=["Treg"])
     # Monocytes

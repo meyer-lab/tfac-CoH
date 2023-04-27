@@ -1,14 +1,11 @@
 """
-This creates Figure 4.
+This creates Figure S9.
 """
-import xarray as xa
-import numpy as np
-import seaborn as sns
-import pandas as pd
 import scanpy as sc
+import anndata as ad
 from .figureCommon import subplotLabel, getSetup
-from os.path import join, dirname
-from ..imports import importCITE, importRNACITE, makeCITE_Ann, makeAzizi_Ann, process_Azizi, import_Azizi
+from os.path import dirname
+from ..imports import makeAzizi_Ann, process_Azizi, import_Azizi_Filt
 import matplotlib.pyplot as plt
 
 
@@ -19,11 +16,13 @@ path_here = dirname(dirname(__file__))
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((16, 8), (2, 4))
+    ax, f = getSetup((12, 6), (2, 4))
 
     # Add subplot labels
     subplotLabel(ax)
-    RNA = import_Azizi(patient="BC01")
+    #makeAzizi_Ann()
+    #process_Azizi()
+    RNA = import_Azizi_Filt(patient="BC01")
    
     sc.pp.pca(RNA, svd_solver='arpack')
     sc.pp.neighbors(RNA)
@@ -38,9 +37,16 @@ def makeFigure():
     new_cluster_names = ['T', 'NK/Cytotoxic', 'Monocyte', 'B']
     RNA.rename_categories('leiden', new_cluster_names)
     sc.pl.umap(RNA, color='leiden', legend_loc='on data', title='', frameon=False, ax=ax[0])
-    RNA.write_h5ad("/opt/CoH/SingleCell/Patient_BC01/BC01_processed_annot.h5ad.gz", compression='gzip')
+    #RNA.write_h5ad("/opt/CoH/SingleCell/Patient_BC01/BC01_processed_annot.h5ad.gz", compression='gzip')
 
-    RNA = import_Azizi(patient="BC04")
+    unFiltRNA = ad.read_h5ad("/opt/CoH/SingleCell/Patient_BC01/BC01_unfilt.h5ad.gz")
+    sc.pp.regress_out(unFiltRNA, ['total_counts', 'pct_counts_mt'])
+    sc.pp.combat(unFiltRNA)
+    sc.pp.scale(unFiltRNA, max_value=10)
+    unFiltRNA.obs['leiden'] = RNA.obs.leiden
+    #unFiltRNA.write_h5ad("/opt/CoH/SingleCell/Patient_BC01/BC01_unfilt_ann.h5ad.gz", compression='gzip')
+
+    RNA = import_Azizi_Filt(patient="BC04")
     sc.pp.pca(RNA, svd_solver='arpack')
     sc.pp.neighbors(RNA)
     sc.tl.leiden(RNA, resolution=0.6)
@@ -52,11 +58,17 @@ def makeFigure():
     sc.pl.umap(RNA, color=['batch'], ax=ax[5])
     sc.pl.umap(RNA, color=['CD19'], ax=ax[6])
     sc.pl.umap(RNA, color=['CD8B'], ax=ax[7])
-    new_cluster_names = ['T', 'NK/Cytotoxic', 'B', 'None', 'Monocytes', 'DC']
+    new_cluster_names = ['T', 'NK/Cytotoxic', 'B', 'Monocytes', 'DC']
     RNA.rename_categories('leiden', new_cluster_names)
     sc.pl.umap(RNA, color='leiden', legend_loc='on data', title='', frameon=False, ax=ax[4])
-    RNA.write_h5ad("/opt/CoH/SingleCell/Patient_BC04/BC04_processed_annot.h5ad.gz", compression='gzip')
+    #RNA.write_h5ad("/opt/CoH/SingleCell/Patient_BC04/BC04_processed_annot.h5ad.gz", compression='gzip')
 
+    unFiltRNA = ad.read_h5ad("/opt/CoH/SingleCell/Patient_BC04/BC04_unfilt.h5ad.gz")
+    sc.pp.regress_out(unFiltRNA, ['total_counts', 'pct_counts_mt'])
+    sc.pp.combat(unFiltRNA)
+    sc.pp.scale(unFiltRNA, max_value=10)
+    unFiltRNA.obs['leiden'] = RNA.obs.leiden
+    #unFiltRNA.write_h5ad("/opt/CoH/SingleCell/Patient_BC04/BC04_unfilt_ann.h5ad.gz", compression='gzip')
 
     return f
 
