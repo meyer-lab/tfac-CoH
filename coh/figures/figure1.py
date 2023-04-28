@@ -10,6 +10,7 @@ import tensorly as tl
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
 from ..tensor import factorTensor, get_status_dict
+from ..flow import make_flow_sc_dataframe
 
 
 path_here = dirname(dirname(__file__))
@@ -19,6 +20,8 @@ def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
     ax, f = getSetup((8, 8), (2, 3), multz={0: 2})
+    # make_flow_sc_dataframe()
+    
 
     # Add subplot labels
     subplotLabel(ax)
