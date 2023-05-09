@@ -330,6 +330,8 @@ def make_flow_sc_dataframe():
     treatments = ['Untreated', 'IFNg-50ng', 'IL10-50ng', 'IL4-50ng', 'IL2-50ng', 'IL6-50ng']
     cell_types = ["T", "CD16 NK", "CD8+", "CD4+", "CD4-/CD8-", "Treg", "Treg 1", "Treg 2", "Treg 3", "CD8 TEM", "CD8 TCM", "CD8 Naive", "CD8 TEMRA",
                   "CD4 TEM", "CD4 TCM", "CD4 Naive", "CD4 TEMRA", "CD20 B", "CD20 B Naive", "CD20 B Memory", "CD33 Myeloid", "Classical Monocyte", "NC Monocyte"]
+    treatments = ['Untreated', 'IL10-50ng']
+    cell_types = ["CD20 B", "CD20 B Naive", "CD20 B Memory", "CD8+"]
     gateDF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_Gates.csv")).reset_index().drop("Unnamed: 0", axis=1)
     totalDF = pd.DataFrame([])
 
@@ -354,10 +356,7 @@ def make_flow_sc_dataframe():
                         CoH_DF["Treatment"] = np.tile(treatment, CoH_DF.shape[0])
                         CoH_DF["Patient"] = np.tile([patient], CoH_DF.shape[0])
                         totalDF = pd.concat([totalDF, CoH_DF])
-                        print("CellType:", cell_type, "Shape:", CoH_DF.shape[0])
 
-                    print(np.shape(totalDF))
-
-    totalDF.to_csv(join(path_here, "coh/data/CoH_Flow_SC.csv"))
+    totalDF.to_csv(join(path_here, "coh/data/CoH_Flow_SC_IL10.csv"))
 
     return totalDF

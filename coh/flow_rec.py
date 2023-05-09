@@ -8,6 +8,7 @@ import warnings
 import xarray as xa
 from FlowCytometryTools import FCMeasurement
 from .flow import pop_gate, live_PBMC_gate, pop_gate, get_gate_dict
+from .tensor import get_status_dict
 
 path_here = dirname(dirname(__file__))
 
@@ -219,3 +220,70 @@ def make_CoH_Tensor_rec():
 
     CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH_Rec.nc"))
     return tensor
+
+
+def make_flow_sc_dataframe_rec():
+    """Compiles data for all populations for all patients into .nc"""
+    patients = [
+        "Patient 26",
+        "Patient 28",
+        "Patient 30",
+        "Patient 34",
+        "Patient 35",
+        "Patient 43",
+        "Patient 44",
+        "Patient 45",
+        "Patient 52",
+        "Patient 52A",
+        "Patient 54",
+        "Patient 56",
+        "Patient 58",
+        "Patient 60",
+        "Patient 61",
+        "Patient 62",
+        "Patient 63",
+        "Patient 66",
+        "Patient 68",
+        "Patient 69",
+        "Patient 70",
+        "Patient 79",
+        "Patient 19186-2",
+        "Patient 19186-3",
+        "Patient 19186-4",
+        "Patient 19186-8",
+        "Patient 19186-10-T1",
+        "Patient 19186-10-T2",
+        "Patient 19186-10-T3",
+        "Patient 19186-15-T1",
+        "Patient 19186-15-T2",
+        "Patient 19186-15-T3",
+        "Patient 19186-12",
+        "Patient 19186-14",
+        "Patient 21368-3",
+        "Patient 21368-4"]
+    cell_types = ["T", "CD16 NK", "CD8+", "CD4+", "CD4-/CD8-", "Treg", "Treg 1", "Treg 2", "Treg 3", "CD8 TEM", "CD8 TCM", "CD8 Naive", "CD8 TEMRA",
+                  "CD4 TEM", "CD4 TCM", "CD4 Naive", "CD4 TEMRA", "CD20 B", "CD20 B Naive", "CD20 B Memory", "CD33 Myeloid", "Classical Monocyte", "NC Monocyte"]
+    gateDF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_Gates_Receptors.csv")).reset_index().drop("Unnamed: 0", axis=1)
+    totalDF = pd.DataFrame([])
+    markerKey = pd.read_csv(join(path_here, "coh/data/Patient_Receptor_Panels.csv"))
+
+
+    for i, patient in enumerate(patients):
+        patient_num = patient.split(" ")[1]
+        print(patient)
+        dictionary = markerKey.loc[markerKey.Patient == patient_num].Panel.values
+        marker_dict = panelDict[dictionary[0]]
+        sample = FCMeasurement(ID="Sample", datafile="/opt/CoH/Receptor Data/F" + patient_num + "_Unmixed.fcs")
+        sample, markers = process_sample_rec(sample, marker_dict)
+        sample = live_PBMC_gate(sample, patient, gateDF)
+        for cell_type in cell_types:
+            pop_sample, abund = pop_gate(sample, cell_type, patient, gateDF)
+            CoH_DF = pop_sample.data.drop("Time", axis=1)
+            CoH_DF["Cell"] = np.arange(1, CoH_DF.shape[0] + 1)
+            CoH_DF["CellType"] = np.tile(cell_type, CoH_DF.shape[0])
+            CoH_DF["Patient"] = np.tile([patient], CoH_DF.shape[0])
+            totalDF = pd.concat([totalDF, CoH_DF])
+
+    totalDF.to_csv(join(path_here, "coh/data/CoH_Flow_SC_Rec.csv"))
+
+    return totalDF

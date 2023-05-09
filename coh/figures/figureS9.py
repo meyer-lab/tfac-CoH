@@ -21,13 +21,13 @@ def makeFigure():
     # Add subplot labels
     subplotLabel(ax)
     #makeAzizi_Ann()
-    #process_Azizi()
+    process_Azizi()
     RNA = import_Azizi_Filt(patient="BC01")
    
     sc.pp.pca(RNA, svd_solver='arpack')
-    sc.pp.neighbors(RNA)
+    sc.pp.neighbors(RNA, n_neighbors=15)
     sc.tl.leiden(RNA, resolution=0.6)
-    sc.tl.umap(RNA)
+    sc.tl.umap(RNA, min_dist=0.5)
     sc.tl.rank_genes_groups(RNA, groupby='leiden', method='wilcoxon')
     marker_matches = sc.tl.marker_gene_overlap(RNA, marker_genes)
     print(marker_matches)
@@ -39,18 +39,20 @@ def makeFigure():
     sc.pl.umap(RNA, color='leiden', legend_loc='on data', title='', frameon=False, ax=ax[0])
     #RNA.write_h5ad("/opt/CoH/SingleCell/Patient_BC01/BC01_processed_annot.h5ad.gz", compression='gzip')
 
+    """
     unFiltRNA = ad.read_h5ad("/opt/CoH/SingleCell/Patient_BC01/BC01_unfilt.h5ad.gz")
     sc.pp.regress_out(unFiltRNA, ['total_counts', 'pct_counts_mt'])
     sc.pp.combat(unFiltRNA)
     sc.pp.scale(unFiltRNA, max_value=10)
     unFiltRNA.obs['leiden'] = RNA.obs.leiden
     #unFiltRNA.write_h5ad("/opt/CoH/SingleCell/Patient_BC01/BC01_unfilt_ann.h5ad.gz", compression='gzip')
+    """
 
     RNA = import_Azizi_Filt(patient="BC04")
     sc.pp.pca(RNA, svd_solver='arpack')
-    sc.pp.neighbors(RNA)
+    sc.pp.neighbors(RNA, n_neighbors=15)
     sc.tl.leiden(RNA, resolution=0.6)
-    sc.tl.umap(RNA)
+    sc.tl.umap(RNA, min_dist=0.5)
     
     sc.tl.rank_genes_groups(RNA, groupby='leiden', method='wilcoxon')
     marker_matches = sc.tl.marker_gene_overlap(RNA, marker_genes)
@@ -63,12 +65,14 @@ def makeFigure():
     sc.pl.umap(RNA, color='leiden', legend_loc='on data', title='', frameon=False, ax=ax[4])
     #RNA.write_h5ad("/opt/CoH/SingleCell/Patient_BC04/BC04_processed_annot.h5ad.gz", compression='gzip')
 
+    """
     unFiltRNA = ad.read_h5ad("/opt/CoH/SingleCell/Patient_BC04/BC04_unfilt.h5ad.gz")
     sc.pp.regress_out(unFiltRNA, ['total_counts', 'pct_counts_mt'])
     sc.pp.combat(unFiltRNA)
     sc.pp.scale(unFiltRNA, max_value=10)
     unFiltRNA.obs['leiden'] = RNA.obs.leiden
-    #unFiltRNA.write_h5ad("/opt/CoH/SingleCell/Patient_BC04/BC04_unfilt_ann.h5ad.gz", compression='gzip')
+    unFiltRNA.write_h5ad("/opt/CoH/SingleCell/Patient_BC04/BC04_unfilt_ann.h5ad.gz", compression='gzip')
+    """
 
     return f
 
