@@ -103,31 +103,38 @@ def makeAzizi_Ann():
             RNA_Ann.write_h5ad(file.split(".")[0] + "_raw.h5ad.gz", compression='gzip')
 
 
-def process_Azizi():
+def process_Azizi(IL10=False):
     """Read AnnData and process"""
-    for patient in ["BC01", "BC04"]:
+    if IL10:
+        patients = ["BC04"]
+    else:
+        patients = ["BC01", "BC04"]
+    
+    for patient in patients:
         dir = "/opt/CoH/SingleCell/Patient_" + patient + "/"
         fileList = os.listdir(dir)
         RNA_list = []
         for file in [dir + filename for filename in fileList if filename.endswith("raw.h5ad.gz")]:
             RNA_samp = ad.read_h5ad(file)
             RNA_samp.obs["batch"] = file.split("_")[2][-1]
-            RNA_list.append(RNA_samp)
+            if IL10:
+                if np.isin("IL10", RNA_samp.var_names):
+                    RNA_list.append(RNA_samp)
+            else:
+                RNA_list.append(RNA_samp)
         RNA = ad.concat(RNA_list)
         RNA.obs_names_make_unique()
-        CD274 = RNA[:, RNA.var_names == "CD274"].to_df()
         sc.pp.filter_cells(RNA, min_genes=20)
         sc.pp.filter_genes(RNA, min_cells=3)
         RNA.var['mt'] = RNA.var_names.str.startswith('MT-')
         RNA.var['rp'] = RNA.var_names.str.startswith('RP11-')
         sc.pp.calculate_qc_metrics(RNA, qc_vars=['mt'], percent_top=None, log1p=False, inplace=True)
         RNA = RNA[RNA.obs.n_genes_by_counts < 5000, :]
-        RNA = RNA[RNA.obs.pct_counts_mt < 15, :]
+        RNA = RNA[RNA.obs.pct_counts_mt < 10, :]
         sc.pp.normalize_total(RNA, target_sum=1e4)
         sc.pp.log1p(RNA)
+        RNA.raw = RNA
         sc.pp.highly_variable_genes(RNA, min_mean=0.0125, max_mean=3, min_disp=0.5, batch_key='batch')
-        RNA.var.highly_variable_nbatches.update(pd.Series([10], index=["CD274"]))
-        RNA.write_h5ad(file.split("_")[0] + "_" + patient + "/" + patient + "_unfilt.h5ad.gz", compression='gzip')
         if patient == "BC01":
             RNA = RNA[:, RNA.var.highly_variable_nbatches >= 1]
         else:
@@ -135,7 +142,10 @@ def process_Azizi():
         sc.pp.regress_out(RNA, ['total_counts', 'pct_counts_mt'])
         sc.pp.combat(RNA)
         sc.pp.scale(RNA, max_value=10)
-        RNA.write_h5ad(file.split("_")[0] + "_" + patient + "/" + patient + "_processed.h5ad.gz", compression='gzip')
+        if IL10:
+            RNA.write_h5ad(file.split("_")[0] + "_" + patient + "/" + patient + "_processed_IL10.h5ad.gz", compression='gzip')
+        else:
+            RNA.write_h5ad(file.split("_")[0] + "_" + patient + "/" + patient + "_processed.h5ad.gz", compression='gzip')
 
 
 def import_Azizi_Filt(patient, annotated=False):
@@ -148,8 +158,11 @@ def import_Azizi_Filt(patient, annotated=False):
     return RNA
 
 
-def import_Azizi_Unfilt(patient):
-    file = "/opt/CoH/SingleCell/Patient_" + patient + "/" + patient + "_unfilt_ann.h5ad.gz"
+def import_Azizi_IL10(patient, annotated=False):
+    if annotated:
+        file = "/opt/CoH/SingleCell/Patient_" + patient + "/" + patient + "_processed_annot_IL10.h5ad.gz"
+    else:
+        file = "/opt/CoH/SingleCell/Patient_" + patient + "/" + patient + "_processed_IL10.h5ad.gz"
     RNA = ad.read_h5ad(file)
     RNA.uns['log1p']["base"] = None
     return RNA

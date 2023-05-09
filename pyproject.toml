@@ -25,6 +25,8 @@ tensorly-viz = "^0.1.7"
 numba = "0.57.0rc1"
 flowcytometrytools = {git = "https://github.com/meyer-lab/FlowCytometryToolsFork.git"}
 fcsparser = "0.2.4"
+scanpy = "^1.9.3"
+leidenalg = "^0.9.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
