@@ -10,8 +10,6 @@ import tensorly as tl
 from .figureCommon import subplotLabel, getSetup
 from os.path import join, dirname
 from ..tensor import factorTensor, get_status_dict
-from ..flow import make_flow_sc_dataframe
-from ..flow_rec import make_flow_sc_dataframe_rec
 
 
 path_here = dirname(dirname(__file__))

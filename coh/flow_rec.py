@@ -8,7 +8,6 @@ import warnings
 import xarray as xa
 from FlowCytometryTools import FCMeasurement
 from .flow import pop_gate, live_PBMC_gate, pop_gate, get_gate_dict
-from .tensor import get_status_dict
 
 path_here = dirname(dirname(__file__))
 
