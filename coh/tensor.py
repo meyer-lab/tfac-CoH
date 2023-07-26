@@ -5,8 +5,6 @@ from collections import OrderedDict
 from tensorly.cp_tensor import cp_flip_sign
 from tensorpack.cmtf import perform_CP, cp_normalize
 from sklearn.linear_model import LogisticRegressionCV
-from sklearn.decomposition import PCA
-from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import RepeatedStratifiedKFold, cross_val_score
 from sklearn import preprocessing
 from os.path import join, dirname
@@ -63,26 +61,6 @@ def CoH_LogReg_plot(ax, tFac, CoH_Array, numComps):
     LR_CoH = LogisticRegressionCV(penalty='l1', max_iter=5000, solver="liblinear", Cs=[100.0, 1.0, 0.01]).fit(mode_facs, Donor_CoH_y)
     CoH_comp_weights = pd.DataFrame({"Component": np.arange(1, numComps + 1), "Coefficient": LR_CoH.coef_[0]})
     sns.barplot(data=CoH_comp_weights, x="Component", y="Coefficient", color="k", ax=ax)
-
-
-def plot_PCA(ax):
-    """Plots CoH PCA"""
-    DF = pd.read_csv(join(path_here, "data/CoH_PCA.csv")).set_index("Patient").drop("Unnamed: 0", axis=1)
-    pcaMat = DF.to_numpy()
-    pca = PCA(n_components=2)
-    scaler = StandardScaler()
-    pcaMat = scaler.fit_transform(np.nan_to_num(pcaMat))
-    scores = pca.fit_transform(pcaMat)
-    loadings = pca.components_
-
-    scoresDF = pd.DataFrame({"Patient": DF.index.values, "Component 1": scores[:, 0], "Component 2": scores[:, 1]})
-    loadingsDF = pd.DataFrame()
-    for i, col in enumerate(DF.columns):
-        vars = col.split("_")
-        loadingsDF = pd.concat([loadingsDF, pd.DataFrame({"Time": [vars[0]], "Treatment": vars[1], "Marker": vars[2], "Cell": vars[3], "Component 1": loadings[0, i], "Component 2": loadings[1, i]})])
-
-    sns.scatterplot(data=scoresDF, hue="Patient", x="Component 1", y="Component 2", ax=ax[0])
-    sns.scatterplot(data=loadingsDF, x="Component 1", y="Component 2", hue="Treatment", style="Cell", size="Marker", ax=ax[1])
 
 
 def BC_status_plot(compNum, CoH_Data, ax, rec=False):
