@@ -16,7 +16,7 @@ path_here = dirname(dirname(__file__))
 
 def factorTensor(tensor, numComps):
     """ Takes Tensor, and mask and returns tensor factorized form. """
-    tfac = perform_CP(tensor, numComps, tol=1e-9, maxiter=1000)
+    tfac = perform_CP(tensor, numComps, tol=1e-8, maxiter=10000, progress=True)
     R2X = tfac.R2X
     tfac = cp_normalize(tfac)
     tfac = cp_flip_sign(tfac)
@@ -60,7 +60,7 @@ def CoH_LogReg_plot(ax, tFac, CoH_Array, numComps):
     status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status.csv"), index_col=0)
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
 
-    LR_CoH = LogisticRegressionCV(random_state=0, penalty='l2', max_iter=5000).fit(mode_facs, Donor_CoH_y)
+    LR_CoH = LogisticRegressionCV(penalty='l1', max_iter=5000, solver="liblinear", Cs=[100.0, 1.0, 0.01]).fit(mode_facs, Donor_CoH_y)
     CoH_comp_weights = pd.DataFrame({"Component": np.arange(1, numComps + 1), "Coefficient": LR_CoH.coef_[0]})
     sns.barplot(data=CoH_comp_weights, x="Component", y="Coefficient", color="k", ax=ax)
 
@@ -71,7 +71,7 @@ def plot_PCA(ax):
     pcaMat = DF.to_numpy()
     pca = PCA(n_components=2)
     scaler = StandardScaler()
-    pcaMat = scaler.fit_transform(np.nan_2_num(pcaMat))
+    pcaMat = scaler.fit_transform(np.nan_to_num(pcaMat))
     scores = pca.fit_transform(pcaMat)
     loadings = pca.components_
 
@@ -94,22 +94,17 @@ def BC_status_plot(compNum, CoH_Data, ax, rec=False):
         status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status.csv"), index_col=0)
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
     cv = RepeatedStratifiedKFold(n_splits=10, random_state=42)
-    model = LogisticRegressionCV(penalty='l2', max_iter=5000)
+    model = LogisticRegressionCV(penalty='l1', max_iter=5000, solver="liblinear", Cs=[100.0, 1.0, 0.01])
+
     for i in range(1, compNum + 1):
         print(i)
         tFacAllM, _ = factorTensor(CoH_Data.values, numComps=i)
-        mode_labels = CoH_Data["Patient"]
         coord = CoH_Data.dims.index("Patient")
         mode_facs = tFacAllM[1][coord]
-        tFacDF = pd.DataFrame()
-        for j in range(0, i):
-            tFacDF = pd.concat([tFacDF, pd.DataFrame({"Component_Val": mode_facs[:, j], "Component": (j + 1), "Patient": mode_labels})])
 
-        tFacDF = pd.pivot(tFacDF, index="Component", columns="Patient", values="Component_Val")
-        tFacDF = tFacDF[status_DF.Patient]
-        TFAC_X = tFacDF.transpose().values
-        model = LogisticRegressionCV(penalty='l2', max_iter=5000)
-        scoresTFAC = cross_val_score(model, TFAC_X, Donor_CoH_y, cv=cv)
+        model.fit(mode_facs, Donor_CoH_y)
+
+        scoresTFAC = cross_val_score(model, mode_facs, Donor_CoH_y, cv=cv)
         accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "Tensor Factorization", "Components": [i], "Accuracy (10-fold CV)": np.mean(scoresTFAC)})])
     accDF = accDF.reset_index(drop=True)
     sns.lineplot(data=accDF, x="Components", y="Accuracy (10-fold CV)", hue="Data Type", ax=ax)
