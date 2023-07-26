@@ -1,9 +1,12 @@
 import numpy as np
+from copy import deepcopy
 import seaborn as sns
 import pandas as pd
+import tensorly as tl
 from collections import OrderedDict
 from tensorly.cp_tensor import cp_flip_sign
-from tensorpack.cmtf import perform_CP, cp_normalize
+from tensorly.tenalg import khatri_rao
+from tensorpack.cmtf import initialize_cp, cp_normalize, calcR2X, mlstsq, sort_factors, tqdm
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn.model_selection import RepeatedStratifiedKFold, cross_val_score
 from sklearn import preprocessing
@@ -12,13 +15,70 @@ from os.path import join, dirname
 path_here = dirname(dirname(__file__))
 
 
-def factorTensor(tensor, numComps):
-    """ Takes Tensor, and mask and returns tensor factorized form. """
-    tfac = perform_CP(tensor, numComps, tol=1e-8, maxiter=10000, progress=True)
-    R2X = tfac.R2X
-    tfac = cp_normalize(tfac)
-    tfac = cp_flip_sign(tfac)
-    return tfac, R2X
+def factorTensor(tOrig, numComps, tol=1e-9, maxiter=6_000, progress=False, linesearch=True):
+    """ Perform CP decomposition. """
+    tFac = initialize_cp(tOrig, numComps)
+
+    acc_pow: float = 2.0  # Extrapolate to the iteration^(1/acc_pow) ahead
+    acc_fail: int = 0  # How many times acceleration have failed
+    max_fail: int = 4  # Increase acc_pow with one after max_fail failure
+
+    # Pre-unfold
+    unfolded = [tl.unfold(tOrig, i) for i in range(tOrig.ndim)]
+
+    R2X_last = -np.inf
+    tFac.R2X = calcR2X(tFac, tOrig)
+
+    # Precalculate the missingness patterns
+    uniqueInfo = [np.unique(np.isfinite(B.T), axis=1, return_inverse=True) for B in unfolded]
+
+    tq = tqdm(range(maxiter), disable=(not progress))
+    for i in tq:
+        tFac_old = deepcopy(tFac)
+
+        # Solve on each mode
+        for m in range(len(tFac.factors)):
+            kr = khatri_rao(tFac.factors, skip_matrix=m)
+            tFac.factors[m] = mlstsq(kr, unfolded[m].T, uniqueInfo[m]).T
+
+        R2X_last = tFac.R2X
+        tFac.R2X = calcR2X(tFac, tOrig)
+        tq.set_postfix(R2X=tFac.R2X, delta=tFac.R2X - R2X_last, refresh=False)
+        assert tFac.R2X > 0.0
+
+        # Initiate line search
+        if linesearch and i % 2 == 0 and i > 5:
+            jump = i ** (1.0 / acc_pow)
+
+            # Estimate error with line search
+            tFac_ls = deepcopy(tFac)
+            tFac_ls.factors = [
+                f + (f - tFac_old.factors[ii]) * jump
+                for ii, f in enumerate(tFac.factors)
+            ]
+            tFac_ls.R2X = calcR2X(tFac_ls, tOrig)
+
+            if tFac_ls.R2X > tFac.R2X:
+                acc_fail = 0
+                tFac = tFac_ls
+            else:
+                acc_fail += 1
+
+                if acc_fail == max_fail:
+                    acc_pow += 1.0
+                    acc_fail = 0
+
+        if tFac.R2X - R2X_last < tol:
+            break
+
+    R2X = tFac.R2X
+    tFac = cp_normalize(tFac)
+    tFac = cp_flip_sign(tFac)
+
+    if numComps > 1:
+        tFac = sort_factors(tFac)
+    
+    return tFac, R2X
 
 
 def R2Xplot(ax, tensor, compNum: int):
