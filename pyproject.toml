@@ -11,26 +11,19 @@ numpy = "^1.24.2"
 svgutils = "^0.3.4"
 seaborn = "^0.11.2"
 scipy = "^1.7.3"
-pandas = "^1.3.4"
+pandas = "^1.5.3"
 matplotlib = "^3.5.0"
 scikit-learn = "^1.2.1"
 tensorly = "^0.8.0"
 pyarrow = "11.0.0"
 xarray = "^2022.3.0"
 tensorpack = {git = "https://github.com/meyer-lab/tensorpack.git", rev = "main"}
-pathlib = "^1.0.1"
 statannot = "^0.2.3"
-pip = "^23.0.1"
-tensorly-viz = "^0.1.7"
-numba = "0.57.0rc1"
+numba = "^0.57.1"
 flowcytometrytools = {git = "https://github.com/meyer-lab/FlowCytometryToolsFork.git"}
 fcsparser = "0.2.4"
 scanpy = "^1.9.3"
 leidenalg = "^0.9.1"
-
-[tool.poetry.dev-dependencies]
-pytest = "^6.2.5"
-pytest-cov = "^3.0.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

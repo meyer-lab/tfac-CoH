@@ -2,7 +2,7 @@ import numpy as np
 import seaborn as sns
 import pandas as pd
 from collections import OrderedDict
-from tensorly.cp_tensor import cp_flip_sign, cp_to_tensor
+from tensorly.cp_tensor import cp_flip_sign
 from tensorpack.cmtf import perform_CP, cp_normalize
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn.decomposition import PCA
@@ -10,7 +10,6 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import RepeatedStratifiedKFold, cross_val_score
 from sklearn import preprocessing
 from os.path import join, dirname
-from tlviz.model_evaluation import core_consistency
 
 path_here = dirname(dirname(__file__))
 
@@ -29,22 +28,6 @@ def R2Xplot(ax, tensor, compNum: int):
     varHold = [factorTensor(tensor, i)[1] for i in range(1, compNum + 1)]
     ax.scatter(np.arange(1, compNum + 1), varHold, c='k', s=20.)
     ax.set(title="R2X", ylabel="Variance Explained", xlabel="Number of Components", ylim=(0, 1), xlim=(0, compNum + 0.5), xticks=np.arange(0, compNum + 1))
-
-
-def core_cons_plot(ax, tensor, compNum: int):
-    """Creates R2X plot for non-neg CP tensor decomposition"""
-    ccHold = np.zeros(compNum)
-    XX = tensor.copy()
-
-    for i in range(1, compNum + 1):
-        print(i)
-        tfac, _ = factorTensor(tensor, i)
-        XX[np.isnan(tensor)] = cp_to_tensor(tfac)[np.isnan(tensor)]
-        CC = core_consistency(tfac, XX, True)
-        ccHold[i - 1] = CC / 100
-
-    ax.scatter(np.arange(1, compNum + 1), ccHold, c='k', s=20.)
-    ax.set(title="Core Consistency", ylabel="Core Consistency", xlabel="Number of Components", ylim=(0, 1), xlim=(0, compNum + 0.5), xticks=np.arange(0, compNum + 1))
 
 
 def plot_tFac_CoH(ax, tFac, CoH_Array, mode, numComps=3, nn=False, rec=False, cbar=True):

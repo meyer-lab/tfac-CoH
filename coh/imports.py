@@ -1,6 +1,5 @@
 """File that deals with everything about importing and sampling."""
 import os
-from functools import lru_cache
 from os.path import join
 import numpy as np
 import pandas as pd
@@ -9,8 +8,6 @@ import anndata as ad
 import scanpy as sc
 from scipy.io import mmread
 from scipy.sparse import coo_matrix
-from zipfile import ZipFile
-
 
 
 path_here = os.path.dirname(os.path.dirname(__file__))
