@@ -3,7 +3,13 @@ This creates Figure S2, factorization of fold-change data.
 """
 from os.path import join
 import xarray as xa
-from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH, CoH_LogReg_plot, BC_status_plot
+from ..tensor import (
+    factorTensor,
+    R2Xplot,
+    plot_tFac_CoH,
+    CoH_LogReg_plot,
+    BC_status_plot,
+)
 from .common import subplotLabel, getSetup, path_here
 
 

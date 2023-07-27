@@ -1,7 +1,6 @@
 """
 This creates Figure S5, scattering receptor data.
 """
-import numpy as np
 import pandas as pd
 from .common import subplotLabel, getSetup, BC_scatter_cells_rec
 from os.path import join, dirname
@@ -17,9 +16,8 @@ def makeFigure():
     # Add subplot labels
     subplotLabel(ax)
     CoH_Data_DF_R = pd.read_csv(join(path_here, "data/CoH_Rec_DF.csv"))
-    filt_list = [False, True, True, True, True, True]
 
-    for i, rec in enumerate(np.array(["IL10R", "IL2RB", "IL12RI", "TGFB RII", "PD_L1", "IL6Ra"])):
-        BC_scatter_cells_rec(ax[i], CoH_Data_DF_R, rec, filter=filt_list[i])
+    for i, rec in enumerate(["IL10R", "IL2RB", "IL12RI", "TGFB RII", "PD_L1", "IL6Ra"]):
+        BC_scatter_cells_rec(ax[i], CoH_Data_DF_R, rec, filter=i > 0)
 
     return f

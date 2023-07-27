@@ -1,11 +1,9 @@
 """
 This creates Figure S4, boxplots of induced responses.
 """
+from os.path import join
 import pandas as pd
-from .common import subplotLabel, getSetup, BC_scatter, BC_scatter_cells
-from os.path import join, dirname
-
-path_here = dirname(dirname(__file__))
+from .common import subplotLabel, getSetup, BC_scatter, BC_scatter_cells, path_here
 
 
 def makeFigure():

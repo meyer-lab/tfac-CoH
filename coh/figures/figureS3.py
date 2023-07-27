@@ -1,12 +1,16 @@
 """
 This creates Figure S3, factorization of cell type abundance.
 """
+from os.path import join
 import xarray as xa
-from .common import subplotLabel, getSetup
-from os.path import join, dirname
-from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH, BC_status_plot, CoH_LogReg_plot
-
-path_here = dirname(dirname(__file__))
+from .common import subplotLabel, getSetup, path_here
+from ..tensor import (
+    factorTensor,
+    R2Xplot,
+    plot_tFac_CoH,
+    BC_status_plot,
+    CoH_LogReg_plot,
+)
 
 
 def makeFigure():
