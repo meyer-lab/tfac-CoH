@@ -4,11 +4,9 @@ This creates Figure 4's clustered heat map.
 import xarray as xa
 import pandas as pd
 import seaborn as sns
-from .figureCommon import getSetup
-from os.path import join, dirname
+from .common import getSetup, path_here
+from os.path import join
 from ..tensor import factorTensor
-
-path_here = dirname(dirname(__file__))
 
 
 def makeFigure():
@@ -19,20 +17,20 @@ def makeFigure():
     num_comps = 4
     # CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Tensor_Data.nc""))
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Rec.nc"))
-    tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
-    f = plot_coh_clust(tFacAllM, CoH_Data, "Patient", numComps=num_comps, rec=True)
+    tFacAllM, _ = factorTensor(CoH_Data.values, r=num_comps)
+    f = plot_coh_clust(tFacAllM, CoH_Data, "Patient", rec=True)
 
     return f
 
 
-def plot_coh_clust(tFac, CoH_Array, mode, numComps=12, rec=False):
+def plot_coh_clust(tFac, CoH_Array, mode, rec=False):
     """Plots tensor factorization of cells"""
     mode_labels = CoH_Array[mode]
     coord = CoH_Array.dims.index(mode)
     mode_facs = tFac[1][coord]
     tFacDF = pd.DataFrame()
 
-    for i in range(0, numComps):
+    for i in range(0, mode_facs.shape[1]):
         tFacDF = pd.concat([tFacDF, pd.DataFrame({"Component_Val": mode_facs[:, i], "Component": (i + 1), mode: mode_labels})])
 
     tFacDF = pd.pivot(tFacDF, index="Component", columns=mode, values="Component_Val")

@@ -1,10 +1,10 @@
 SHELL := /bin/bash
 
-flist = 1 2 3 4 5 S2 S3 S4
+flist = $(wildcard coh/figures/figure*.py)
 
 .PHONY: clean test all
 
-all: $(patsubst %, output/figure%.svg, $(flist))
+all: $(patsubst coh/figures/figure%.py, output/figure%.svg, $(flist))
 
 output/figure%.svg: coh/figures/figure%.py
 	mkdir -p ./output

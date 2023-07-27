@@ -7,12 +7,9 @@ import seaborn as sns
 import pandas as pd
 from copy import copy
 import tensorly as tl
-from .figureCommon import subplotLabel, getSetup
-from os.path import join, dirname
+from .common import subplotLabel, getSetup, path_here
+from os.path import join
 from ..tensor import factorTensor, get_status_dict
-
-
-path_here = dirname(dirname(__file__))
 
 
 def makeFigure():
@@ -74,7 +71,7 @@ def make_impute_DF():
     """Imputes data and returns df containing those values"""
     num_comps = 5
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Tensor_DataSet.nc"))
-    tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
+    tFacAllM, _ = factorTensor(CoH_Data.values, r=num_comps)
     tensor = tl.cp_to_tensor(tFacAllM)
     CoH_Data_I = copy(CoH_Data)
     CoH_Data_I.data = tensor

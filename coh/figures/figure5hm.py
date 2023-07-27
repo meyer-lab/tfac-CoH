@@ -4,10 +4,8 @@ This creates Figure 5 heatmap (clustered receptor and response correlations).
 import seaborn as sns
 import pandas as pd
 import numpy as np
-from .figureCommon import subplotLabel, getSetup
-from os.path import join, dirname
-
-path_here = dirname(dirname(__file__))
+from .common import subplotLabel, getSetup, path_here
+from os.path import join
 
 
 def makeFigure():
