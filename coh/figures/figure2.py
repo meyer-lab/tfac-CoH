@@ -27,13 +27,13 @@ def makeFigure():
     num_comps = 12
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Tensor_DataSet.nc"))
     tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
-    R2Xplot(ax[1], CoH_Data.values, compNum=15)
+    R2Xplot(ax[1], CoH_Data.values, compNum=14)
     plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Patient", numComps=num_comps, cbar=False)
     plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Treatment", numComps=num_comps, cbar=False)
     plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Cell", numComps=num_comps, cbar=False)
     plot_tFac_CoH(ax[5], tFacAllM, CoH_Data, "Marker", numComps=num_comps, cbar=False)
 
-    tc = Decomposition(CoH_Data.to_numpy(), max_rr=15)
+    tc = Decomposition(CoH_Data.to_numpy(), max_rr=12)
     tc.perform_tfac()
     tc.perform_PCA(flattenon=0)
 

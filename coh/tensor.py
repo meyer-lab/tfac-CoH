@@ -1,12 +1,13 @@
 import numpy as np
+from copy import deepcopy
 import seaborn as sns
 import pandas as pd
+import tensorly as tl
 from collections import OrderedDict
 from tensorly.cp_tensor import cp_flip_sign
-from tensorpack.cmtf import perform_CP, cp_normalize
+from tensorly.tenalg import khatri_rao
+from tensorpack.cmtf import initialize_cp, cp_normalize, calcR2X, mlstsq, sort_factors, tqdm
 from sklearn.linear_model import LogisticRegressionCV
-from sklearn.decomposition import PCA
-from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import RepeatedStratifiedKFold, cross_val_score
 from sklearn import preprocessing
 from os.path import join, dirname
@@ -14,13 +15,70 @@ from os.path import join, dirname
 path_here = dirname(dirname(__file__))
 
 
-def factorTensor(tensor, numComps):
-    """ Takes Tensor, and mask and returns tensor factorized form. """
-    tfac = perform_CP(tensor, numComps, tol=1e-9, maxiter=1000)
-    R2X = tfac.R2X
-    tfac = cp_normalize(tfac)
-    tfac = cp_flip_sign(tfac)
-    return tfac, R2X
+def factorTensor(tOrig, numComps, tol=1e-9, maxiter=6_000, progress=False, linesearch=True):
+    """ Perform CP decomposition. """
+    tFac = initialize_cp(tOrig, numComps)
+
+    acc_pow: float = 2.0  # Extrapolate to the iteration^(1/acc_pow) ahead
+    acc_fail: int = 0  # How many times acceleration have failed
+    max_fail: int = 4  # Increase acc_pow with one after max_fail failure
+
+    # Pre-unfold
+    unfolded = [tl.unfold(tOrig, i) for i in range(tOrig.ndim)]
+
+    R2X_last = -np.inf
+    tFac.R2X = calcR2X(tFac, tOrig)
+
+    # Precalculate the missingness patterns
+    uniqueInfo = [np.unique(np.isfinite(B.T), axis=1, return_inverse=True) for B in unfolded]
+
+    tq = tqdm(range(maxiter), disable=(not progress))
+    for i in tq:
+        tFac_old = deepcopy(tFac)
+
+        # Solve on each mode
+        for m in range(len(tFac.factors)):
+            kr = khatri_rao(tFac.factors, skip_matrix=m)
+            tFac.factors[m] = mlstsq(kr, unfolded[m].T, uniqueInfo[m]).T
+
+        R2X_last = tFac.R2X
+        tFac.R2X = calcR2X(tFac, tOrig)
+        tq.set_postfix(R2X=tFac.R2X, delta=tFac.R2X - R2X_last, refresh=False)
+        assert tFac.R2X > 0.0
+
+        # Initiate line search
+        if linesearch and i % 2 == 0 and i > 5:
+            jump = i ** (1.0 / acc_pow)
+
+            # Estimate error with line search
+            tFac_ls = deepcopy(tFac)
+            tFac_ls.factors = [
+                f + (f - tFac_old.factors[ii]) * jump
+                for ii, f in enumerate(tFac.factors)
+            ]
+            tFac_ls.R2X = calcR2X(tFac_ls, tOrig)
+
+            if tFac_ls.R2X > tFac.R2X:
+                acc_fail = 0
+                tFac = tFac_ls
+            else:
+                acc_fail += 1
+
+                if acc_fail == max_fail:
+                    acc_pow += 1.0
+                    acc_fail = 0
+
+        if tFac.R2X - R2X_last < tol:
+            break
+
+    R2X = tFac.R2X
+    tFac = cp_normalize(tFac)
+    tFac = cp_flip_sign(tFac)
+
+    if numComps > 1:
+        tFac = sort_factors(tFac)
+    
+    return tFac, R2X
 
 
 def R2Xplot(ax, tensor, compNum: int):
@@ -60,29 +118,9 @@ def CoH_LogReg_plot(ax, tFac, CoH_Array, numComps):
     status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status.csv"), index_col=0)
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
 
-    LR_CoH = LogisticRegressionCV(random_state=0, penalty='l2', max_iter=5000).fit(mode_facs, Donor_CoH_y)
+    LR_CoH = LogisticRegressionCV(penalty='l1', max_iter=5000, solver="liblinear", Cs=[100.0, 1.0, 0.01]).fit(mode_facs, Donor_CoH_y)
     CoH_comp_weights = pd.DataFrame({"Component": np.arange(1, numComps + 1), "Coefficient": LR_CoH.coef_[0]})
     sns.barplot(data=CoH_comp_weights, x="Component", y="Coefficient", color="k", ax=ax)
-
-
-def plot_PCA(ax):
-    """Plots CoH PCA"""
-    DF = pd.read_csv(join(path_here, "data/CoH_PCA.csv")).set_index("Patient").drop("Unnamed: 0", axis=1)
-    pcaMat = DF.to_numpy()
-    pca = PCA(n_components=2)
-    scaler = StandardScaler()
-    pcaMat = scaler.fit_transform(np.nan_2_num(pcaMat))
-    scores = pca.fit_transform(pcaMat)
-    loadings = pca.components_
-
-    scoresDF = pd.DataFrame({"Patient": DF.index.values, "Component 1": scores[:, 0], "Component 2": scores[:, 1]})
-    loadingsDF = pd.DataFrame()
-    for i, col in enumerate(DF.columns):
-        vars = col.split("_")
-        loadingsDF = pd.concat([loadingsDF, pd.DataFrame({"Time": [vars[0]], "Treatment": vars[1], "Marker": vars[2], "Cell": vars[3], "Component 1": loadings[0, i], "Component 2": loadings[1, i]})])
-
-    sns.scatterplot(data=scoresDF, hue="Patient", x="Component 1", y="Component 2", ax=ax[0])
-    sns.scatterplot(data=loadingsDF, x="Component 1", y="Component 2", hue="Treatment", style="Cell", size="Marker", ax=ax[1])
 
 
 def BC_status_plot(compNum, CoH_Data, ax, rec=False):
@@ -94,22 +132,17 @@ def BC_status_plot(compNum, CoH_Data, ax, rec=False):
         status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status.csv"), index_col=0)
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
     cv = RepeatedStratifiedKFold(n_splits=10, random_state=42)
-    model = LogisticRegressionCV(penalty='l2', max_iter=5000)
+    model = LogisticRegressionCV(penalty='l1', max_iter=5000, solver="liblinear", Cs=[100.0, 1.0, 0.01])
+
     for i in range(1, compNum + 1):
         print(i)
         tFacAllM, _ = factorTensor(CoH_Data.values, numComps=i)
-        mode_labels = CoH_Data["Patient"]
         coord = CoH_Data.dims.index("Patient")
         mode_facs = tFacAllM[1][coord]
-        tFacDF = pd.DataFrame()
-        for j in range(0, i):
-            tFacDF = pd.concat([tFacDF, pd.DataFrame({"Component_Val": mode_facs[:, j], "Component": (j + 1), "Patient": mode_labels})])
 
-        tFacDF = pd.pivot(tFacDF, index="Component", columns="Patient", values="Component_Val")
-        tFacDF = tFacDF[status_DF.Patient]
-        TFAC_X = tFacDF.transpose().values
-        model = LogisticRegressionCV(penalty='l2', max_iter=5000)
-        scoresTFAC = cross_val_score(model, TFAC_X, Donor_CoH_y, cv=cv)
+        model.fit(mode_facs, Donor_CoH_y)
+
+        scoresTFAC = cross_val_score(model, mode_facs, Donor_CoH_y, cv=cv)
         accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "Tensor Factorization", "Components": [i], "Accuracy (10-fold CV)": np.mean(scoresTFAC)})])
     accDF = accDF.reset_index(drop=True)
     sns.lineplot(data=accDF, x="Components", y="Accuracy (10-fold CV)", hue="Data Type", ax=ax)
