@@ -1,7 +1,7 @@
 """
 This creates Figure 8.
 """
-from .figureCommon import subplotLabel, getSetup
+from .common import subplotLabel, getSetup
 from os.path import dirname
 from ..flow import make_flow_sc_dataframe
 

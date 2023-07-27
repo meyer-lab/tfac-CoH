@@ -2,7 +2,7 @@
 This creates Figure S4, boxplots of induced responses.
 """
 import pandas as pd
-from .figureCommon import subplotLabel, getSetup, BC_scatter, BC_scatter_cells
+from .common import subplotLabel, getSetup, BC_scatter, BC_scatter_cells
 from os.path import join, dirname
 
 path_here = dirname(dirname(__file__))

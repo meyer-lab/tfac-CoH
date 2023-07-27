@@ -2,15 +2,11 @@
 This creates Figure 3, tensor factorization of receptor data.
 """
 import xarray as xa
-import numpy as np
 from tensorpack.plot import reduction
 from tensorpack import Decomposition
-from .figureCommon import subplotLabel, getSetup
-from os.path import join, dirname
+from .common import subplotLabel, getSetup, path_here
+from os.path import join
 from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH
-
-
-path_here = dirname(dirname(__file__))
 
 
 def makeFigure():
@@ -24,11 +20,11 @@ def makeFigure():
 
     num_comps = 4
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Rec.nc"))
-    tFacAllM, _ = factorTensor(CoH_Data.values, numComps=num_comps)
+    tFacAllM, _ = factorTensor(CoH_Data.values, r=num_comps)
     R2Xplot(ax[1], CoH_Data.values, compNum=8)
-    plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Patient", numComps=num_comps, cbar=False, rec=True)
-    plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Cell", numComps=num_comps, cbar=False)
-    plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Marker", numComps=num_comps, cbar=False)
+    plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Patient", cbar=False, rec=True)
+    plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Cell", cbar=False)
+    plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Marker", cbar=False)
 
     tc = Decomposition(CoH_Data.to_numpy(), max_rr=8)
     tc.perform_tfac()

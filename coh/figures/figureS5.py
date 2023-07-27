@@ -3,7 +3,7 @@ This creates Figure S5, scattering receptor data.
 """
 import numpy as np
 import pandas as pd
-from .figureCommon import subplotLabel, getSetup, BC_scatter_cells_rec
+from .common import subplotLabel, getSetup, BC_scatter_cells_rec
 from os.path import join, dirname
 
 path_here = dirname(dirname(__file__))
