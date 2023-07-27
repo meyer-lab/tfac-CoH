@@ -23,14 +23,14 @@ def makeFigure():
     return f
 
 
-def plot_coh_clust(tFac, CoH_Array, mode, numComps=12, rec=False):
+def plot_coh_clust(tFac, CoH_Array, mode, rec=False):
     """Plots tensor factorization of cells"""
     mode_labels = CoH_Array[mode]
     coord = CoH_Array.dims.index(mode)
     mode_facs = tFac[1][coord]
     tFacDF = pd.DataFrame()
 
-    for i in range(0, numComps):
+    for i in range(0, mode_facs.shape[1]):
         tFacDF = pd.concat([tFacDF, pd.DataFrame({"Component_Val": mode_facs[:, i], "Component": (i + 1), mode: mode_labels})])
 
     tFacDF = pd.pivot(tFacDF, index="Component", columns=mode, values="Component_Val")

@@ -15,7 +15,7 @@ from os.path import join, dirname
 path_here = dirname(dirname(__file__))
 
 
-def factorTensor(tOrig, r, tol=1e-9, maxiter=6_000, progress=False, linesearch=True):
+def factorTensor(tOrig: np.ndarray, r: int, tol: float=1e-9, maxiter: int=6_000, progress: bool=False, linesearch: bool=True):
     """ Perform CP decomposition. """
     tFac = initialize_cp(tOrig, r)
 
@@ -27,7 +27,7 @@ def factorTensor(tOrig, r, tol=1e-9, maxiter=6_000, progress=False, linesearch=T
     unfolded = [tl.unfold(tOrig, i) for i in range(tOrig.ndim)]
 
     R2X_last = -np.inf
-    tFac.R2X = calcR2X(tFac, tOrig)
+    R2X = calcR2X(tFac, tOrig)
 
     # Precalculate the missingness patterns
     uniqueInfo = [np.unique(np.isfinite(B.T), axis=1, return_inverse=True) for B in unfolded]
@@ -41,10 +41,10 @@ def factorTensor(tOrig, r, tol=1e-9, maxiter=6_000, progress=False, linesearch=T
             kr = khatri_rao(tFac.factors, skip_matrix=m)
             tFac.factors[m] = mlstsq(kr, unfolded[m].T, uniqueInfo[m]).T
 
-        R2X_last = tFac.R2X
-        tFac.R2X = calcR2X(tFac, tOrig)
-        tq.set_postfix(R2X=tFac.R2X, delta=tFac.R2X - R2X_last, refresh=False)
-        assert tFac.R2X > 0.0
+        R2X_last = R2X
+        R2X = calcR2X(tFac, tOrig)
+        assert R2X > 0.0
+        tq.set_postfix(R2X=R2X, delta=R2X - R2X_last, refresh=False)
 
         # Initiate line search
         if linesearch and i % 2 == 0 and i > 5:
@@ -56,9 +56,9 @@ def factorTensor(tOrig, r, tol=1e-9, maxiter=6_000, progress=False, linesearch=T
                 f + (f - tFac_old.factors[ii]) * jump
                 for ii, f in enumerate(tFac.factors)
             ]
-            tFac_ls.R2X = calcR2X(tFac_ls, tOrig)
+            R2X_ls = calcR2X(tFac_ls, tOrig)
 
-            if tFac_ls.R2X > tFac.R2X:
+            if R2X_ls > R2X:
                 acc_fail = 0
                 tFac = tFac_ls
             else:
@@ -68,10 +68,9 @@ def factorTensor(tOrig, r, tol=1e-9, maxiter=6_000, progress=False, linesearch=T
                     acc_pow += 1.0
                     acc_fail = 0
 
-        if tFac.R2X - R2X_last < tol:
+        if R2X - R2X_last < tol:
             break
 
-    R2X = tFac.R2X
     tFac = cp_normalize(tFac)
     tFac = cp_flip_sign(tFac)
 
@@ -88,7 +87,7 @@ def R2Xplot(ax, tensor, compNum: int):
     ax.set(title="R2X", ylabel="Variance Explained", xlabel="Number of Components", ylim=(0, 1), xlim=(0, compNum + 0.5), xticks=np.arange(0, compNum + 1))
 
 
-def plot_tFac_CoH(ax, tFac, CoH_Array, mode, nn=False, rec=False, cbar=True):
+def plot_tFac_CoH(ax, tFac, CoH_Array, mode, rec=False, cbar=True):
     """Plots tensor factorization of cells"""
     mode_labels = CoH_Array[mode]
     coord = CoH_Array.dims.index(mode)
@@ -104,8 +103,6 @@ def plot_tFac_CoH(ax, tFac, CoH_Array, mode, nn=False, rec=False, cbar=True):
             tFacDF = tFacDF[get_status_dict_rec().keys()]
         else:
             tFacDF = tFacDF[get_status_dict().keys()]
-    if nn:
-        sns.heatmap(data=tFacDF, ax=ax, vmin=0, vmax=1)
     else:
         cmap = sns.color_palette("vlag", as_cmap=True)
         sns.heatmap(data=tFacDF, ax=ax, cmap=cmap, vmin=-1, vmax=1, cbar=cbar)
@@ -135,7 +132,6 @@ def BC_status_plot(compNum, CoH_Data, ax, rec=False):
     model = LogisticRegressionCV(penalty='l1', max_iter=5000, solver="liblinear", Cs=[100.0, 1.0, 0.01])
 
     for i in range(1, compNum + 1):
-        print(i)
         tFacAllM, _ = factorTensor(CoH_Data.values, r=i)
         coord = CoH_Data.dims.index("Patient")
         mode_facs = tFacAllM[1][coord]

@@ -39,14 +39,14 @@ def makeFigure():
     return f
 
 
-def CoH_Scat_Plot(ax, tFac, CoH_Array, mode, numComps, plot_comps):
+def CoH_Scat_Plot(ax, tFac, CoH_Array, mode, plot_comps):
     """Plots bar plot for spec"""
     mode_labels = CoH_Array[mode]
     coord = CoH_Array.dims.index(mode)
     mode_facs = tFac[1][coord]
     tFacDF = pd.DataFrame()
 
-    for i in range(0, numComps):
+    for i in range(0, mode_facs.shape[1]):
         tFacDF = pd.concat([tFacDF, pd.DataFrame({"Component_Val": mode_facs[:, i], "Component": (i + 1), mode: mode_labels})])
     tFacDF = tFacDF.loc[tFacDF["Component"].isin(plot_comps)]
     tFacDF = tFacDF.pivot(index=mode, columns='Component', values='Component_Val')
