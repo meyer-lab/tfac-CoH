@@ -19,7 +19,7 @@ def makeFigure():
 
     tFacAllM, _ = factorTensor(CoH_Data.values, r=4)
 
-    plot_tFac_CoH(ax[1], tFacAllM, CoH_Data, "Patient", rec=True)
+    plot_tFac_CoH(ax[1], tFacAllM, CoH_Data, "Patient")
     plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Cell")
     plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Marker")
 

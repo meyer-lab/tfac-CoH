@@ -19,7 +19,6 @@ def makeFigure():
 
     CoH_Data_DF = pd.read_csv(join(path_here, "data/CoH_Rec_DF.csv"))
     for i, rec in enumerate(np.array(["IFNg R1", "TGFB RII", "PD1", "PD_L1", "IL2Ra", "IL2RB", "IL4Ra", "IL6Ra", "IL6RB", "IL7Ra", "IL10R", "IL12RI"])):
-        print(rec)
         DF = CoH_Data_DF.loc[CoH_Data_DF.Marker == rec].copy()
         DF.loc[:, "Mean"] -= np.mean(DF["Mean"].values)
         DF.loc[:, "Mean"] /= np.std(DF["Mean"].values)

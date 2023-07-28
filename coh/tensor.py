@@ -77,6 +77,10 @@ def factorTensor(tOrig: np.ndarray, r: int, tol: float=1e-9, maxiter: int=6_000,
     return tFac, R2X
 
 
+cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=10)
+lrmodel = LogisticRegressionCV(penalty='elasticnet', solver="saga", max_iter=5000, l1_ratios=[0.9], Cs=[100.0, 1.0, 0.1], cv=cv)
+
+
 def varyCompPlots(axs: list, compNum: int, data, yDf: pd.DataFrame):
     """Plot 5 fold CV by # components"""
     accDF = pd.DataFrame()
@@ -84,7 +88,6 @@ def varyCompPlots(axs: list, compNum: int, data, yDf: pd.DataFrame):
     comps = np.arange(1, compNum + 1)
 
     y = preprocessing.label_binarize(yDf.Status, classes=['Healthy', 'BC']).flatten()
-    cv = RepeatedStratifiedKFold(n_splits=10, random_state=42)
 
     for i in comps:
         tFacAllM, R2X[i - 1] = factorTensor(data.values, r=i)
@@ -98,35 +101,20 @@ def varyCompPlots(axs: list, compNum: int, data, yDf: pd.DataFrame):
 
     accDF = accDF.reset_index(drop=True)
 
-    sns.lineplot(data=accDF, x="Components", y="Accuracy (10-fold CV)", hue="Data Type", ax=ax[0])
+    sns.lineplot(data=accDF, x="Components", y="Accuracy (10-fold CV)", hue="Data Type", ax=axs[0])
     axs[0].set(xticks=comps, ylim=(0.5, 1))
 
     axs[1].scatter(comps, R2X, c='k', s=20.)
     axs[1].set(title="R2X", ylabel="Variance Explained", xlabel="Number of Components", ylim=(0, 1), xlim=(0, compNum + 0.5), xticks=np.arange(0, compNum + 1))
 
 
-def plot_tFac_CoH(ax, tFac, CoH_Array, mode, rec=False, cbar=True):
+def plot_tFac_CoH(ax, tFac, CoH_Array, mode, cbar=False):
     """Plots tensor factorization of cells"""
-    mode_labels = CoH_Array[mode]
-    coord = CoH_Array.dims.index(mode)
-    mode_facs = tFac[1][coord]
-    tFacDF = pd.DataFrame()
+    mode_facs = tFac.factors[CoH_Array.dims.index(mode)]
+    tFacDF = pd.DataFrame(mode_facs, index=CoH_Array.coords[mode], columns=[str(i) for i in range(1, mode_facs.shape[1] + 1)])
 
-    for i in range(0, tFac.factors[0].shape[1]):
-        tFacDF = pd.concat([tFacDF, pd.DataFrame({"Component_Val": mode_facs[:, i], "Component": (i + 1), mode: mode_labels})])
-
-    tFacDF = pd.pivot(tFacDF, index="Component", columns=mode, values="Component_Val")
-    if mode == "Patient":
-        if rec:
-            tFacDF = tFacDF[get_status_dict_rec().keys()]
-        else:
-            tFacDF = tFacDF[get_status_dict().keys()]
-    else:
-        cmap = sns.color_palette("vlag", as_cmap=True)
-        sns.heatmap(data=tFacDF, ax=ax, cmap=cmap, vmin=-1, vmax=1, cbar=cbar)
-
-
-lrmodel = LogisticRegressionCV(penalty='elasticnet', solver="saga", max_iter=5000, l1_ratios=[0.9], Cs=[100.0, 1.0, 0.1])
+    cmap = sns.color_palette("vlag", as_cmap=True)
+    sns.heatmap(data=tFacDF.T, ax=ax, cmap=cmap, vmin=-1, vmax=1, cbar=cbar)
 
 
 def CoH_LogReg_plot(ax, tFac, CoH_Array):

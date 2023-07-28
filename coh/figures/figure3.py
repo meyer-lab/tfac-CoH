@@ -1,11 +1,10 @@
 """
 This creates Figure 3, tensor factorization of receptor data.
 """
-import xarray as xa
 from tensorpack.plot import reduction
 from tensorpack import Decomposition
 from .common import subplotLabel, getSetup
-from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH
+from ..tensor import factorTensor, varyCompPlots, plot_tFac_CoH, get_status_rec_df
 from ..flow_rec import make_CoH_Tensor_rec
 
 
@@ -16,14 +15,15 @@ def makeFigure():
 
     # Add subplot labels
     subplotLabel(ax)
-    ax[0].axis("off")
 
     CoH_Data = make_CoH_Tensor_rec()
-    tFacAllM, _ = factorTensor(CoH_Data.values, r=5)
-    R2Xplot(ax[1], CoH_Data.values, compNum=8)
-    plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Patient", cbar=False, rec=True)
-    plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Cell", cbar=False)
-    plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Marker", cbar=False)
+    tFacAllM, _ = factorTensor(CoH_Data.values, r=4)
+
+    varyCompPlots([ax[1], ax[0]], 8, CoH_Data, get_status_rec_df())
+
+    plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Patient")
+    plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Cell")
+    plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Marker")
 
     tc = Decomposition(CoH_Data.to_numpy(), max_rr=8)
     tc.perform_tfac()

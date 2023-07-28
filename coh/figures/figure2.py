@@ -22,15 +22,15 @@ def makeFigure():
 
     varyCompPlots([ax[1], ax[0]], 3, CoH_Data, get_status_df())
 
-    plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Patient", cbar=False)
-    plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Treatment", cbar=False)
-    plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Cell", cbar=False)
-    plot_tFac_CoH(ax[5], tFacAllM, CoH_Data, "Marker", cbar=False)
+    plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Patient")
+    plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Treatment")
+    plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Cell")
+    plot_tFac_CoH(ax[5], tFacAllM, CoH_Data, "Marker")
 
-    # tc = Decomposition(CoH_Data.to_numpy(), max_rr=12)
-    # tc.perform_tfac()
-    # tc.perform_PCA(flattenon=0)
+    tc = Decomposition(CoH_Data.to_numpy(), max_rr=12)
+    tc.perform_tfac()
+    tc.perform_PCA(flattenon=0)
 
-    # reduction(ax[6], tc)
+    reduction(ax[6], tc)
 
     return f

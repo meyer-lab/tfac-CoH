@@ -13,9 +13,8 @@ def makeFigure():
     # Get list of axis objects
     _, f = getSetup((8, 2), (1, 1))
 
-    num_comps = 4
     CoH_Data = make_CoH_Tensor_rec()
-    tFacAllM, _ = factorTensor(CoH_Data.values, r=num_comps)
+    tFacAllM, _ = factorTensor(CoH_Data.values, r=4)
     f = plot_coh_clust(tFacAllM, CoH_Data, "Patient", rec=True)
 
     return f

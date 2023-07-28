@@ -9,7 +9,7 @@ from ..tensor import (
     varyCompPlots,
 )
 from ..flow import make_CoH_Tensor
-from .common import subplotLabel, getSetup, path_here
+from .common import subplotLabel, getSetup
 
 
 def makeFigure():

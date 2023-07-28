@@ -18,9 +18,9 @@ def makeFigure():
     subplotLabel(ax)
     ax[0].axis("off")
 
-    data = make_CoH_Tensor(just_signal=True, foldChange=False)
+    data = make_CoH_Tensor(just_signal=True)
 
-    tFacAllM = factorTensor(data.values, r=12)[0]
+    tFacAllM = factorTensor(data.values, r=1)[0]
     tensor = tl.cp_to_tensor(tFacAllM)
     data.data[np.isnan(data.data)] = tensor[np.isnan(data.data)]
 
@@ -33,7 +33,7 @@ def makeFigure():
         "IL4-50ng",
         "IL6-50ng",
         "TGFB-50ng",
-        "Basal",
+        "Untreated",
     ]
 
     data = data.loc[patients, treatments, :, :]

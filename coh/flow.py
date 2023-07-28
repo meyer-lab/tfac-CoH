@@ -237,22 +237,23 @@ def make_CoH_Tensor(just_signal: bool=False, foldChange: bool=False) -> xa.DataA
         df = pd.read_csv(join(path_here, "coh/data/CoH_Flow_DF.csv"), index_col=[1, 2, 3, 4, 5])
 
     xdata = df.to_xarray()["Mean"]
+    xdata = xdata.loc[:, "15min", :, :, :]
 
     if just_signal or foldChange:
         markers = np.array(["pSTAT1", "pSTAT3", "pSTAT4", "pSTAT5", "pSTAT6", "pSmad1-2"])
-        xdata = xdata.loc[:, :, :, :, markers]
+        xdata = xdata.loc[:, :, :, markers]
 
     if foldChange:
         treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng"])
-        xdata = xdata.loc[:, :, treatments, :, :]
+        xdata = xdata.loc[:, treatments, :, :]
 
     # Normalize
     if foldChange:
         xdata -= np.nanmean(xdata, axis=(0, 1, 2))[np.newaxis, np.newaxis, np.newaxis, :]
         xdata /= np.nanstd(xdata, axis=(0, 1, 2))[np.newaxis, np.newaxis, np.newaxis, :]
     else:
-        xdata[:, 1::, :, :] -= np.nanmean(xdata[:, 1::, :, :], axis=(0, 1, 2))[np.newaxis, np.newaxis, np.newaxis, :]
-        xdata[:, 1::, :, :] /= np.nanstd(xdata[:, 1::, :, :], axis=(0, 1, 2))[np.newaxis, np.newaxis, np.newaxis, :]
+        xdata[:, :, :, :] -= np.nanmean(xdata[:, :, :, :], axis=(0, 1, 2))[np.newaxis, np.newaxis, np.newaxis, :]
+        xdata[:, :, :, :] /= np.nanstd(xdata[:, :, :, :], axis=(0, 1, 2))[np.newaxis, np.newaxis, np.newaxis, :]
         xdata[:, 0, :, :] -= np.nanmean(xdata[:, 0, :, :], axis=(0, 1))[np.newaxis, np.newaxis, :]
         xdata[:, 0, :, :] /= np.nanstd(xdata[:, 0, :, :], axis=(0, 1))[np.newaxis, np.newaxis, :]
 
