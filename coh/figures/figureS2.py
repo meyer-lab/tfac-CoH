@@ -26,7 +26,7 @@ def makeFigure():
     tFacAllM, _ = factorTensor(CoH_Data.values, r=num_comps)
     R2Xplot(ax[0], CoH_Data.values, compNum=10)
     BC_status_plot(10, CoH_Data, ax[1])
-    CoH_LogReg_plot(ax[2], tFacAllM, CoH_Data, num_comps)
+    CoH_LogReg_plot(ax[2], tFacAllM, CoH_Data)
     plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Patient")
     plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Treatment")
     plot_tFac_CoH(ax[5], tFacAllM, CoH_Data, "Cell")

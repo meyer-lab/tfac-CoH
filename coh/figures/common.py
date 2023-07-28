@@ -95,12 +95,6 @@ def genFigure():
     print(f"Figure {sys.argv[1]} is done after {time.time() - start} seconds.\n")
 
 
-def make_status_DF():
-    statusDF = pd.DataFrame.from_dict(get_status_dict(), orient='index').reset_index()
-    statusDF.columns = ["Patient", "Status"]
-    statusDF.to_csv("coh/data/Patient_Status.csv")
-
-
 def BC_scatter(ax, CoH_DF, marker, cytokine, cells=False):
     """Scatters specific responses"""
     CoH_DF = CoH_DF.loc[(CoH_DF.Time == "15min")]

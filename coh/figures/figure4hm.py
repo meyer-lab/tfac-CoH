@@ -6,7 +6,7 @@ import pandas as pd
 import seaborn as sns
 from .common import getSetup, path_here
 from os.path import join
-from ..tensor import factorTensor
+from ..tensor import factorTensor, get_status_df, get_status_rec_df
 
 
 def makeFigure():
@@ -37,9 +37,9 @@ def plot_coh_clust(tFac, CoH_Array, mode, rec=False):
     cmap = sns.color_palette("vlag", as_cmap=True)
 
     if rec:
-        status_df = pd.read_csv(join(path_here, "data/Patient_Status_Rec.csv")).sort_values(by="Patient").reset_index()
+        status_df = get_status_rec_df().reset_index()
     else:
-        status_df = pd.read_csv(join(path_here, "data/Patient_Status.csv")).sort_values(by="Patient").reset_index()
+        status_df = get_status_df().reset_index()
     status = status_df["Status"]
     lut = dict(zip(status.unique(), "rbg"))
     col_colors = pd.DataFrame(status.map(lut))

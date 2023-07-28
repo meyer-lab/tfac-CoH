@@ -18,9 +18,8 @@ def makeFigure():
     subplotLabel(ax)
     ax[0].axis("off")
 
-    num_comps = 4
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Rec.nc"))
-    tFacAllM, _ = factorTensor(CoH_Data.values, r=num_comps)
+    tFacAllM, _ = factorTensor(CoH_Data.values, r=5)
     R2Xplot(ax[1], CoH_Data.values, compNum=8)
     plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Patient", cbar=False, rec=True)
     plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Cell", cbar=False)
