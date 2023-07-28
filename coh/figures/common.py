@@ -224,7 +224,7 @@ def BC_scatter_ligs(ax, CoH_DF, marker, filter=False):
                             perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(hist_DF.Treatment.unique())), verbose=0)
 
 
-def BC_scatter_cells_rec(ax, CoH_DF, marker, filter=False):
+def BC_scatter_cells_rec(ax, CoH_DF, marker):
     """Scatters specific responses"""
     status_dict = get_status_dict_rec()
     hist_DF = CoH_DF.loc[(CoH_DF.Marker == marker)]
@@ -248,31 +248,13 @@ def BC_scatter_cells_rec(ax, CoH_DF, marker, filter=False):
             else:
                 pvals.append("****")
         else:
-            if not filter:
-                pvals.append("ns")
-    if filter:
-        hist_DF = hist_DF.loc[hist_DF.Cell.isin(filt_cells)]
+            pvals.append("ns")
+
     sns.boxplot(data=hist_DF, y="Mean", x="Cell", hue="Status", ax=ax)
     ax.set(title=marker, ylabel=marker, xlabel="Status")
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
     boxpairs = []
     for cell in hist_DF.Cell.unique():
         boxpairs.append([(cell, "Healthy"), (cell, "BC")])
-    if filter:
-        add_stat_annotation(
-            ax=ax,
-            data=hist_DF,
-            x="Cell",
-            y="Mean",
-            hue="Status",
-            box_pairs=boxpairs,
-            text_annot_custom=pvals,
-            perform_stat_test=False,
-            loc='inside',
-            pvalues=np.tile(
-                0,
-                len(filt_cells)),
-            verbose=0)
-    else:
-        add_stat_annotation(ax=ax, data=hist_DF, x="Cell", y="Mean", hue="Status", box_pairs=boxpairs, text_annot_custom=pvals,
-                            perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(hist_DF.Cell.unique())), verbose=0)
+    add_stat_annotation(ax=ax, data=hist_DF, x="Cell", y="Mean", hue="Status", box_pairs=boxpairs, text_annot_custom=pvals,
+                        perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(hist_DF.Cell.unique())), verbose=0)

@@ -77,7 +77,7 @@ def factorTensor(tOrig: np.ndarray, r: int, tol: float=1e-9, maxiter: int=6_000,
     return tFac, R2X
 
 
-def varyCompPlots(axs: list, compNum: int, data, yDf: pd.DataFrame, rec=False):
+def varyCompPlots(axs: list, compNum: int, data, yDf: pd.DataFrame):
     """Plot 5 fold CV by # components"""
     accDF = pd.DataFrame()
     R2X = np.zeros(compNum)
