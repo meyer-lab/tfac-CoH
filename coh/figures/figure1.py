@@ -50,7 +50,7 @@ def fullHeatMap(ax, data, cbar=True):
     """Plots the various affinities for IL-2 Muteins"""
     dataFlat = data.stack(condition=["Cell", "Patient"]).T
     dataFlat = dataFlat.to_pandas()
-    dataFlat.iloc[:, :] = dataFlat.values - np.array(dataFlat.loc[:, "Basal"])[:, np.newaxis]
+    # dataFlat.iloc[:, :] = dataFlat.values - np.array(dataFlat.loc[:, "Basal"])[:, np.newaxis]
     dataFlat.iloc[:, :] = dataFlat.values / np.max(dataFlat.values)
 
     sns.heatmap(
