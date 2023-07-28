@@ -8,7 +8,7 @@ import xarray as xa
 import seaborn as sns
 from .common import subplotLabel, getSetup, path_here
 
-from ..tensor import factorTensor
+from ..tensor import factorTensor, get_status_df
 
 
 def makeFigure():
@@ -40,7 +40,7 @@ def CoH_Factor_HM(ax, tFac, CoH_Array, tFac_R, CoH_Array_R, sig_comps, rec_comps
     mode_facs = tFac[1][coord]
     tFacDF = pd.DataFrame()
 
-    status_DF = pd.read_csv(join(path_here, "data/Patient_Status.csv"))
+    status_DF = get_status_df()
     BC_Patients = status_DF.loc[status_DF.Status == "BC"].Patient.unique()
 
     for i in sig_comps:

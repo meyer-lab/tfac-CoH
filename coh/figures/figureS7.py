@@ -16,8 +16,6 @@ def makeFigure():
 
     # Add subplot labels
     subplotLabel(ax)
-    # make_flow_df_rec()
-    # make_CoH_Tensor_rec()
 
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Rec.nc"))
     #make_alldata_DF(CoH_Data, PCA=False, basal=True)

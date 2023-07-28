@@ -5,6 +5,7 @@ import seaborn as sns
 import pandas as pd
 import numpy as np
 from .common import subplotLabel, getSetup, path_here
+from ..tensor import get_status_df
 from os.path import join
 
 
@@ -45,7 +46,7 @@ def dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_DF_R, markers_dysreg, cyto_dysreg, mar
     CoH_DF_R = CoH_DF_R.groupby(["Cell", "Patient", "Marker"]).Mean.mean().reset_index()
 
     dysreg_DF = pd.DataFrame()
-    status_DF = pd.read_csv(join(path_here, "data/Patient_Status.csv"))
+    status_DF = get_status_df()
     BC_Patients = status_DF.loc[status_DF.Status == "BC"].Patient.unique()
     CoH_DF = CoH_DF.loc[CoH_DF.Patient.isin(BC_Patients)]
     CoH_DF_B = CoH_DF_B.loc[CoH_DF_B.Patient.isin(BC_Patients)]
@@ -73,8 +74,7 @@ def dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_DF_R, markers_dysreg, cyto_dysreg, mar
             value = patient_DF_R.loc[(patient_DF_R.Marker == marker)].Mean.values
             patient_row[marker] = value
         dysreg_DF = pd.concat([dysreg_DF, patient_row])
-    
-    print(dysreg_DF)
+
     
     cov_DF = dysreg_DF.cov()
     Vi = np.linalg.pinv(cov_DF, hermitian=True)  # Inverse covariance matrix

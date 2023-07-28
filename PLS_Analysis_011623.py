@@ -34,7 +34,7 @@ cancer_treatment_indicies=np.array(cancer_treatment_indicies)
 
 CoH_DF_PLS=CoH_DF_PLS[:,0,cancer_treatment_indicies,:,:]
 
-patient_response_ori = pd.read_csv(join(path_here,"/data/Patient_Status.csv"))
+patient_response_ori = get_status_df()
 
 
 

@@ -6,7 +6,7 @@ import seaborn as sns
 import pandas as pd
 from .common import subplotLabel, getSetup, path_here
 from os.path import join
-from ..tensor import factorTensor, CoH_LogReg_plot, plot_tFac_CoH, BC_status_plot
+from ..tensor import factorTensor, CoH_LogReg_plot, plot_tFac_CoH, BC_status_plot, get_status_df
 
 
 def makeFigure():
@@ -50,7 +50,7 @@ def CoH_Scat_Plot(ax, tFac, CoH_Array, mode, plot_comps):
     tFacDF = tFacDF.loc[tFacDF["Component"].isin(plot_comps)]
     tFacDF = tFacDF.pivot(index=mode, columns='Component', values='Component_Val')
     if mode == "Patient":
-        status_df = pd.read_csv(join(path_here, "data/Patient_Status.csv")).set_index("Patient")
+        status_df = get_status_df().set_index("Patient")
         tFacDF = pd.concat([tFacDF, status_df], axis=1)
         sns.scatterplot(data=tFacDF, x=plot_comps[0], y=plot_comps[1], hue="Status", style="Status", ax=ax)
     else:

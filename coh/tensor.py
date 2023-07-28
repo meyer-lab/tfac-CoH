@@ -10,9 +10,7 @@ from tensorpack.cmtf import initialize_cp, cp_normalize, calcR2X, mlstsq, sort_f
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn.model_selection import RepeatedStratifiedKFold, cross_val_score
 from sklearn import preprocessing
-from os.path import join, dirname
-
-path_here = dirname(dirname(__file__))
+from os.path import dirname
 
 
 def factorTensor(tOrig: np.ndarray, r: int, tol: float=1e-9, maxiter: int=6_000, progress: bool=False, linesearch: bool=True):
@@ -115,7 +113,7 @@ def CoH_LogReg_plot(ax, tFac, CoH_Array):
     """Plot factor weights for donor BC prediction"""
     coord = CoH_Array.dims.index("Patient")
     mode_facs = tFac[1][coord]
-    status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status.csv"), index_col=0)
+    status_DF = get_status_df()
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
 
     LR_CoH = lrmodel.fit(mode_facs, Donor_CoH_y)
@@ -127,9 +125,9 @@ def BC_status_plot(compNum, CoH_Data, ax, rec=False):
     """Plot 5 fold CV by # components"""
     accDF = pd.DataFrame()
     if rec:
-        status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status_Rec.csv"), index_col=0)
+        status_DF = get_status_rec_df()
     else:
-        status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status.csv"), index_col=0)
+        status_DF = get_status_df()
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
     cv = RepeatedStratifiedKFold(n_splits=10, random_state=42)
     
@@ -188,6 +186,12 @@ def get_status_dict():
                         ("Patient 21368-4", "BC")])
 
 
+def get_status_df():
+    statusDF = pd.DataFrame.from_dict(get_status_dict(), orient='index').reset_index()
+    statusDF.columns = ["Patient", "Status"]
+    return statusDF
+
+
 def get_status_dict_rec():
     """Returns status dictionary"""
     return OrderedDict([("Patient 26", "Healthy"),
@@ -226,3 +230,8 @@ def get_status_dict_rec():
                         ("Patient 19186-14", "BC"),
                         ("Patient 21368-3", "BC"),
                         ("Patient 21368-4", "BC")])
+
+def get_status_rec_df():
+    statusDF = pd.DataFrame.from_dict(get_status_dict_rec(), orient='index').reset_index()
+    statusDF.columns = ["Patient", "Status"]
+    return statusDF
