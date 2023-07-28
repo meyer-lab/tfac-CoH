@@ -19,15 +19,13 @@ def makeFigure():
     # make_flow_df_rec()
     # make_CoH_Tensor_rec()
 
-    num_comps = 4
-
     CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Rec.nc"))
     #make_alldata_DF(CoH_Data, PCA=False, basal=True)
-    tFacAllM, _ = factorTensor(CoH_Data.values, r=num_comps)
+    tFacAllM, _ = factorTensor(CoH_Data.values, r=4)
     #R2Xplot(ax[0], CoH_Data.values, compNum=10)
     plot_tFac_CoH(ax[1], tFacAllM, CoH_Data, "Patient", rec=True)
     plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Cell")
     plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Marker")
-    CoH_LogReg_plot(ax[4], tFacAllM, CoH_Data, num_comps)
+    CoH_LogReg_plot(ax[4], tFacAllM, CoH_Data)
 
     return f

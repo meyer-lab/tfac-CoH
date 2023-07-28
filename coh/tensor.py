@@ -108,15 +108,18 @@ def plot_tFac_CoH(ax, tFac, CoH_Array, mode, rec=False, cbar=True):
         sns.heatmap(data=tFacDF, ax=ax, cmap=cmap, vmin=-1, vmax=1, cbar=cbar)
 
 
-def CoH_LogReg_plot(ax, tFac, CoH_Array, numComps):
+lrmodel = LogisticRegressionCV(penalty='elasticnet', solver="saga", max_iter=5000, l1_ratios=[0.9], Cs=[100.0, 1.0, 0.1])
+
+
+def CoH_LogReg_plot(ax, tFac, CoH_Array):
     """Plot factor weights for donor BC prediction"""
     coord = CoH_Array.dims.index("Patient")
     mode_facs = tFac[1][coord]
     status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status.csv"), index_col=0)
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
 
-    LR_CoH = LogisticRegressionCV(penalty='l1', max_iter=5000, solver="liblinear", Cs=[100.0, 1.0, 0.01]).fit(mode_facs, Donor_CoH_y)
-    CoH_comp_weights = pd.DataFrame({"Component": np.arange(1, numComps + 1), "Coefficient": LR_CoH.coef_[0]})
+    LR_CoH = lrmodel.fit(mode_facs, Donor_CoH_y)
+    CoH_comp_weights = pd.DataFrame({"Component": np.arange(1, mode_facs.shape[1] + 1), "Coefficient": LR_CoH.coef_[0]})
     sns.barplot(data=CoH_comp_weights, x="Component", y="Coefficient", color="k", ax=ax)
 
 
@@ -129,16 +132,16 @@ def BC_status_plot(compNum, CoH_Data, ax, rec=False):
         status_DF = pd.read_csv(join(path_here, "coh/data/Patient_Status.csv"), index_col=0)
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
     cv = RepeatedStratifiedKFold(n_splits=10, random_state=42)
-    model = LogisticRegressionCV(penalty='l1', max_iter=5000, solver="liblinear", Cs=[100.0, 1.0, 0.01])
+    
 
     for i in range(1, compNum + 1):
         tFacAllM, _ = factorTensor(CoH_Data.values, r=i)
         coord = CoH_Data.dims.index("Patient")
         mode_facs = tFacAllM[1][coord]
 
-        model.fit(mode_facs, Donor_CoH_y)
+        lrmodel.fit(mode_facs, Donor_CoH_y)
 
-        scoresTFAC = cross_val_score(model, mode_facs, Donor_CoH_y, cv=cv)
+        scoresTFAC = cross_val_score(lrmodel, mode_facs, Donor_CoH_y, cv=cv)
         accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "Tensor Factorization", "Components": [i], "Accuracy (10-fold CV)": np.mean(scoresTFAC)})])
     accDF = accDF.reset_index(drop=True)
     sns.lineplot(data=accDF, x="Components", y="Accuracy (10-fold CV)", hue="Data Type", ax=ax)
