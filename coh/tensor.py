@@ -106,7 +106,8 @@ def plot_tFac_CoH(ax, tFac, CoH_Array, mode, rec=False, cbar=True):
         sns.heatmap(data=tFacDF, ax=ax, cmap=cmap, vmin=-1, vmax=1, cbar=cbar)
 
 
-lrmodel = LogisticRegressionCV(penalty='elasticnet', solver="saga", max_iter=5000, l1_ratios=[0.9], Cs=[100.0, 1.0, 0.1])
+cv = RepeatedStratifiedKFold(n_splits=10)
+lrmodel = LogisticRegressionCV(penalty='elasticnet', solver="saga", max_iter=5000, l1_ratios=[0.9], cv=cv)
 
 
 def CoH_LogReg_plot(ax, tFac, CoH_Array):
@@ -129,8 +130,6 @@ def BC_status_plot(compNum, CoH_Data, ax, rec=False):
     else:
         status_DF = get_status_df()
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
-    cv = RepeatedStratifiedKFold(n_splits=10, random_state=42)
-    
 
     for i in range(1, compNum + 1):
         tFacAllM, _ = factorTensor(CoH_Data.values, r=i)
@@ -139,7 +138,7 @@ def BC_status_plot(compNum, CoH_Data, ax, rec=False):
 
         lrmodel.fit(mode_facs, Donor_CoH_y)
 
-        scoresTFAC = cross_val_score(lrmodel, mode_facs, Donor_CoH_y, cv=cv)
+        scoresTFAC = cross_val_score(lrmodel, mode_facs, Donor_CoH_y, cv=cv, n_jobs=10)
         accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "Tensor Factorization", "Components": [i], "Accuracy (10-fold CV)": np.mean(scoresTFAC)})])
     accDF = accDF.reset_index(drop=True)
     sns.lineplot(data=accDF, x="Components", y="Accuracy (10-fold CV)", hue="Data Type", ax=ax)

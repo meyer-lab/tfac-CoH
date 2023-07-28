@@ -28,9 +28,9 @@ def makeFigure():
     plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Marker", cbar=False)
 
     CoH_Data_R = xa.open_dataarray(join(path_here, "data/CoH_Rec.nc"))
-    tFacAllM_R, _ = factorTensor(CoH_Data_R.values, r=5)
+    tFacAllM_R, _ = factorTensor(CoH_Data_R.values, r=4)
 
-    BC_status_plot(8, CoH_Data_R, ax[5], rec=True)
+    BC_status_plot(6, CoH_Data_R, ax[5], rec=True)
     CoH_LogReg_plot(ax[6], tFacAllM_R, CoH_Data_R)
     CoH_Scat_Plot(ax[7], tFacAllM_R, CoH_Data_R, "Patient", plot_comps=[1, 2])
     plot_tFac_CoH(ax[8], tFacAllM_R, CoH_Data_R, "Marker", cbar=False)
