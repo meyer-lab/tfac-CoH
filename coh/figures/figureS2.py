@@ -1,15 +1,14 @@
 """
 This creates Figure S2, factorization of fold-change data.
 """
-from os.path import join
-import xarray as xa
 from ..tensor import (
     factorTensor,
-    R2Xplot,
     plot_tFac_CoH,
     CoH_LogReg_plot,
-    BC_status_plot,
+    get_status_df,
+    varyCompPlots,
 )
+from ..flow import make_CoH_Tensor
 from .common import subplotLabel, getSetup, path_here
 
 
@@ -20,12 +19,12 @@ def makeFigure():
 
     # Add subplot labels
     subplotLabel(ax)
-    num_comps = 8
-    CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Tensor_DataSet_FC.nc"))
+    CoH_Data = make_CoH_Tensor(just_signal=True, foldChange=True)
 
-    tFacAllM, _ = factorTensor(CoH_Data.values, r=num_comps)
-    R2Xplot(ax[0], CoH_Data.values, compNum=10)
-    BC_status_plot(10, CoH_Data, ax[1])
+    tFacAllM, _ = factorTensor(CoH_Data.values, r=8)
+
+    varyCompPlots([ax[0], ax[1]], 10, CoH_Data, get_status_df())
+
     CoH_LogReg_plot(ax[2], tFacAllM, CoH_Data)
     plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Patient")
     plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Treatment")

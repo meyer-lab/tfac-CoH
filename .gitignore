@@ -129,4 +129,3 @@ dmypy.json
 .pyre/
 
 output
-coh/data/CoH_Tensor_DataSet_All.nc

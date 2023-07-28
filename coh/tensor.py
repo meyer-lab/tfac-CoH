@@ -10,7 +10,6 @@ from tensorpack.cmtf import initialize_cp, cp_normalize, calcR2X, mlstsq, sort_f
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn.model_selection import RepeatedStratifiedKFold, cross_val_score
 from sklearn import preprocessing
-from os.path import dirname
 
 
 def factorTensor(tOrig: np.ndarray, r: int, tol: float=1e-9, maxiter: int=6_000, progress: bool=False, linesearch: bool=True):
@@ -78,11 +77,32 @@ def factorTensor(tOrig: np.ndarray, r: int, tol: float=1e-9, maxiter: int=6_000,
     return tFac, R2X
 
 
-def R2Xplot(ax, tensor, compNum: int):
-    """Creates R2X plot for non-neg CP tensor decomposition"""
-    varHold = [factorTensor(tensor, i)[1] for i in range(1, compNum + 1)]
-    ax.scatter(np.arange(1, compNum + 1), varHold, c='k', s=20.)
-    ax.set(title="R2X", ylabel="Variance Explained", xlabel="Number of Components", ylim=(0, 1), xlim=(0, compNum + 0.5), xticks=np.arange(0, compNum + 1))
+def varyCompPlots(axs: list, compNum: int, data, yDf: pd.DataFrame, rec=False):
+    """Plot 5 fold CV by # components"""
+    accDF = pd.DataFrame()
+    R2X = np.zeros(compNum)
+    comps = np.arange(1, compNum + 1)
+
+    y = preprocessing.label_binarize(yDf.Status, classes=['Healthy', 'BC']).flatten()
+    cv = RepeatedStratifiedKFold(n_splits=10, random_state=42)
+
+    for i in comps:
+        tFacAllM, R2X[i - 1] = factorTensor(data.values, r=i)
+        coord = data.dims.index("Patient")
+        mode_facs = tFacAllM[1][coord]
+
+        lrmodel.fit(mode_facs, y)
+
+        scoresTFAC = cross_val_score(lrmodel, mode_facs, y, cv=cv)
+        accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "Tensor Factorization", "Components": [i], "Accuracy (10-fold CV)": np.mean(scoresTFAC)})])
+
+    accDF = accDF.reset_index(drop=True)
+
+    sns.lineplot(data=accDF, x="Components", y="Accuracy (10-fold CV)", hue="Data Type", ax=ax[0])
+    axs[0].set(xticks=comps, ylim=(0.5, 1))
+
+    axs[1].scatter(comps, R2X, c='k', s=20.)
+    axs[1].set(title="R2X", ylabel="Variance Explained", xlabel="Number of Components", ylim=(0, 1), xlim=(0, compNum + 0.5), xticks=np.arange(0, compNum + 1))
 
 
 def plot_tFac_CoH(ax, tFac, CoH_Array, mode, rec=False, cbar=True):
@@ -119,31 +139,6 @@ def CoH_LogReg_plot(ax, tFac, CoH_Array):
     LR_CoH = lrmodel.fit(mode_facs, Donor_CoH_y)
     CoH_comp_weights = pd.DataFrame({"Component": np.arange(1, mode_facs.shape[1] + 1), "Coefficient": LR_CoH.coef_[0]})
     sns.barplot(data=CoH_comp_weights, x="Component", y="Coefficient", color="k", ax=ax)
-
-
-def BC_status_plot(compNum, CoH_Data, ax, rec=False):
-    """Plot 5 fold CV by # components"""
-    accDF = pd.DataFrame()
-    if rec:
-        status_DF = get_status_rec_df()
-    else:
-        status_DF = get_status_df()
-    Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
-    cv = RepeatedStratifiedKFold(n_splits=10, random_state=42)
-    
-
-    for i in range(1, compNum + 1):
-        tFacAllM, _ = factorTensor(CoH_Data.values, r=i)
-        coord = CoH_Data.dims.index("Patient")
-        mode_facs = tFacAllM[1][coord]
-
-        lrmodel.fit(mode_facs, Donor_CoH_y)
-
-        scoresTFAC = cross_val_score(lrmodel, mode_facs, Donor_CoH_y, cv=cv)
-        accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "Tensor Factorization", "Components": [i], "Accuracy (10-fold CV)": np.mean(scoresTFAC)})])
-    accDF = accDF.reset_index(drop=True)
-    sns.lineplot(data=accDF, x="Components", y="Accuracy (10-fold CV)", hue="Data Type", ax=ax)
-    ax.set(xticks=np.arange(1, compNum + 1), ylim=(0.5, 1))
 
 
 def get_status_dict():
