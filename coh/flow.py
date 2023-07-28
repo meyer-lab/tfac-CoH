@@ -224,7 +224,7 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
         if abundance:
             CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_Abund.csv"))
         else:
-            CoH_DF.to_csv(join(path_here, "coh/data/NN_CoH_Flow_DF.csv"))
+            raise RuntimeError("Shouldn't end up here.")
 
     return CoH_DF
 
