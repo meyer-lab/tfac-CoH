@@ -86,6 +86,8 @@ def varyCompPlots(axs: list, compNum: int, data, yDf: pd.DataFrame):
     accDF = pd.DataFrame()
     R2X = np.zeros(compNum)
     comps = np.arange(1, compNum + 1)
+    yDf = yDf.set_index("Patient")
+    yDf = yDf.loc[data.Patient.values, :]
 
     y = preprocessing.label_binarize(yDf.Status, classes=['Healthy', 'BC']).flatten()
 

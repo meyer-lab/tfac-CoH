@@ -15,12 +15,11 @@ def makeFigure():
 
     # Add subplot labels
     subplotLabel(ax)
-    ax[0].axis("off")
     CoH_Data = make_CoH_Tensor(just_signal=True, foldChange=False)
 
     tFacAllM, _ = factorTensor(CoH_Data.values, r=12)
 
-    varyCompPlots([ax[1], ax[0]], 3, CoH_Data, get_status_df())
+    varyCompPlots([ax[1], ax[0]], 5, CoH_Data, get_status_df())
 
     plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Patient")
     plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Treatment")
