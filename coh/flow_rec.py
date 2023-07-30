@@ -204,8 +204,9 @@ def make_CoH_Tensor_rec() -> xa.DataArray:
     xdata = xdata.loc[:, :, markers]
 
     # Normalize
-    xdata -= np.nanmean(xdata, axis=(0, 1))[np.newaxis, np.newaxis, :]
-    xdata /= np.nanstd(xdata, axis=(0, 1))[np.newaxis, np.newaxis, :]
+    for i, _ in enumerate(markers):
+        xdata[:, :, i] -= np.nanmean(xdata[:, :, i])
+        xdata[:, :, i] /= np.nanstd(xdata[:, :, i])
 
     return xdata
 
