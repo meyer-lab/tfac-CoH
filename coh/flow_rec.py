@@ -129,7 +129,7 @@ def process_sample_rec(sample, marker_dict):
 gate_dict = get_gate_dict()
 
 
-def make_flow_df_rec(subtract=True, abundance=False, foldChange=False):
+def make_flow_df_rec():
     """Compiles data for all populations for all patients into .csv"""
     patients = [
         "Patient 26",
@@ -194,35 +194,24 @@ def make_flow_df_rec(subtract=True, abundance=False, foldChange=False):
     return CoH_DF_rec
 
 
-def make_CoH_Tensor_rec():
+def make_CoH_Tensor_rec() -> xa.DataArray:
     """Processes RA DataFrame into Xarray Tensor"""
-    CoH_DF_rec = pd.read_csv(join(path_here, "coh/data/CoH_Rec_DF.csv"))
-    patients = CoH_DF_rec.Patient.unique()
-    cells = CoH_DF_rec.Cell.unique()
+    df = pd.read_csv(join(path_here, "coh/data/CoH_Rec_DF.csv"), index_col=[1, 2, 3])
+
+    xdata = df.to_xarray()["Mean"]
     markers = np.array(["IFNg R1", "TGFB RII", "PD1", "PD_L1", "IL2Ra", "IL2RB", "IL4Ra", "IL6Ra", "IL6RB", "IL7Ra", "IL10R", "IL12RI"])
 
-    tensor = np.empty((len(patients), len(cells), len(markers)))
-    tensor[:] = np.nan
-    for i, pat in enumerate(patients):
-        print(pat)
-        for j, cell in enumerate(cells):
-            for k, mark in enumerate(markers):
-                entry = CoH_DF_rec.loc[(CoH_DF_rec.Patient == pat) & (CoH_DF_rec.Cell == cell) & (CoH_DF_rec.Marker == mark)]["Mean"].values
-                tensor[i, j, k] = np.mean(entry)
+    xdata = xdata.loc[:, :, markers]
 
     # Normalize
-    for i, _ in enumerate(markers):
-        tensor[:, :, i][~np.isnan(tensor[:, :, i])] -= np.nanmean(tensor[:, :, i])
-        tensor[:, :, i][~np.isnan(tensor[:, :, i])] /= np.nanstd(tensor[:, :, i])
+    xdata -= np.nanmean(xdata, axis=(0, 1))[np.newaxis, np.newaxis, :]
+    xdata /= np.nanstd(xdata, axis=(0, 1))[np.newaxis, np.newaxis, :]
 
-    CoH_xarray = xa.DataArray(tensor, dims=("Patient", "Cell", "Marker"), coords={"Patient": patients, "Cell": cells, "Marker": markers})
-
-    CoH_xarray.to_netcdf(join(path_here, "coh/data/CoH_Rec.nc"))
-    return tensor
+    return xdata
 
 
 def make_flow_sc_dataframe_rec():
-    """Compiles data for all populations for all patients into .nc"""
+    """Compiles data for all populations for all patients into a CSV."""
     patients = [
         "Patient 26",
         "Patient 28",
