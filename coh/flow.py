@@ -299,7 +299,8 @@ def make_CoH_Tensor(just_signal: bool = False, foldChange: bool = False) -> xa.D
         treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng"])
     else:
         treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng", "Untreated"])
-    xdata = xdata.loc[:, treatments, :, :]
+
+    xdata = xdata.loc[list(get_status_dict().keys()), treatments, :, :]
 
     # Normalize
     if foldChange:
@@ -323,7 +324,7 @@ def make_CoH_Tensor_abund() -> xa.DataArray:
 
     treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng", "Untreated"])
 
-    xdata = xdata.loc[:, "15min", treatments, :]
+    xdata = xdata.loc[list(get_status_dict().keys()), "15min", treatments, :]
 
     # Normalize
     xdata -= np.nanmean(xdata, axis=(0, 1))[np.newaxis, np.newaxis, :]

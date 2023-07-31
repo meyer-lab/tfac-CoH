@@ -4,17 +4,24 @@ import seaborn as sns
 import pandas as pd
 import tensorly as tl
 from tensorly.cp_tensor import cp_flip_sign
-from tensorly.tenalg import khatri_rao
+from tensorly.tenalg.einsum_tenalg import khatri_rao
 from tensorpack.cmtf import initialize_cp, cp_normalize, calcR2X, mlstsq, sort_factors, tqdm
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn.model_selection import RepeatedStratifiedKFold, cross_val_score
 from sklearn import preprocessing
-from .flow_rec import get_status_rec_df, get_status_dict_rec
-from .flow import get_status_df, get_status_dict
+from .flow_rec import get_status_rec_df
+from .flow import get_status_df
 
 
-def factorTensor(tOrig: np.ndarray, r: int, tol: float=1e-9, maxiter: int=6_000, progress: bool=False, linesearch: bool=True):
-    """ Perform CP decomposition. """
+def factorTensor(
+    tOrig: np.ndarray,
+    r: int,
+    tol: float = 1e-8,
+    maxiter: int = 6_000,
+    progress: bool = False,
+    linesearch: bool = True,
+):
+    """Perform CP decomposition."""
     tFac = initialize_cp(tOrig, r)
 
     acc_pow: float = 2.0  # Extrapolate to the iteration^(1/acc_pow) ahead
@@ -74,40 +81,27 @@ def factorTensor(tOrig: np.ndarray, r: int, tol: float=1e-9, maxiter: int=6_000,
 
     if r > 1:
         tFac = sort_factors(tFac)
-    
-    return tFac, R2X
+
+    tFac.R2X = R2X
+    return tFac
 
 
 def R2Xplot(ax, tensor, compNum: int):
     """Creates R2X plot for non-neg CP tensor decomposition"""
-    varHold = [factorTensor(tensor, i)[1] for i in range(1, compNum + 1)]
-    ax.scatter(np.arange(1, compNum + 1), varHold, c='k', s=20.)
-    ax.set(title="R2X", ylabel="Variance Explained", xlabel="Number of Components", ylim=(0, 1), xlim=(0, compNum + 0.5), xticks=np.arange(0, compNum + 1))
+    varHold = [factorTensor(tensor, i).R2X for i in range(1, compNum + 1)]
+    ax.scatter(np.arange(1, compNum + 1), varHold, c="k", s=20.0)
+    ax.set(
+        title="R2X",
+        ylabel="Variance Explained",
+        xlabel="Number of Components",
+        ylim=(0, 1),
+        xlim=(0, compNum + 0.5),
+        xticks=np.arange(0, compNum + 1),
+    )
 
 
-def plot_tFac_CoH(ax, tFac, CoH_Array, mode, rec=False, cbar=True):
-    """Plots tensor factorization of cells"""
-    mode_labels = CoH_Array[mode]
-    coord = CoH_Array.dims.index(mode)
-    mode_facs = tFac[1][coord]
-    tFacDF = pd.DataFrame()
-
-    for i in range(0, tFac.factors[0].shape[1]):
-        tFacDF = pd.concat([tFacDF, pd.DataFrame({"Component_Val": mode_facs[:, i], "Component": (i + 1), mode: mode_labels})])
-
-    tFacDF = pd.pivot(tFacDF, index="Component", columns=mode, values="Component_Val")
-    if mode == "Patient":
-        if rec:
-            tFacDF = tFacDF[get_status_dict_rec().keys()]
-        else:
-            tFacDF = tFacDF[get_status_dict().keys()]
-    else:
-        cmap = sns.color_palette("vlag", as_cmap=True)
-        sns.heatmap(data=tFacDF, ax=ax, cmap=cmap, vmin=-1, vmax=1, cbar=cbar)
-
-
-cv = RepeatedStratifiedKFold(n_splits=10)
-lrmodel = LogisticRegressionCV(penalty='elasticnet', solver="saga", max_iter=5000, l1_ratios=[0.9], cv=cv)
+cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=20)
+lrmodel = LogisticRegressionCV(penalty="l2", solver="liblinear", max_iter=5000, cv=cv)
 
 
 def CoH_LogReg_plot(ax, tFac, CoH_Array):
@@ -132,7 +126,7 @@ def BC_status_plot(compNum, CoH_Data, ax, rec=False):
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
 
     for i in range(1, compNum + 1):
-        tFacAllM, _ = factorTensor(CoH_Data.values, r=i)
+        tFacAllM = factorTensor(CoH_Data.values, r=i)
         coord = CoH_Data.dims.index("Patient")
         mode_facs = tFacAllM[1][coord]
 

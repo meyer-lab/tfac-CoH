@@ -7,11 +7,14 @@ import time
 import numpy as np
 import seaborn as sns
 import matplotlib
+import xarray as xa
+import pandas as pd
 import svgutils.transform as st
 from matplotlib import gridspec, pyplot as plt
 from scipy.stats import ttest_ind
 from statannot import add_stat_annotation
-from ..tensor import get_status_dict, get_status_dict_rec
+from ..flow import get_status_dict
+from ..flow_rec import get_status_dict_rec
 
 
 matplotlib.use("AGG")
@@ -90,6 +93,16 @@ def genFigure():
     ff.savefig(fdir + nameOut + ".pdf", dpi=300, bbox_inches="tight", pad_inches=0)
 
     print(f"Figure {sys.argv[1]} is done after {time.time() - start} seconds.\n")
+
+
+def plot_tFac_CoH(axs: list, tFac, CoH_Array: xa.DataArray):
+    """Plots tensor factorization of cells"""
+    for ii in range(CoH_Array.ndim):
+        mode = CoH_Array.dims[ii]
+        tFacDF = pd.DataFrame(tFac.factors[ii], index=CoH_Array.coords[mode], columns=[str(i + 1) for i in range(tFac.factors[ii].shape[1])])
+
+        cmap = sns.color_palette("vlag", as_cmap=True)
+        sns.heatmap(data=tFacDF, ax=axs[ii], cmap=cmap, vmin=-1, vmax=1, cbar=(ii == 0))
 
 
 def BC_scatter(ax, CoH_DF, marker, cytokine, cells=False):

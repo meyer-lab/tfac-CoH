@@ -15,7 +15,7 @@ def makeFigure():
 
     num_comps = 4
     CoH_Data = make_CoH_Tensor_rec()
-    tFacAllM, _ = factorTensor(CoH_Data.values, r=num_comps)
+    tFacAllM = factorTensor(CoH_Data.values, r=num_comps)
     f = plot_coh_clust(tFacAllM, CoH_Data, "Patient", rec=True)
 
     return f
