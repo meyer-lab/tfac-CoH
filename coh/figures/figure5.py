@@ -9,6 +9,7 @@ import seaborn as sns
 from .common import subplotLabel, getSetup, path_here
 
 from ..tensor import factorTensor, get_status_df
+from ..flow_rec import make_CoH_Tensor_rec
 
 
 def makeFigure():
@@ -25,7 +26,7 @@ def makeFigure():
     tFacAllM, _ = factorTensor(CoH_Data.values, r=num_comps)
 
     num_comps = 4
-    CoH_Data_R = xa.open_dataarray(join(path_here, "data/CoH_Rec.nc"))
+    CoH_Data_R = make_CoH_Tensor_rec()
     tFacAllM_R, _ = factorTensor(CoH_Data_R.values, r=num_comps)
 
     f = CoH_Factor_HM(ax[0], tFacAllM, CoH_Data, tFacAllM_R, CoH_Data_R, sig_comps=[2, 5, 9, 10], rec_comps=[1, 2, 4])

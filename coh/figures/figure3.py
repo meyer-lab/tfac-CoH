@@ -1,12 +1,11 @@
 """
 This creates Figure 3, tensor factorization of receptor data.
 """
-import xarray as xa
 from tensorpack.plot import reduction
 from tensorpack import Decomposition
-from .common import subplotLabel, getSetup, path_here
-from os.path import join
+from .common import subplotLabel, getSetup
 from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH
+from ..flow_rec import make_CoH_Tensor_rec
 
 
 def makeFigure():
@@ -18,7 +17,7 @@ def makeFigure():
     subplotLabel(ax)
     ax[0].axis("off")
 
-    CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Rec.nc"))
+    CoH_Data = make_CoH_Tensor_rec()
     tFacAllM, _ = factorTensor(CoH_Data.values, r=5)
     R2Xplot(ax[1], CoH_Data.values, compNum=8)
     plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Patient", cbar=False, rec=True)

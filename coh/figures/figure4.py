@@ -7,6 +7,7 @@ import pandas as pd
 from .common import subplotLabel, getSetup, path_here
 from os.path import join
 from ..tensor import factorTensor, CoH_LogReg_plot, plot_tFac_CoH, BC_status_plot, get_status_df
+from ..flow_rec import make_CoH_Tensor_rec
 
 
 def makeFigure():
@@ -27,7 +28,7 @@ def makeFigure():
     CoH_Scat_Plot(ax[3], tFacAllM, CoH_Data, "Patient", plot_comps=[2, 9])
     plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Marker", cbar=False)
 
-    CoH_Data_R = xa.open_dataarray(join(path_here, "data/CoH_Rec.nc"))
+    CoH_Data_R = make_CoH_Tensor_rec()
     tFacAllM_R, _ = factorTensor(CoH_Data_R.values, r=4)
 
     BC_status_plot(6, CoH_Data_R, ax[5], rec=True)

@@ -1,12 +1,9 @@
 """
 This creates Figure S7, factorization of receptors.
 """
-import xarray as xa
 from .common import subplotLabel, getSetup
-from os.path import join, dirname
 from ..tensor import factorTensor, plot_tFac_CoH, CoH_LogReg_plot
-
-path_here = dirname(dirname(__file__))
+from ..flow_rec import make_CoH_Tensor_rec
 
 
 def makeFigure():
@@ -17,7 +14,7 @@ def makeFigure():
     # Add subplot labels
     subplotLabel(ax)
 
-    CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Rec.nc"))
+    CoH_Data = make_CoH_Tensor_rec()
     #make_alldata_DF(CoH_Data, PCA=False, basal=True)
     tFacAllM, _ = factorTensor(CoH_Data.values, r=4)
     #R2Xplot(ax[0], CoH_Data.values, compNum=10)
