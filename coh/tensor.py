@@ -13,8 +13,15 @@ from .flow_rec import get_status_rec_df, get_status_dict_rec
 from .flow import get_status_df, get_status_dict
 
 
-def factorTensor(tOrig: np.ndarray, r: int, tol: float=1e-9, maxiter: int=6_000, progress: bool=False, linesearch: bool=True):
-    """ Perform CP decomposition. """
+def factorTensor(
+    tOrig: np.ndarray,
+    r: int,
+    tol: float = 1e-9,
+    maxiter: int = 6_000,
+    progress: bool = False,
+    linesearch: bool = True,
+):
+    """Perform CP decomposition."""
     tFac = initialize_cp(tOrig, r)
 
     acc_pow: float = 2.0  # Extrapolate to the iteration^(1/acc_pow) ahead
@@ -74,15 +81,22 @@ def factorTensor(tOrig: np.ndarray, r: int, tol: float=1e-9, maxiter: int=6_000,
 
     if r > 1:
         tFac = sort_factors(tFac)
-    
+
     return tFac, R2X
 
 
 def R2Xplot(ax, tensor, compNum: int):
     """Creates R2X plot for non-neg CP tensor decomposition"""
     varHold = [factorTensor(tensor, i)[1] for i in range(1, compNum + 1)]
-    ax.scatter(np.arange(1, compNum + 1), varHold, c='k', s=20.)
-    ax.set(title="R2X", ylabel="Variance Explained", xlabel="Number of Components", ylim=(0, 1), xlim=(0, compNum + 0.5), xticks=np.arange(0, compNum + 1))
+    ax.scatter(np.arange(1, compNum + 1), varHold, c="k", s=20.0)
+    ax.set(
+        title="R2X",
+        ylabel="Variance Explained",
+        xlabel="Number of Components",
+        ylim=(0, 1),
+        xlim=(0, compNum + 0.5),
+        xticks=np.arange(0, compNum + 1),
+    )
 
 
 def plot_tFac_CoH(ax, tFac, CoH_Array, mode, rec=False, cbar=True):
@@ -107,7 +121,7 @@ def plot_tFac_CoH(ax, tFac, CoH_Array, mode, rec=False, cbar=True):
 
 
 cv = RepeatedStratifiedKFold(n_splits=10)
-lrmodel = LogisticRegressionCV(penalty='elasticnet', solver="saga", max_iter=5000, l1_ratios=[0.9], cv=cv)
+lrmodel = LogisticRegressionCV(penalty="l2", solver="liblinear", max_iter=5000, cv=cv)
 
 
 def CoH_LogReg_plot(ax, tFac, CoH_Array):
