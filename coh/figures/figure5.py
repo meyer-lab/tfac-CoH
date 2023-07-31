@@ -22,11 +22,11 @@ def makeFigure():
 
     num_comps = 12
     CoH_Data = make_CoH_Tensor(just_signal=True)
-    tFacAllM, _ = factorTensor(CoH_Data.values, r=num_comps)
+    tFacAllM = factorTensor(CoH_Data.values, r=num_comps)
 
     num_comps = 4
     CoH_Data_R = make_CoH_Tensor_rec()
-    tFacAllM_R, _ = factorTensor(CoH_Data_R.values, r=num_comps)
+    tFacAllM_R = factorTensor(CoH_Data_R.values, r=num_comps)
 
     f = CoH_Factor_HM(ax[0], tFacAllM, CoH_Data, tFacAllM_R, CoH_Data_R, sig_comps=[2, 5, 9, 10], rec_comps=[1, 2, 4])
 

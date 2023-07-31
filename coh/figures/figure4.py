@@ -4,7 +4,7 @@ This creates Figure 4, classification analysis.
 import seaborn as sns
 import pandas as pd
 from .common import subplotLabel, getSetup
-from ..tensor import factorTensor, CoH_LogReg_plot, plot_tFac_CoH, BC_status_plot, get_status_df
+from ..tensor import factorTensor, CoH_LogReg_plot, BC_status_plot, get_status_df
 from ..flow_rec import make_CoH_Tensor_rec
 from ..flow import make_CoH_Tensor
 
@@ -18,22 +18,19 @@ def makeFigure():
     subplotLabel(ax)
     ax[0].axis("off")
 
-    num_comps = 12
     CoH_Data = make_CoH_Tensor(just_signal=True)
-    tFacAllM, _ = factorTensor(CoH_Data.values, r=num_comps)
+    tFacAllM = factorTensor(CoH_Data.values, r=12)
 
     BC_status_plot(13, CoH_Data, ax[1])
     CoH_LogReg_plot(ax[2], tFacAllM, CoH_Data)
     CoH_Scat_Plot(ax[3], tFacAllM, CoH_Data, "Patient", plot_comps=[2, 9])
-    plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Marker", cbar=False)
 
     CoH_Data_R = make_CoH_Tensor_rec()
-    tFacAllM_R, _ = factorTensor(CoH_Data_R.values, r=4)
+    tFacAllM_R = factorTensor(CoH_Data_R.values, r=4)
 
     BC_status_plot(6, CoH_Data_R, ax[5], rec=True)
     CoH_LogReg_plot(ax[6], tFacAllM_R, CoH_Data_R)
     CoH_Scat_Plot(ax[7], tFacAllM_R, CoH_Data_R, "Patient", plot_comps=[1, 2])
-    plot_tFac_CoH(ax[8], tFacAllM_R, CoH_Data_R, "Marker", cbar=False)
 
     return f
 

@@ -1,11 +1,10 @@
 """
 This creates Figure S3, factorization of cell type abundance.
 """
-from .common import subplotLabel, getSetup
+from .common import subplotLabel, getSetup, plot_tFac_CoH
 from ..tensor import (
     factorTensor,
     R2Xplot,
-    plot_tFac_CoH,
     BC_status_plot,
     CoH_LogReg_plot,
 )
@@ -20,16 +19,13 @@ def makeFigure():
     # Add subplot labels
     subplotLabel(ax)
 
-    num_comps = 7
-
     CoH_Data = make_CoH_Tensor_abund()
-    tFacAllM, _ = factorTensor(CoH_Data.values, r=num_comps)
+    tFacAllM = factorTensor(CoH_Data.values, r=7)
 
     R2Xplot(ax[0], CoH_Data.values, compNum=8)
     BC_status_plot(8, CoH_Data, ax[1])
     CoH_LogReg_plot(ax[2], tFacAllM, CoH_Data)
-    plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Patient")
-    plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Treatment")
-    plot_tFac_CoH(ax[5], tFacAllM, CoH_Data, "Cell")
+
+    plot_tFac_CoH(ax[3:], tFacAllM, CoH_Data)
 
     return f

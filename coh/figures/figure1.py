@@ -5,7 +5,7 @@ import numpy as np
 import seaborn as sns
 import tensorly as tl
 from .common import subplotLabel, getSetup
-from ..tensor import factorTensor, get_status_dict
+from ..tensor import factorTensor
 from ..flow import make_CoH_Tensor
 
 
@@ -20,11 +20,10 @@ def makeFigure():
 
     data = make_CoH_Tensor(just_signal=True)
 
-    tFacAllM = factorTensor(data.values, r=12)[0]
+    tFacAllM = factorTensor(data.values, r=12)
     tensor = tl.cp_to_tensor(tFacAllM)
     data.data[np.isnan(data.data)] = tensor[np.isnan(data.data)]
 
-    patients = list(get_status_dict().keys())
     treatments = [
         "IFNg-50ng",
         "IFNg-50ng+IL6-50ng",
@@ -36,7 +35,7 @@ def makeFigure():
         "Untreated",
     ]
 
-    data = data.loc[patients, treatments, :, :]
+    data = data.loc[:, treatments, :, :]
 
     fullHeatMap(ax[1], data.loc[:, :, :, "pSTAT3"], cbar=False)
     fullHeatMap(ax[2], data.loc[:, :, :, "pSTAT5"], cbar=False)

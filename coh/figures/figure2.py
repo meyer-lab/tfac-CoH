@@ -1,10 +1,11 @@
 """
 This creates Figure 2, tensor factorization of response data.
 """
+import numpy as np
 from tensorpack.plot import reduction
 from tensorpack import Decomposition
-from .common import subplotLabel, getSetup
-from ..tensor import factorTensor, R2Xplot, plot_tFac_CoH
+from .common import subplotLabel, getSetup, plot_tFac_CoH
+from ..tensor import factorTensor
 from ..flow import make_CoH_Tensor
 
 
@@ -19,17 +20,25 @@ def makeFigure():
 
     num_comps = 12
     CoH_Data = make_CoH_Tensor(just_signal=True)
-    tFacAllM, _ = factorTensor(CoH_Data.values, r=num_comps)
-    R2Xplot(ax[1], CoH_Data.values, compNum=14)
-    plot_tFac_CoH(ax[2], tFacAllM, CoH_Data, "Patient", cbar=False)
-    plot_tFac_CoH(ax[3], tFacAllM, CoH_Data, "Treatment", cbar=False)
-    plot_tFac_CoH(ax[4], tFacAllM, CoH_Data, "Cell", cbar=False)
-    plot_tFac_CoH(ax[5], tFacAllM, CoH_Data, "Marker", cbar=False)
+    tFacAllM = factorTensor(CoH_Data.values, r=num_comps)
 
-    tc = Decomposition(CoH_Data.to_numpy(), max_rr=12)
+    plot_tFac_CoH(ax[2:], tFacAllM, CoH_Data)
+
+    tc = Decomposition(CoH_Data.to_numpy(), max_rr=14, method=factorTensor)
     tc.perform_tfac()
     tc.perform_PCA(flattenon=0)
 
     reduction(ax[6], tc)
+
+    # R2X plot
+    ax[1].scatter(np.arange(1, len(tc.TR2X) + 1), tc.TR2X, c="k", s=20.0)
+    ax[1].set(
+        title="R2X",
+        ylabel="Variance Explained",
+        xlabel="Number of Components",
+        ylim=(0, 1),
+        xlim=(0, len(tc.TR2X) + 0.5),
+        xticks=np.arange(0, len(tc.TR2X) + 1),
+    )
 
     return f

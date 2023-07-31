@@ -203,7 +203,7 @@ def make_CoH_Tensor_rec() -> xa.DataArray:
     xdata = df.to_xarray()["Mean"]
     markers = np.array(["IFNg R1", "TGFB RII", "PD1", "PD_L1", "IL2Ra", "IL2RB", "IL4Ra", "IL6Ra", "IL6RB", "IL7Ra", "IL10R", "IL12RI"])
 
-    xdata = xdata.loc[:, :, markers]
+    xdata = xdata.loc[list(get_status_dict_rec().keys()), :, markers]
 
     # Normalize
     xdata -= np.nanmean(xdata, axis=(0, 1))[np.newaxis, np.newaxis, :]
