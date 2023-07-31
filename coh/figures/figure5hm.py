@@ -4,9 +4,8 @@ This creates Figure 5 heatmap (clustered receptor and response correlations).
 import seaborn as sns
 import pandas as pd
 import numpy as np
-from .common import subplotLabel, getSetup, path_here
+from .common import subplotLabel, getSetup
 from ..tensor import get_status_df
-from os.path import join
 
 
 def makeFigure():
@@ -17,9 +16,9 @@ def makeFigure():
     # Add subplot labels
     subplotLabel(ax)
 
-    CoH_DF = pd.read_csv(join(path_here, "data/CoH_Flow_DF.csv"))
-    CoH_DF_B = pd.read_csv(join(path_here, "data/CoH_Flow_DF_Basal.csv"))
-    CoH_Data_DF_R = pd.read_csv(join(path_here, "data/CoH_Rec_DF.csv"))
+    CoH_DF = pd.read_csv("./coh/data/CoH_Flow_DF.csv")
+    CoH_DF_B = pd.read_csv("./coh/data/CoH_Flow_DF_Basal.csv")
+    CoH_Data_DF_R = pd.read_csv("./coh/data/CoH_Rec_DF.csv")
 
     # CD8
     #f = dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_Data_DF_R, ["pSTAT3", "pSTAT5"], ["IL10-50ng", "IL2-50ng"], ["pSmad1-2", "pSTAT4"], ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI", "IL2RB"], cells=["CD8+"])

@@ -3,13 +3,13 @@ from copy import deepcopy
 import seaborn as sns
 import pandas as pd
 import tensorly as tl
-from collections import OrderedDict
 from tensorly.cp_tensor import cp_flip_sign
 from tensorly.tenalg import khatri_rao
 from tensorpack.cmtf import initialize_cp, cp_normalize, calcR2X, mlstsq, sort_factors, tqdm
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn.model_selection import RepeatedStratifiedKFold, cross_val_score
 from sklearn import preprocessing
+from .flow import get_status_df
 
 
 def factorTensor(tOrig: np.ndarray, r: int, tol: float=1e-9, maxiter: int=6_000, progress: bool=False, linesearch: bool=True):
@@ -129,94 +129,3 @@ def CoH_LogReg_plot(ax, tFac, CoH_Array):
     LR_CoH = lrmodel.fit(mode_facs, Donor_CoH_y)
     CoH_comp_weights = pd.DataFrame({"Component": np.arange(1, mode_facs.shape[1] + 1), "Coefficient": LR_CoH.coef_[0]})
     sns.barplot(data=CoH_comp_weights, x="Component", y="Coefficient", color="k", ax=ax)
-
-
-def get_status_dict():
-    """Returns status dictionary"""
-    return OrderedDict([("Patient 26", "Healthy"),
-                        ("Patient 28", "Healthy"),
-                        ("Patient 30", "Healthy"),
-                        ("Patient 34", "Healthy"),
-                        ("Patient 35", "Healthy"),
-                        ("Patient 43", "Healthy"),
-                        ("Patient 44", "Healthy"),
-                        ("Patient 45", "Healthy"),
-                        ("Patient 52", "Healthy"),
-                        ("Patient 52A", "Healthy"),
-                        ("Patient 54", "Healthy"),
-                        ("Patient 56", "Healthy"),
-                        ("Patient 58", "Healthy"),
-                        ("Patient 60", "Healthy"),
-                        ("Patient 61", "Healthy"),
-                        ("Patient 62", "Healthy"),
-                        ("Patient 63", "Healthy"),
-                        ("Patient 66", "Healthy"),
-                        ("Patient 68", "Healthy"),
-                        ("Patient 69", "Healthy"),
-                        ("Patient 70", "Healthy"),
-                        ("Patient 79", "Healthy"),
-                        ("Patient 19186-4", "BC"),
-                        ("Patient 19186-8", "BC"),
-                        ("Patient 406", "BC"),
-                        ("Patient 19186-10-T1", "BC"),
-                        ("Patient 19186-10-T2", "BC"),
-                        ("Patient 19186-10-T3", "BC"),
-                        ("Patient 19186-15-T1", "BC"),
-                        ("Patient 19186-15-T2", "BC"),
-                        ("Patient 19186-15-T3", "BC"),
-                        ("Patient 19186-2", "BC"),
-                        ("Patient 19186-3", "BC"),
-                        ("Patient 19186-14", "BC"),
-                        ("Patient 21368-3", "BC"),
-                        ("Patient 21368-4", "BC")])
-
-
-def get_status_df():
-    statusDF = pd.DataFrame.from_dict(get_status_dict(), orient='index').reset_index()
-    statusDF.columns = ["Patient", "Status"]
-    return statusDF
-
-
-def get_status_dict_rec():
-    """Returns status dictionary"""
-    return OrderedDict([("Patient 26", "Healthy"),
-                        ("Patient 28", "Healthy"),
-                        ("Patient 30", "Healthy"),
-                        ("Patient 34", "Healthy"),
-                        ("Patient 35", "Healthy"),
-                        ("Patient 43", "Healthy"),
-                        ("Patient 44", "Healthy"),
-                        ("Patient 45", "Healthy"),
-                        ("Patient 52", "Healthy"),
-                        ("Patient 52A", "Healthy"),
-                        ("Patient 54", "Healthy"),
-                        ("Patient 56", "Healthy"),
-                        ("Patient 58", "Healthy"),
-                        ("Patient 60", "Healthy"),
-                        ("Patient 61", "Healthy"),
-                        ("Patient 62", "Healthy"),
-                        ("Patient 63", "Healthy"),
-                        ("Patient 66", "Healthy"),
-                        ("Patient 68", "Healthy"),
-                        ("Patient 69", "Healthy"),
-                        ("Patient 70", "Healthy"),
-                        ("Patient 79", "Healthy"),
-                        ("Patient 19186-4", "BC"),
-                        ("Patient 19186-8", "BC"),
-                        ("Patient 19186-10-T1", "BC"),
-                        ("Patient 19186-10-T2", "BC"),
-                        ("Patient 19186-10-T3", "BC"),
-                        ("Patient 19186-15-T1", "BC"),
-                        ("Patient 19186-15-T2", "BC"),
-                        ("Patient 19186-15-T3", "BC"),
-                        ("Patient 19186-2", "BC"),
-                        ("Patient 19186-3", "BC"),
-                        ("Patient 19186-12", "BC"),
-                        ("Patient 19186-14", "BC"),
-                        ("Patient 21368-3", "BC"),
-                        ("Patient 21368-4", "BC")])
-
-def get_status_rec_df():
-    statusDF = pd.DataFrame.from_dict(get_status_dict_rec(), orient='index').reset_index()
-    statusDF.columns = ["Patient", "Status"]
-    return statusDF

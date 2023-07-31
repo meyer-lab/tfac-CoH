@@ -4,8 +4,8 @@ This creates Figure 4's clustered heat map.
 import pandas as pd
 import seaborn as sns
 from .common import getSetup
-from ..tensor import factorTensor, get_status_df, get_status_rec_df
-from ..flow_rec import make_CoH_Tensor_rec
+from ..tensor import factorTensor, get_status_df
+from ..flow_rec import make_CoH_Tensor_rec, get_status_rec_df
 
 
 def makeFigure():
