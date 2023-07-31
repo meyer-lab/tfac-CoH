@@ -18,27 +18,31 @@ warnings.filterwarnings("ignore")
 gate_df = pd.DataFrame()
 
 
-marker_dict = OrderedDict({"Alexa Fluor 647-A": "pSTAT4",
-               "Alexa Fluor 700-A": "CD20",
-               "BV650-A": "CD14",
-               "APC-Cy7-A": "CD14",
-               "V450-A": "pSTAT6",
-               "BV786-A": "CD27",
-               "BV570-A": "CD3",
-               "BV750-A": "CD33",
-               "BUV395-A": "CD45RA",
-               "LIVE DEAD Blue-A": "Live/Dead",
-               "BUV563-A": "CD4",
-               "BUV737-A": "CD16",
-               "BUV805-A": "CD8",
-               "Alexa Fluor 488-A": "pSTAT3",
-               "Brilliant Blue 515-A": "pSTAT3",
-               "PerCP-Cy5.5-A": "pSTAT1",
-               "PE-A": "pSmad1-2",
-               "PE-CF594-A": "FoxP3",
-               "PE-Cy7-A": "pSTAT5",
-               "BV605-A": "PD-1",
-               "BV510-A": "PD-L1"})
+marker_dict = OrderedDict(
+    {
+        "Alexa Fluor 647-A": "pSTAT4",
+        "Alexa Fluor 700-A": "CD20",
+        "BV650-A": "CD14",
+        "APC-Cy7-A": "CD14",
+        "V450-A": "pSTAT6",
+        "BV786-A": "CD27",
+        "BV570-A": "CD3",
+        "BV750-A": "CD33",
+        "BUV395-A": "CD45RA",
+        "LIVE DEAD Blue-A": "Live/Dead",
+        "BUV563-A": "CD4",
+        "BUV737-A": "CD16",
+        "BUV805-A": "CD8",
+        "Alexa Fluor 488-A": "pSTAT3",
+        "Brilliant Blue 515-A": "pSTAT3",
+        "PerCP-Cy5.5-A": "pSTAT1",
+        "PE-A": "pSmad1-2",
+        "PE-CF594-A": "FoxP3",
+        "PE-Cy7-A": "pSTAT5",
+        "BV605-A": "PD-1",
+        "BV510-A": "PD-L1",
+    }
+)
 
 
 def compile_patient(patient_num, cellFrac):
