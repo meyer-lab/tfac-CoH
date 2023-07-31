@@ -33,7 +33,7 @@ def makeFigure():
         "IL4-50ng",
         "IL6-50ng",
         "TGFB-50ng",
-        "Basal",
+        "Untreated",
     ]
 
     data = data.loc[patients, treatments, :, :]

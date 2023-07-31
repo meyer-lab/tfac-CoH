@@ -1,6 +1,7 @@
 """
 This file includes various methods for flow cytometry analysis of fixed cells.
 """
+from collections import OrderedDict
 import pandas as pd
 import numpy as np
 import warnings
@@ -10,7 +11,6 @@ from .flow import pop_gate, live_PBMC_gate, pop_gate, get_gate_dict
 
 
 warnings.filterwarnings("ignore")
-gate_df = pd.DataFrame()
 
 
 marker_dict_1 = {"BUV661-A": "CD20",
@@ -92,6 +92,51 @@ panelDict = {"marker_dict_1": marker_dict_1,
              "marker_dict_3": marker_dict_3}
 
 
+def get_status_dict_rec():
+    """Returns status dictionary"""
+    return OrderedDict([("Patient 26", "Healthy"),
+                        ("Patient 28", "Healthy"),
+                        ("Patient 30", "Healthy"),
+                        ("Patient 34", "Healthy"),
+                        ("Patient 35", "Healthy"),
+                        ("Patient 43", "Healthy"),
+                        ("Patient 44", "Healthy"),
+                        ("Patient 45", "Healthy"),
+                        ("Patient 52", "Healthy"),
+                        ("Patient 52A", "Healthy"),
+                        ("Patient 54", "Healthy"),
+                        ("Patient 56", "Healthy"),
+                        ("Patient 58", "Healthy"),
+                        ("Patient 60", "Healthy"),
+                        ("Patient 61", "Healthy"),
+                        ("Patient 62", "Healthy"),
+                        ("Patient 63", "Healthy"),
+                        ("Patient 66", "Healthy"),
+                        ("Patient 68", "Healthy"),
+                        ("Patient 69", "Healthy"),
+                        ("Patient 70", "Healthy"),
+                        ("Patient 79", "Healthy"),
+                        ("Patient 19186-4", "BC"),
+                        ("Patient 19186-8", "BC"),
+                        ("Patient 19186-10-T1", "BC"),
+                        ("Patient 19186-10-T2", "BC"),
+                        ("Patient 19186-10-T3", "BC"),
+                        ("Patient 19186-15-T1", "BC"),
+                        ("Patient 19186-15-T2", "BC"),
+                        ("Patient 19186-15-T3", "BC"),
+                        ("Patient 19186-2", "BC"),
+                        ("Patient 19186-3", "BC"),
+                        ("Patient 19186-12", "BC"),
+                        ("Patient 19186-14", "BC"),
+                        ("Patient 21368-3", "BC"),
+                        ("Patient 21368-4", "BC")])
+
+def get_status_rec_df():
+    statusDF = pd.DataFrame.from_dict(get_status_dict_rec(), orient='index').reset_index()
+    statusDF.columns = ["Patient", "Status"]
+    return statusDF
+
+
 def compile_patient_rec(patient_num):
     """Adds all data from a single patient to an FC file"""
     pathname = "/opt/CoH/Receptor Data/F" + patient_num.split(" ")[1] + "_Unmixed.fcs"
@@ -128,43 +173,7 @@ gate_dict = get_gate_dict()
 
 def make_flow_df_rec():
     """Compiles data for all populations for all patients into .csv"""
-    patients = [
-        "Patient 26",
-        "Patient 28",
-        "Patient 30",
-        "Patient 34",
-        "Patient 35",
-        "Patient 43",
-        "Patient 44",
-        "Patient 45",
-        "Patient 52",
-        "Patient 52A",
-        "Patient 54",
-        "Patient 56",
-        "Patient 58",
-        "Patient 60",
-        "Patient 61",
-        "Patient 62",
-        "Patient 63",
-        "Patient 66",
-        "Patient 68",
-        "Patient 69",
-        "Patient 70",
-        "Patient 79",
-        "Patient 19186-2",
-        "Patient 19186-3",
-        "Patient 19186-4",
-        "Patient 19186-8",
-        "Patient 19186-10-T1",
-        "Patient 19186-10-T2",
-        "Patient 19186-10-T3",
-        "Patient 19186-15-T1",
-        "Patient 19186-15-T2",
-        "Patient 19186-15-T3",
-        "Patient 19186-12",
-        "Patient 19186-14",
-        "Patient 21368-3",
-        "Patient 21368-4"]
+    patients = list(get_status_dict_rec().keys())
     cell_types = list(get_gate_dict().keys())
     gateDF = pd.read_csv("./coh/data/CoH_Flow_Gates_Receptors.csv").reset_index().drop("Unnamed: 0", axis=1)
     CoH_DF_rec = pd.DataFrame([])

@@ -11,11 +11,55 @@ import pandas as pd
 import numpy as np
 import xarray as xa
 from FlowCytometryTools import PolyGate, FCMeasurement
-from .tensor import get_status_dict
 
 
 warnings.filterwarnings("ignore")
-gate_df = pd.DataFrame()
+
+
+def get_status_dict():
+    """Returns status dictionary"""
+    return OrderedDict([("Patient 26", "Healthy"),
+                        ("Patient 28", "Healthy"),
+                        ("Patient 30", "Healthy"),
+                        ("Patient 34", "Healthy"),
+                        ("Patient 35", "Healthy"),
+                        ("Patient 43", "Healthy"),
+                        ("Patient 44", "Healthy"),
+                        ("Patient 45", "Healthy"),
+                        ("Patient 52", "Healthy"),
+                        ("Patient 52A", "Healthy"),
+                        ("Patient 54", "Healthy"),
+                        ("Patient 56", "Healthy"),
+                        ("Patient 58", "Healthy"),
+                        ("Patient 60", "Healthy"),
+                        ("Patient 61", "Healthy"),
+                        ("Patient 62", "Healthy"),
+                        ("Patient 63", "Healthy"),
+                        ("Patient 66", "Healthy"),
+                        ("Patient 68", "Healthy"),
+                        ("Patient 69", "Healthy"),
+                        ("Patient 70", "Healthy"),
+                        ("Patient 79", "Healthy"),
+                        ("Patient 19186-4", "BC"),
+                        ("Patient 19186-8", "BC"),
+                        ("Patient 406", "BC"),
+                        ("Patient 19186-10-T1", "BC"),
+                        ("Patient 19186-10-T2", "BC"),
+                        ("Patient 19186-10-T3", "BC"),
+                        ("Patient 19186-15-T1", "BC"),
+                        ("Patient 19186-15-T2", "BC"),
+                        ("Patient 19186-15-T3", "BC"),
+                        ("Patient 19186-2", "BC"),
+                        ("Patient 19186-3", "BC"),
+                        ("Patient 19186-14", "BC"),
+                        ("Patient 21368-3", "BC"),
+                        ("Patient 21368-4", "BC")])
+
+
+def get_status_df():
+    statusDF = pd.DataFrame.from_dict(get_status_dict(), orient='index').reset_index()
+    statusDF.columns = ["Patient", "Status"]
+    return statusDF
 
 
 marker_dict = OrderedDict(

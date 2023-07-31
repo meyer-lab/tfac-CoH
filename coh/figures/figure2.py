@@ -16,7 +16,6 @@ def makeFigure():
     # Add subplot labels
     subplotLabel(ax)
     ax[0].axis("off")
-    
 
     num_comps = 12
     CoH_Data = make_CoH_Tensor(just_signal=True)
