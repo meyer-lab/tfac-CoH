@@ -9,7 +9,6 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 import xarray as xa
-import itertools
 from copy import copy
 from FlowCytometryTools import PolyGate, FCMeasurement
 from .tensor import get_status_dict
@@ -232,9 +231,9 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
 def make_CoH_Tensor(just_signal: bool=False, foldChange: bool=False) -> xa.DataArray:
     """Processes RA DataFrame into Xarray Tensor"""
     if foldChange:
-        df = pd.read_csv(join(path_here, "coh/data/CoH_Flow_DF_FC.csv"), index_col=[1, 2, 3, 4, 5])
+        df = pd.read_csv("./coh/data/CoH_Flow_DF_FC.csv", index_col=[1, 2, 3, 4, 5])
     else:
-        df = pd.read_csv(join(path_here, "coh/data/CoH_Flow_DF.csv"), index_col=[1, 2, 3, 4, 5])
+        df = pd.read_csv("./coh/data/CoH_Flow_DF.csv", index_col=[1, 2, 3, 4, 5])
 
     xdata = df.to_xarray()["Mean"]
     xdata = xdata.loc[:, "15min", :, :, :]
@@ -258,15 +257,6 @@ def make_CoH_Tensor(just_signal: bool=False, foldChange: bool=False) -> xa.DataA
         xdata[:, :-1, :, :] /= np.nanstd(xdata[:, :-1, :, :], axis=(0, 1, 2))[np.newaxis, np.newaxis, np.newaxis, :]
         xdata[:, -1, :, :] -= np.nanmean(xdata[:, -1, :, :], axis=(0, 1))[np.newaxis, np.newaxis, :]
         xdata[:, -1, :, :] /= np.nanstd(xdata[:, -1, :, :], axis=(0, 1))[np.newaxis, np.newaxis, :]
-
-    if foldChange:
-        cdata = xa.open_dataarray(join(path_here, "coh/data/CoH_Tensor_DataSet_FC.nc"))
-    else:
-        cdata = xa.open_dataarray(join(path_here, "coh/data/CoH_Tensor_DataSet.nc"))
-    
-    diff = (cdata - xdata)
-
-    print(np.nansum(np.abs(diff), axis=(0, 1, 2)))
 
     return xdata
 
