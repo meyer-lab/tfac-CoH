@@ -15,7 +15,7 @@ def makeFigure():
     subplotLabel(ax)
 
     CoH_Data = make_CoH_Tensor_rec()
-    #make_alldata_DF(CoH_Data, PCA=False, basal=True)
+
     tFacAllM, _ = factorTensor(CoH_Data.values, r=4)
     #R2Xplot(ax[0], CoH_Data.values, compNum=10)
     plot_tFac_CoH(ax[1], tFacAllM, CoH_Data, "Patient", rec=True)

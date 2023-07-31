@@ -2,7 +2,6 @@
 This file contains functions that are used in multiple figures.
 """
 from string import ascii_lowercase
-from os.path import dirname
 import sys
 import time
 import numpy as np
@@ -14,7 +13,6 @@ from scipy.stats import ttest_ind
 from statannot import add_stat_annotation
 from ..tensor import get_status_dict, get_status_dict_rec
 
-path_here = dirname(dirname(__file__))
 
 matplotlib.use("AGG")
 
