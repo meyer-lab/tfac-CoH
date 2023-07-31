@@ -165,8 +165,7 @@ def make_flow_df_rec():
         "Patient 19186-14",
         "Patient 21368-3",
         "Patient 21368-4"]
-    cell_types = ["T", "CD16 NK", "CD8+", "CD4+", "CD4-/CD8-", "Treg", "Treg 1", "Treg 2", "Treg 3", "CD8 TEM", "CD8 TCM", "CD8 Naive", "CD8 TEMRA",
-                  "CD4 TEM", "CD4 TCM", "CD4 Naive", "CD4 TEMRA", "CD20 B", "CD20 B Naive", "CD20 B Memory", "CD33 Myeloid", "Classical Monocyte", "NC Monocyte"]
+    cell_types = list(get_gate_dict().keys())
     gateDF = pd.read_csv("./coh/data/CoH_Flow_Gates_Receptors.csv").reset_index().drop("Unnamed: 0", axis=1)
     CoH_DF_rec = pd.DataFrame([])
     markerKey = pd.read_csv("./coh/data/Patient_Receptor_Panels.csv")
@@ -246,8 +245,7 @@ def make_flow_sc_dataframe_rec():
         "Patient 19186-14",
         "Patient 21368-3",
         "Patient 21368-4"]
-    cell_types = ["T", "CD16 NK", "CD8+", "CD4+", "CD4-/CD8-", "Treg", "Treg 1", "Treg 2", "Treg 3", "CD8 TEM", "CD8 TCM", "CD8 Naive", "CD8 TEMRA",
-                  "CD4 TEM", "CD4 TCM", "CD4 Naive", "CD4 TEMRA", "CD20 B", "CD20 B Naive", "CD20 B Memory", "CD33 Myeloid", "Classical Monocyte", "NC Monocyte"]
+    cell_types = list(get_gate_dict().keys())
     gateDF = pd.read_csv("./coh/data/CoH_Flow_Gates_Receptors.csv").reset_index().drop("Unnamed: 0", axis=1)
     totalDF = pd.DataFrame([])
     markerKey = pd.read_csv("./coh/data/Patient_Receptor_Panels.csv")
