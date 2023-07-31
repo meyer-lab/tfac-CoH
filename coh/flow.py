@@ -243,6 +243,12 @@ def make_CoH_Tensor(just_signal: bool=False, foldChange: bool=False) -> xa.DataA
         markers = np.array(["pSTAT1", "pSTAT3", "pSTAT4", "pSTAT5", "pSTAT6", "pSmad1-2"])
         xdata = xdata.loc[:, :, :, markers]
 
+    if foldChange:
+        treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng"])
+    else:
+        treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng", "Untreated"])
+    xdata = xdata.loc[:, treatments, :, :]
+
     # Normalize
     if foldChange:
         xdata -= np.nanmean(xdata, axis=(0, 1, 2))[np.newaxis, np.newaxis, np.newaxis, :]
@@ -254,18 +260,13 @@ def make_CoH_Tensor(just_signal: bool=False, foldChange: bool=False) -> xa.DataA
         xdata[:, -1, :, :] /= np.nanstd(xdata[:, -1, :, :], axis=(0, 1))[np.newaxis, np.newaxis, :]
 
     if foldChange:
-        treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng"])
+        cdata = xa.open_dataarray(join(path_here, "coh/data/CoH_Tensor_DataSet_FC.nc"))
     else:
-        treatments = np.array(["Untreated", "IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng"])
-
-    xdata = xdata.loc[:, treatments, :, :]
-
-    cdata = xa.open_dataarray(join(path_here, "coh/data/CoH_Tensor_DataSet_FC.nc"))
-
-
+        cdata = xa.open_dataarray(join(path_here, "coh/data/CoH_Tensor_DataSet.nc"))
+    
     diff = (cdata - xdata)
 
-    print(np.nansum(np.abs(diff), axis=(0, 2, 3)))
+    print(np.nansum(np.abs(diff), axis=(0, 1, 2)))
 
     return xdata
 
