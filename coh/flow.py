@@ -265,11 +265,7 @@ def make_CoH_Tensor(just_signal: bool=False, foldChange: bool=False) -> xa.DataA
 
     diff = (cdata - xdata)
 
-    print(np.sum(np.isnan(cdata)))
-    print(np.sum(np.isnan(xdata)))
-
-    assert False
-
+    print(np.nansum(np.abs(diff), axis=(0, 2, 3)))
 
     return xdata
 
