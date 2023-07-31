@@ -168,9 +168,6 @@ def process_sample_rec(sample, marker_dict):
     return sample, log_markers
 
 
-gate_dict = get_gate_dict()
-
-
 def make_flow_df_rec():
     """Compiles data for all populations for all patients into .csv"""
     patients = list(get_status_dict_rec().keys())
@@ -217,43 +214,7 @@ def make_CoH_Tensor_rec() -> xa.DataArray:
 
 def make_flow_sc_dataframe_rec():
     """Compiles data for all populations for all patients into a CSV."""
-    patients = [
-        "Patient 26",
-        "Patient 28",
-        "Patient 30",
-        "Patient 34",
-        "Patient 35",
-        "Patient 43",
-        "Patient 44",
-        "Patient 45",
-        "Patient 52",
-        "Patient 52A",
-        "Patient 54",
-        "Patient 56",
-        "Patient 58",
-        "Patient 60",
-        "Patient 61",
-        "Patient 62",
-        "Patient 63",
-        "Patient 66",
-        "Patient 68",
-        "Patient 69",
-        "Patient 70",
-        "Patient 79",
-        "Patient 19186-2",
-        "Patient 19186-3",
-        "Patient 19186-4",
-        "Patient 19186-8",
-        "Patient 19186-10-T1",
-        "Patient 19186-10-T2",
-        "Patient 19186-10-T3",
-        "Patient 19186-15-T1",
-        "Patient 19186-15-T2",
-        "Patient 19186-15-T3",
-        "Patient 19186-12",
-        "Patient 19186-14",
-        "Patient 21368-3",
-        "Patient 21368-4"]
+    patients = list(get_status_dict_rec().keys())
     cell_types = list(get_gate_dict().keys())
     gateDF = pd.read_csv("./coh/data/CoH_Flow_Gates_Receptors.csv").reset_index().drop("Unnamed: 0", axis=1)
     totalDF = pd.DataFrame([])
