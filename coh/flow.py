@@ -84,29 +84,33 @@ def makeGate(lowerCorner, upperCorner, channels, name):
     return PolyGate([(lowerCorner[0], lowerCorner[1]), (upperCorner[0], lowerCorner[1]), (upperCorner[0], upperCorner[1]), (lowerCorner[0], upperCorner[1])], channels, region='in', name=name)
 
 
-gate_dict = {"T": ["T Cell Gate"],
-             "CD16 NK": ["CD16 NK Gate"],
-             "CD8+": ["T Cell Gate", "CD8 Gate"],
-             "CD4+": ["T Cell Gate", "CD4 Gate"],
-             "CD4-/CD8-": ["T Cell Gate", "CD4/CD8- Gate"],
-             "Treg": ["T Cell Gate", "CD4 Gate", "Treg Gate"],
-             "Treg 1": ["T Cell Gate", "CD4 Gate", "Treg Gate", "Treg1 Gate"],
-             "Treg 2": ["T Cell Gate", "CD4 Gate", "Treg Gate", "Treg2 Gate"],
-             "Treg 3": ["T Cell Gate", "CD4 Gate", "Treg Gate", "Treg3 Gate"],
-             "CD8 TEM": ["T Cell Gate", "CD8 Gate", "CD8 TEM Gate"],
-             "CD8 TCM": ["T Cell Gate", "CD8 Gate", "CD8 TCM Gate"],
-             "CD8 Naive": ["T Cell Gate", "CD8 Gate", "CD8 Naive Gate"],
-             "CD8 TEMRA": ["T Cell Gate", "CD8 Gate", "CD8 TEMRA Gate"],
-             "CD4 TEM": ["T Cell Gate", "CD4 Gate", "CD4 TEM Gate"],
-             "CD4 TCM": ["T Cell Gate", "CD4 Gate", "CD4 TCM Gate"],
-             "CD4 Naive": ["T Cell Gate", "CD4 Gate", "CD4 Naive Gate"],
-             "CD4 TEMRA": ["T Cell Gate", "CD4 Gate", "CD4 TEMRA Gate"],
-             "CD20 B": ["CD20 B Gate"],
-             "CD20 B Naive": ["CD20 B Gate", "B Naive Gate"],
-             "CD20 B Memory": ["CD20 B Gate", "B Memory Gate"],
-             "CD33 Myeloid": ["CD33 Myeloid Gate"],
-             "Classical Monocyte": ["Classical Monocyte Gate"],
-             "NC Monocyte": ["Non-Classical Monocyte Gate"]}
+gate_dict = OrderedDict(
+    {
+        "T": ["T Cell Gate"],
+        "CD16 NK": ["CD16 NK Gate"],
+        "CD8+": ["T Cell Gate", "CD8 Gate"],
+        "CD4+": ["T Cell Gate", "CD4 Gate"],
+        "CD4-/CD8-": ["T Cell Gate", "CD4/CD8- Gate"],
+        "Treg": ["T Cell Gate", "CD4 Gate", "Treg Gate"],
+        "Treg 1": ["T Cell Gate", "CD4 Gate", "Treg Gate", "Treg1 Gate"],
+        "Treg 2": ["T Cell Gate", "CD4 Gate", "Treg Gate", "Treg2 Gate"],
+        "Treg 3": ["T Cell Gate", "CD4 Gate", "Treg Gate", "Treg3 Gate"],
+        "CD8 TEM": ["T Cell Gate", "CD8 Gate", "CD8 TEM Gate"],
+        "CD8 TCM": ["T Cell Gate", "CD8 Gate", "CD8 TCM Gate"],
+        "CD8 Naive": ["T Cell Gate", "CD8 Gate", "CD8 Naive Gate"],
+        "CD8 TEMRA": ["T Cell Gate", "CD8 Gate", "CD8 TEMRA Gate"],
+        "CD4 TEM": ["T Cell Gate", "CD4 Gate", "CD4 TEM Gate"],
+        "CD4 TCM": ["T Cell Gate", "CD4 Gate", "CD4 TCM Gate"],
+        "CD4 Naive": ["T Cell Gate", "CD4 Gate", "CD4 Naive Gate"],
+        "CD4 TEMRA": ["T Cell Gate", "CD4 Gate", "CD4 TEMRA Gate"],
+        "CD20 B": ["CD20 B Gate"],
+        "CD20 B Naive": ["CD20 B Gate", "B Naive Gate"],
+        "CD20 B Memory": ["CD20 B Gate", "B Memory Gate"],
+        "CD33 Myeloid": ["CD33 Myeloid Gate"],
+        "Classical Monocyte": ["Classical Monocyte Gate"],
+        "NC Monocyte": ["Non-Classical Monocyte Gate"],
+    }
+)
 
 
 def get_gate_dict():
@@ -145,23 +149,28 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
     """Compiles data for all populations for all patients into .csv"""
     patients = get_status_dict().keys()
     times = ["15min", "60min"]
-    treatments = ["Untreated",
-                  "IFNg-1ng",
-                  "IFNg-1ng+IL6-1ng",
-                  "IFNg-1ng+IL6-50ng",
-                  "IFNg-50ng",
-                  "IFNg-50ng+IL6-1ng",
-                  "IFNg-50ng+IL6-50ng",
-                  "IL10-50ng",
-                  "IL12-100ng",
-                  "IL2-50ng",
-                  "IL4-50ng",
-                  "IL6-1ng",
-                  "IL6-50ng",
-                  "TGFB-50ng"]
-    cell_types = ["T", "CD16 NK", "CD8+", "CD4+", "CD4-/CD8-", "Treg", "Treg 1", "Treg 2", "Treg 3", "CD8 TEM", "CD8 TCM", "CD8 Naive", "CD8 TEMRA",
-                  "CD4 TEM", "CD4 TCM", "CD4 Naive", "CD4 TEMRA", "CD20 B", "CD20 B Naive", "CD20 B Memory", "CD33 Myeloid", "Classical Monocyte", "NC Monocyte"]
-    gateDF = pd.read_csv("./coh/data/CoH_Flow_Gates.csv").reset_index().drop("Unnamed: 0", axis=1)
+    treatments = [
+        "Untreated",
+        "IFNg-1ng",
+        "IFNg-1ng+IL6-1ng",
+        "IFNg-1ng+IL6-50ng",
+        "IFNg-50ng",
+        "IFNg-50ng+IL6-1ng",
+        "IFNg-50ng+IL6-50ng",
+        "IL10-50ng",
+        "IL12-100ng",
+        "IL2-50ng",
+        "IL4-50ng",
+        "IL6-1ng",
+        "IL6-50ng",
+        "TGFB-50ng",
+    ]
+    cell_types = list(gate_dict.keys())
+    gateDF = (
+        pd.read_csv("./coh/data/CoH_Flow_Gates.csv")
+        .reset_index()
+        .drop("Unnamed: 0", axis=1)
+    )
     CoH_DF = pd.DataFrame([])
 
     for patient in patients:
@@ -228,7 +237,7 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
     return CoH_DF
 
 
-def make_CoH_Tensor(just_signal: bool=False, foldChange: bool=False) -> xa.DataArray:
+def make_CoH_Tensor(just_signal: bool = False, foldChange: bool = False) -> xa.DataArray:
     """Processes RA DataFrame into Xarray Tensor"""
     if foldChange:
         df = pd.read_csv("./coh/data/CoH_Flow_DF_FC.csv", index_col=[1, 2, 3, 4, 5])
@@ -283,12 +292,13 @@ def make_flow_sc_dataframe():
     """Compiles data for all populations for all patients into a CSV."""
     patients = get_status_dict().keys()
     times = ["15min"]
-    treatments = ['Untreated', 'IFNg-50ng', 'IL10-50ng', 'IL4-50ng', 'IL2-50ng', 'IL6-50ng']
-    cell_types = ["T", "CD16 NK", "CD8+", "CD4+", "CD4-/CD8-", "Treg", "Treg 1", "Treg 2", "Treg 3", "CD8 TEM", "CD8 TCM", "CD8 Naive", "CD8 TEMRA",
-                  "CD4 TEM", "CD4 TCM", "CD4 Naive", "CD4 TEMRA", "CD20 B", "CD20 B Naive", "CD20 B Memory", "CD33 Myeloid", "Classical Monocyte", "NC Monocyte"]
-    treatments = ['Untreated', 'IL10-50ng']
+    treatments = ["Untreated", "IL10-50ng"]
     cell_types = ["CD20 B", "CD20 B Naive", "CD20 B Memory", "CD8+"]
-    gateDF = pd.read_csv("./coh/data/CoH_Flow_Gates.csv").reset_index().drop("Unnamed: 0", axis=1)
+    gateDF = (
+        pd.read_csv("./coh/data/CoH_Flow_Gates.csv")
+        .reset_index()
+        .drop("Unnamed: 0", axis=1)
+    )
     totalDF = pd.DataFrame([])
 
     for i, patient in enumerate(patients):
