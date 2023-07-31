@@ -1,15 +1,14 @@
 """
 This creates Figure 5, heatmap (clustered factor correlations).
 """
-from os.path import join
 import numpy as np
 import pandas as pd
-import xarray as xa
 import seaborn as sns
-from .common import subplotLabel, getSetup, path_here
+from .common import subplotLabel, getSetup
 
 from ..tensor import factorTensor, get_status_df
 from ..flow_rec import make_CoH_Tensor_rec
+from ..flow import make_CoH_Tensor
 
 
 def makeFigure():
@@ -22,7 +21,7 @@ def makeFigure():
     ax[0].axis("off")
 
     num_comps = 12
-    CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Tensor_DataSet.nc"))
+    CoH_Data = make_CoH_Tensor(just_signal=True)
     tFacAllM, _ = factorTensor(CoH_Data.values, r=num_comps)
 
     num_comps = 4

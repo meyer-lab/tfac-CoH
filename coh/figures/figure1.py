@@ -1,13 +1,12 @@
 """
 This creates Figure 1.
 """
-from os.path import join
-import xarray as xa
 import numpy as np
 import seaborn as sns
 import tensorly as tl
-from .common import subplotLabel, getSetup, path_here
+from .common import subplotLabel, getSetup
 from ..tensor import factorTensor, get_status_dict
+from ..flow import make_CoH_Tensor
 
 
 def makeFigure():
@@ -19,7 +18,7 @@ def makeFigure():
     subplotLabel(ax)
     ax[0].axis("off")
 
-    data = xa.open_dataarray(join(path_here, "data/CoH_Tensor_DataSet.nc")).copy()
+    data = make_CoH_Tensor(just_signal=True)
 
     tFacAllM = factorTensor(data.values, r=12)[0]
     tensor = tl.cp_to_tensor(tFacAllM)

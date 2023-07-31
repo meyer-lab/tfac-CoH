@@ -14,7 +14,6 @@ def makeFigure():
     _, f = getSetup((8, 2), (1, 1))
 
     num_comps = 4
-    # CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Tensor_Data.nc""))
     CoH_Data = make_CoH_Tensor_rec()
     tFacAllM, _ = factorTensor(CoH_Data.values, r=num_comps)
     f = plot_coh_clust(tFacAllM, CoH_Data, "Patient", rec=True)
