@@ -1,9 +1,7 @@
 """
 This creates Figure S3, factorization of cell type abundance.
 """
-from os.path import join
-import xarray as xa
-from .common import subplotLabel, getSetup, path_here
+from .common import subplotLabel, getSetup
 from ..tensor import (
     factorTensor,
     R2Xplot,
@@ -11,6 +9,7 @@ from ..tensor import (
     BC_status_plot,
     CoH_LogReg_plot,
 )
+from ..flow import make_CoH_Tensor_abund
 
 
 def makeFigure():
@@ -23,7 +22,7 @@ def makeFigure():
 
     num_comps = 7
 
-    CoH_Data = xa.open_dataarray(join(path_here, "data/CoH_Tensor_Abundance.nc"))
+    CoH_Data = make_CoH_Tensor_abund()
     tFacAllM, _ = factorTensor(CoH_Data.values, r=num_comps)
 
     R2Xplot(ax[0], CoH_Data.values, compNum=8)
