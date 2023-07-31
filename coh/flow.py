@@ -4,44 +4,45 @@ This file includes various methods for flow cytometry analysis of fixed cells.
 import ast
 import textwrap
 import warnings
-from os.path import dirname, join
+from copy import copy
 from pathlib import Path
+from collections import OrderedDict
 import pandas as pd
 import numpy as np
 import xarray as xa
-import itertools
-from copy import copy
 from FlowCytometryTools import PolyGate, FCMeasurement
 from .tensor import get_status_dict
-
-path_here = dirname(dirname(__file__))
 
 
 warnings.filterwarnings("ignore")
 gate_df = pd.DataFrame()
 
 
-marker_dict = {"Alexa Fluor 647-A": "pSTAT4",
-               "Alexa Fluor 700-A": "CD20",
-               "BV650-A": "CD14",
-               "APC-Cy7-A": "CD14",
-               "V450-A": "pSTAT6",
-               "BV786-A": "CD27",
-               "BV570-A": "CD3",
-               "BV750-A": "CD33",
-               "BUV395-A": "CD45RA",
-               "LIVE DEAD Blue-A": "Live/Dead",
-               "BUV563-A": "CD4",
-               "BUV737-A": "CD16",
-               "BUV805-A": "CD8",
-               "Alexa Fluor 488-A": "pSTAT3",
-               "Brilliant Blue 515-A": "pSTAT3",
-               "PerCP-Cy5.5-A": "pSTAT1",
-               "PE-A": "pSmad1-2",
-               "PE-CF594-A": "FoxP3",
-               "PE-Cy7-A": "pSTAT5",
-               "BV605-A": "PD-1",
-               "BV510-A": "PD-L1"}
+marker_dict = OrderedDict(
+    {
+        "Alexa Fluor 647-A": "pSTAT4",
+        "Alexa Fluor 700-A": "CD20",
+        "BV650-A": "CD14",
+        "APC-Cy7-A": "CD14",
+        "V450-A": "pSTAT6",
+        "BV786-A": "CD27",
+        "BV570-A": "CD3",
+        "BV750-A": "CD33",
+        "BUV395-A": "CD45RA",
+        "LIVE DEAD Blue-A": "Live/Dead",
+        "BUV563-A": "CD4",
+        "BUV737-A": "CD16",
+        "BUV805-A": "CD8",
+        "Alexa Fluor 488-A": "pSTAT3",
+        "Brilliant Blue 515-A": "pSTAT3",
+        "PerCP-Cy5.5-A": "pSTAT1",
+        "PE-A": "pSmad1-2",
+        "PE-CF594-A": "FoxP3",
+        "PE-Cy7-A": "pSTAT5",
+        "BV605-A": "PD-1",
+        "BV510-A": "PD-L1",
+    }
+)
 
 
 def compile_patient(patient_num, cellFrac):
@@ -56,8 +57,7 @@ def compile_patient(patient_num, cellFrac):
 
 def combineWells(samples, cellFrac):
     """Accepts sample array returned from importF, and array of channels, returns combined well data"""
-    markers = np.array(["Alexa Fluor 647-A", "Alexa Fluor 700-A", "BV650-A", "APC-Cy7-A", "V450-A", "BV786-A", "BV570-A", "BV750-A", "BUV395-A", "LIVE DEAD Blue-A",
-                       "BUV563-A", "BUV737-A", "BUV805-A", "Alexa Fluor 488-A", "Brilliant Blue 515-A", "PerCP-Cy5.5-A", "PE-A", "PE-CF594-A", "PE-Cy7-A", "BV605-A", "BV510-A"])
+    markers = np.array(list(marker_dict.keys()))
     log_markers = markers[np.isin(markers, samples[0].data.columns)]
     samples[0] = samples[0].transform("tlog", channels=log_markers)
     combinedSamples = samples[0]
@@ -72,8 +72,7 @@ def combineWells(samples, cellFrac):
 
 def process_sample(sample):
     """Relabels and logs a sample"""
-    markers = np.array(["Alexa Fluor 647-A", "Alexa Fluor 700-A", "BV650-A", "APC-Cy7-A", "V450-A", "BV786-A", "BV570-A", "BV750-A", "BUV395-A", "LIVE DEAD Blue-A",
-                       "BUV563-A", "BUV737-A", "BUV805-A", "Alexa Fluor 488-A", "Brilliant Blue 515-A", "PerCP-Cy5.5-A", "PE-A", "PE-CF594-A", "PE-Cy7-A", "BV605-A", "BV510-A"])
+    markers = np.array(list(marker_dict.keys()))
     log_markers = markers[np.isin(markers, sample.data.columns)]
     sample = sample.transform("tlog", channels=log_markers)
     sample.data = sample.data.rename(marker_dict, axis=1)
@@ -85,29 +84,33 @@ def makeGate(lowerCorner, upperCorner, channels, name):
     return PolyGate([(lowerCorner[0], lowerCorner[1]), (upperCorner[0], lowerCorner[1]), (upperCorner[0], upperCorner[1]), (lowerCorner[0], upperCorner[1])], channels, region='in', name=name)
 
 
-gate_dict = {"T": ["T Cell Gate"],
-             "CD16 NK": ["CD16 NK Gate"],
-             "CD8+": ["T Cell Gate", "CD8 Gate"],
-             "CD4+": ["T Cell Gate", "CD4 Gate"],
-             "CD4-/CD8-": ["T Cell Gate", "CD4/CD8- Gate"],
-             "Treg": ["T Cell Gate", "CD4 Gate", "Treg Gate"],
-             "Treg 1": ["T Cell Gate", "CD4 Gate", "Treg Gate", "Treg1 Gate"],
-             "Treg 2": ["T Cell Gate", "CD4 Gate", "Treg Gate", "Treg2 Gate"],
-             "Treg 3": ["T Cell Gate", "CD4 Gate", "Treg Gate", "Treg3 Gate"],
-             "CD8 TEM": ["T Cell Gate", "CD8 Gate", "CD8 TEM Gate"],
-             "CD8 TCM": ["T Cell Gate", "CD8 Gate", "CD8 TCM Gate"],
-             "CD8 Naive": ["T Cell Gate", "CD8 Gate", "CD8 Naive Gate"],
-             "CD8 TEMRA": ["T Cell Gate", "CD8 Gate", "CD8 TEMRA Gate"],
-             "CD4 TEM": ["T Cell Gate", "CD4 Gate", "CD4 TEM Gate"],
-             "CD4 TCM": ["T Cell Gate", "CD4 Gate", "CD4 TCM Gate"],
-             "CD4 Naive": ["T Cell Gate", "CD4 Gate", "CD4 Naive Gate"],
-             "CD4 TEMRA": ["T Cell Gate", "CD4 Gate", "CD4 TEMRA Gate"],
-             "CD20 B": ["CD20 B Gate"],
-             "CD20 B Naive": ["CD20 B Gate", "B Naive Gate"],
-             "CD20 B Memory": ["CD20 B Gate", "B Memory Gate"],
-             "CD33 Myeloid": ["CD33 Myeloid Gate"],
-             "Classical Monocyte": ["Classical Monocyte Gate"],
-             "NC Monocyte": ["Non-Classical Monocyte Gate"]}
+gate_dict = OrderedDict(
+    {
+        "T": ["T Cell Gate"],
+        "CD16 NK": ["CD16 NK Gate"],
+        "CD8+": ["T Cell Gate", "CD8 Gate"],
+        "CD4+": ["T Cell Gate", "CD4 Gate"],
+        "CD4-/CD8-": ["T Cell Gate", "CD4/CD8- Gate"],
+        "Treg": ["T Cell Gate", "CD4 Gate", "Treg Gate"],
+        "Treg 1": ["T Cell Gate", "CD4 Gate", "Treg Gate", "Treg1 Gate"],
+        "Treg 2": ["T Cell Gate", "CD4 Gate", "Treg Gate", "Treg2 Gate"],
+        "Treg 3": ["T Cell Gate", "CD4 Gate", "Treg Gate", "Treg3 Gate"],
+        "CD8 TEM": ["T Cell Gate", "CD8 Gate", "CD8 TEM Gate"],
+        "CD8 TCM": ["T Cell Gate", "CD8 Gate", "CD8 TCM Gate"],
+        "CD8 Naive": ["T Cell Gate", "CD8 Gate", "CD8 Naive Gate"],
+        "CD8 TEMRA": ["T Cell Gate", "CD8 Gate", "CD8 TEMRA Gate"],
+        "CD4 TEM": ["T Cell Gate", "CD4 Gate", "CD4 TEM Gate"],
+        "CD4 TCM": ["T Cell Gate", "CD4 Gate", "CD4 TCM Gate"],
+        "CD4 Naive": ["T Cell Gate", "CD4 Gate", "CD4 Naive Gate"],
+        "CD4 TEMRA": ["T Cell Gate", "CD4 Gate", "CD4 TEMRA Gate"],
+        "CD20 B": ["CD20 B Gate"],
+        "CD20 B Naive": ["CD20 B Gate", "B Naive Gate"],
+        "CD20 B Memory": ["CD20 B Gate", "B Memory Gate"],
+        "CD33 Myeloid": ["CD33 Myeloid Gate"],
+        "Classical Monocyte": ["Classical Monocyte Gate"],
+        "NC Monocyte": ["Non-Classical Monocyte Gate"],
+    }
+)
 
 
 def get_gate_dict():
@@ -146,23 +149,28 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
     """Compiles data for all populations for all patients into .csv"""
     patients = get_status_dict().keys()
     times = ["15min", "60min"]
-    treatments = ["Untreated",
-                  "IFNg-1ng",
-                  "IFNg-1ng+IL6-1ng",
-                  "IFNg-1ng+IL6-50ng",
-                  "IFNg-50ng",
-                  "IFNg-50ng+IL6-1ng",
-                  "IFNg-50ng+IL6-50ng",
-                  "IL10-50ng",
-                  "IL12-100ng",
-                  "IL2-50ng",
-                  "IL4-50ng",
-                  "IL6-1ng",
-                  "IL6-50ng",
-                  "TGFB-50ng"]
-    cell_types = ["T", "CD16 NK", "CD8+", "CD4+", "CD4-/CD8-", "Treg", "Treg 1", "Treg 2", "Treg 3", "CD8 TEM", "CD8 TCM", "CD8 Naive", "CD8 TEMRA",
-                  "CD4 TEM", "CD4 TCM", "CD4 Naive", "CD4 TEMRA", "CD20 B", "CD20 B Naive", "CD20 B Memory", "CD33 Myeloid", "Classical Monocyte", "NC Monocyte"]
-    gateDF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_Gates.csv")).reset_index().drop("Unnamed: 0", axis=1)
+    treatments = [
+        "Untreated",
+        "IFNg-1ng",
+        "IFNg-1ng+IL6-1ng",
+        "IFNg-1ng+IL6-50ng",
+        "IFNg-50ng",
+        "IFNg-50ng+IL6-1ng",
+        "IFNg-50ng+IL6-50ng",
+        "IL10-50ng",
+        "IL12-100ng",
+        "IL2-50ng",
+        "IL4-50ng",
+        "IL6-1ng",
+        "IL6-50ng",
+        "TGFB-50ng",
+    ]
+    cell_types = list(gate_dict.keys())
+    gateDF = (
+        pd.read_csv("./coh/data/CoH_Flow_Gates.csv")
+        .reset_index()
+        .drop("Unnamed: 0", axis=1)
+    )
     CoH_DF = pd.DataFrame([])
 
     for patient in patients:
@@ -214,27 +222,27 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
                                                    "Cell": cell_type, "Marker": marker_dict[marker], "Mean": np.nan})])
     if subtract:
         UntreatedDF = CoH_DF.loc[(CoH_DF.Treatment == "Untreated")]
-        UntreatedDF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_Basal.csv"))
+        UntreatedDF.to_csv("./coh/data/CoH_Flow_DF_Basal.csv")
         if foldChange:
             CoH_DF.loc[(CoH_DF.Treatment == "Untreated"), "Mean"] = 0
-            CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_FC.csv"))
+            CoH_DF.to_csv("./coh/data/CoH_Flow_DF_FC.csv")
         else:
-            CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF.csv"))
+            CoH_DF.to_csv("./coh/data/CoH_Flow_DF.csv")
     else:
         if abundance:
-            CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_Abund.csv"))
+            CoH_DF.to_csv("./coh/data/CoH_Flow_DF_Abund.csv")
         else:
             raise RuntimeError("Shouldn't end up here.")
 
     return CoH_DF
 
 
-def make_CoH_Tensor(just_signal: bool=False, foldChange: bool=False) -> xa.DataArray:
+def make_CoH_Tensor(just_signal: bool = False, foldChange: bool = False) -> xa.DataArray:
     """Processes RA DataFrame into Xarray Tensor"""
     if foldChange:
-        df = pd.read_csv(join(path_here, "coh/data/CoH_Flow_DF_FC.csv"), index_col=[1, 2, 3, 4, 5])
+        df = pd.read_csv("./coh/data/CoH_Flow_DF_FC.csv", index_col=[1, 2, 3, 4, 5])
     else:
-        df = pd.read_csv(join(path_here, "coh/data/CoH_Flow_DF.csv"), index_col=[1, 2, 3, 4, 5])
+        df = pd.read_csv("./coh/data/CoH_Flow_DF.csv", index_col=[1, 2, 3, 4, 5])
 
     xdata = df.to_xarray()["Mean"]
     xdata = xdata.loc[:, "15min", :, :, :]
@@ -248,17 +256,18 @@ def make_CoH_Tensor(just_signal: bool=False, foldChange: bool=False) -> xa.DataA
         xdata -= np.nanmean(xdata, axis=(0, 1, 2))[np.newaxis, np.newaxis, np.newaxis, :]
         xdata /= np.nanstd(xdata, axis=(0, 1, 2))[np.newaxis, np.newaxis, np.newaxis, :]
     else:
+        treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng", "Untreated"])
+    xdata = xdata.loc[:, treatments, :, :]
+
+    # Normalize
+    if foldChange:
+        xdata -= np.nanmean(xdata, axis=(0, 1, 2))[np.newaxis, np.newaxis, np.newaxis, :]
+        xdata /= np.nanstd(xdata, axis=(0, 1, 2))[np.newaxis, np.newaxis, np.newaxis, :]
+    else:
         xdata[:, :-1, :, :] -= np.nanmean(xdata[:, :-1, :, :], axis=(0, 1, 2))[np.newaxis, np.newaxis, np.newaxis, :]
         xdata[:, :-1, :, :] /= np.nanstd(xdata[:, :-1, :, :], axis=(0, 1, 2))[np.newaxis, np.newaxis, np.newaxis, :]
         xdata[:, -1, :, :] -= np.nanmean(xdata[:, -1, :, :], axis=(0, 1))[np.newaxis, np.newaxis, :]
         xdata[:, -1, :, :] /= np.nanstd(xdata[:, -1, :, :], axis=(0, 1))[np.newaxis, np.newaxis, :]
-
-    if foldChange:
-        treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng"])
-    else:
-        treatments = np.array(["Untreated", "IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng"])
-
-    xdata = xdata.loc[:, treatments, :, :]
 
     return xdata
 
@@ -285,12 +294,13 @@ def make_flow_sc_dataframe():
     """Compiles data for all populations for all patients into a CSV."""
     patients = get_status_dict().keys()
     times = ["15min"]
-    treatments = ['Untreated', 'IFNg-50ng', 'IL10-50ng', 'IL4-50ng', 'IL2-50ng', 'IL6-50ng']
-    cell_types = ["T", "CD16 NK", "CD8+", "CD4+", "CD4-/CD8-", "Treg", "Treg 1", "Treg 2", "Treg 3", "CD8 TEM", "CD8 TCM", "CD8 Naive", "CD8 TEMRA",
-                  "CD4 TEM", "CD4 TCM", "CD4 Naive", "CD4 TEMRA", "CD20 B", "CD20 B Naive", "CD20 B Memory", "CD33 Myeloid", "Classical Monocyte", "NC Monocyte"]
-    treatments = ['Untreated', 'IL10-50ng']
+    treatments = ["Untreated", "IL10-50ng"]
     cell_types = ["CD20 B", "CD20 B Naive", "CD20 B Memory", "CD8+"]
-    gateDF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_Gates.csv")).reset_index().drop("Unnamed: 0", axis=1)
+    gateDF = (
+        pd.read_csv("./coh/data/CoH_Flow_Gates.csv")
+        .reset_index()
+        .drop("Unnamed: 0", axis=1)
+    )
     totalDF = pd.DataFrame([])
 
     for i, patient in enumerate(patients):
@@ -315,6 +325,6 @@ def make_flow_sc_dataframe():
                         CoH_DF["Patient"] = np.tile([patient], CoH_DF.shape[0])
                         totalDF = pd.concat([totalDF, CoH_DF])
 
-    totalDF.to_csv(join(path_here, "coh/data/CoH_Flow_SC_IL10.csv"))
+    totalDF.to_csv("./coh/data/CoH_Flow_SC_IL10.csv")
 
     return totalDF
