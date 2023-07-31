@@ -9,7 +9,6 @@ import numpy as np
 import seaborn as sns
 import matplotlib
 import svgutils.transform as st
-import pandas as pd
 from matplotlib import gridspec, pyplot as plt
 from scipy.stats import ttest_ind
 from statannot import add_stat_annotation

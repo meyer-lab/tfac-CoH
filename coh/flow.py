@@ -4,23 +4,21 @@ This file includes various methods for flow cytometry analysis of fixed cells.
 import ast
 import textwrap
 import warnings
-from os.path import dirname, join
+from copy import copy
 from pathlib import Path
+from collections import OrderedDict
 import pandas as pd
 import numpy as np
 import xarray as xa
-from copy import copy
 from FlowCytometryTools import PolyGate, FCMeasurement
 from .tensor import get_status_dict
-
-path_here = dirname(dirname(__file__))
 
 
 warnings.filterwarnings("ignore")
 gate_df = pd.DataFrame()
 
 
-marker_dict = {"Alexa Fluor 647-A": "pSTAT4",
+marker_dict = OrderedDict({"Alexa Fluor 647-A": "pSTAT4",
                "Alexa Fluor 700-A": "CD20",
                "BV650-A": "CD14",
                "APC-Cy7-A": "CD14",
@@ -40,7 +38,7 @@ marker_dict = {"Alexa Fluor 647-A": "pSTAT4",
                "PE-CF594-A": "FoxP3",
                "PE-Cy7-A": "pSTAT5",
                "BV605-A": "PD-1",
-               "BV510-A": "PD-L1"}
+               "BV510-A": "PD-L1"})
 
 
 def compile_patient(patient_num, cellFrac):
@@ -55,8 +53,7 @@ def compile_patient(patient_num, cellFrac):
 
 def combineWells(samples, cellFrac):
     """Accepts sample array returned from importF, and array of channels, returns combined well data"""
-    markers = np.array(["Alexa Fluor 647-A", "Alexa Fluor 700-A", "BV650-A", "APC-Cy7-A", "V450-A", "BV786-A", "BV570-A", "BV750-A", "BUV395-A", "LIVE DEAD Blue-A",
-                       "BUV563-A", "BUV737-A", "BUV805-A", "Alexa Fluor 488-A", "Brilliant Blue 515-A", "PerCP-Cy5.5-A", "PE-A", "PE-CF594-A", "PE-Cy7-A", "BV605-A", "BV510-A"])
+    markers = np.array(list(marker_dict.keys()))
     log_markers = markers[np.isin(markers, samples[0].data.columns)]
     samples[0] = samples[0].transform("tlog", channels=log_markers)
     combinedSamples = samples[0]
@@ -71,8 +68,7 @@ def combineWells(samples, cellFrac):
 
 def process_sample(sample):
     """Relabels and logs a sample"""
-    markers = np.array(["Alexa Fluor 647-A", "Alexa Fluor 700-A", "BV650-A", "APC-Cy7-A", "V450-A", "BV786-A", "BV570-A", "BV750-A", "BUV395-A", "LIVE DEAD Blue-A",
-                       "BUV563-A", "BUV737-A", "BUV805-A", "Alexa Fluor 488-A", "Brilliant Blue 515-A", "PerCP-Cy5.5-A", "PE-A", "PE-CF594-A", "PE-Cy7-A", "BV605-A", "BV510-A"])
+    markers = np.array(list(marker_dict.keys()))
     log_markers = markers[np.isin(markers, sample.data.columns)]
     sample = sample.transform("tlog", channels=log_markers)
     sample.data = sample.data.rename(marker_dict, axis=1)
@@ -161,7 +157,7 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
                   "TGFB-50ng"]
     cell_types = ["T", "CD16 NK", "CD8+", "CD4+", "CD4-/CD8-", "Treg", "Treg 1", "Treg 2", "Treg 3", "CD8 TEM", "CD8 TCM", "CD8 Naive", "CD8 TEMRA",
                   "CD4 TEM", "CD4 TCM", "CD4 Naive", "CD4 TEMRA", "CD20 B", "CD20 B Naive", "CD20 B Memory", "CD33 Myeloid", "Classical Monocyte", "NC Monocyte"]
-    gateDF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_Gates.csv")).reset_index().drop("Unnamed: 0", axis=1)
+    gateDF = pd.read_csv("./coh/data/CoH_Flow_Gates.csv").reset_index().drop("Unnamed: 0", axis=1)
     CoH_DF = pd.DataFrame([])
 
     for patient in patients:
@@ -213,15 +209,15 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
                                                    "Cell": cell_type, "Marker": marker_dict[marker], "Mean": np.nan})])
     if subtract:
         UntreatedDF = CoH_DF.loc[(CoH_DF.Treatment == "Untreated")]
-        UntreatedDF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_Basal.csv"))
+        UntreatedDF.to_csv("./coh/data/CoH_Flow_DF_Basal.csv")
         if foldChange:
             CoH_DF.loc[(CoH_DF.Treatment == "Untreated"), "Mean"] = 0
-            CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_FC.csv"))
+            CoH_DF.to_csv("./coh/data/CoH_Flow_DF_FC.csv")
         else:
-            CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF.csv"))
+            CoH_DF.to_csv("./coh/data/CoH_Flow_DF.csv")
     else:
         if abundance:
-            CoH_DF.to_csv(join(path_here, "coh/data/CoH_Flow_DF_Abund.csv"))
+            CoH_DF.to_csv("./coh/data/CoH_Flow_DF_Abund.csv")
         else:
             raise RuntimeError("Shouldn't end up here.")
 
@@ -288,7 +284,7 @@ def make_flow_sc_dataframe():
                   "CD4 TEM", "CD4 TCM", "CD4 Naive", "CD4 TEMRA", "CD20 B", "CD20 B Naive", "CD20 B Memory", "CD33 Myeloid", "Classical Monocyte", "NC Monocyte"]
     treatments = ['Untreated', 'IL10-50ng']
     cell_types = ["CD20 B", "CD20 B Naive", "CD20 B Memory", "CD8+"]
-    gateDF = pd.read_csv(join(path_here, "coh/data/CoH_Flow_Gates.csv")).reset_index().drop("Unnamed: 0", axis=1)
+    gateDF = pd.read_csv("./coh/data/CoH_Flow_Gates.csv").reset_index().drop("Unnamed: 0", axis=1)
     totalDF = pd.DataFrame([])
 
     for i, patient in enumerate(patients):
@@ -313,6 +309,6 @@ def make_flow_sc_dataframe():
                         CoH_DF["Patient"] = np.tile([patient], CoH_DF.shape[0])
                         totalDF = pd.concat([totalDF, CoH_DF])
 
-    totalDF.to_csv(join(path_here, "coh/data/CoH_Flow_SC_IL10.csv"))
+    totalDF.to_csv("./coh/data/CoH_Flow_SC_IL10.csv")
 
     return totalDF

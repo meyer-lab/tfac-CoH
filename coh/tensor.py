@@ -10,7 +10,6 @@ from tensorpack.cmtf import initialize_cp, cp_normalize, calcR2X, mlstsq, sort_f
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn.model_selection import RepeatedStratifiedKFold, cross_val_score
 from sklearn import preprocessing
-from os.path import dirname
 
 
 def factorTensor(tOrig: np.ndarray, r: int, tol: float=1e-9, maxiter: int=6_000, progress: bool=False, linesearch: bool=True):
