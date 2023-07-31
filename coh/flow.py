@@ -265,7 +265,7 @@ def make_CoH_Tensor(just_signal: bool=False, foldChange: bool=False) -> xa.DataA
 
 def make_CoH_Tensor_abund() -> xa.DataArray:
     """Processes RA DataFrame into Xarray Tensor"""
-    df = pd.read_csv(join(path_here, "coh/data/CoH_Flow_DF_Abund.csv"), index_col=[1, 2, 3, 4])
+    df = pd.read_csv("./coh/data/CoH_Flow_DF_Abund.csv", index_col=[1, 2, 3, 4])
     df = df.dropna()
 
     xdata = df.to_xarray()["Abundance"]
