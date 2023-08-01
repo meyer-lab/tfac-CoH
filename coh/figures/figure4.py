@@ -19,14 +19,14 @@ def makeFigure():
     ax[0].axis("off")
 
     CoH_Data = make_CoH_Tensor(just_signal=True)
-    tFacAllM = factorTensor(CoH_Data.values, r=12)
+    tFacAllM = factorTensor(CoH_Data.to_numpy(), r=12)
 
     BC_status_plot(13, CoH_Data, ax[1])
     CoH_LogReg_plot(ax[2], tFacAllM, CoH_Data)
     CoH_Scat_Plot(ax[3], tFacAllM, CoH_Data, "Patient", plot_comps=[2, 9])
 
     CoH_Data_R = make_CoH_Tensor_rec()
-    tFacAllM_R = factorTensor(CoH_Data_R.values, r=4)
+    tFacAllM_R = factorTensor(CoH_Data_R.to_numpy(), r=4)
 
     BC_status_plot(6, CoH_Data_R, ax[5], rec=True)
     CoH_LogReg_plot(ax[6], tFacAllM_R, CoH_Data_R)

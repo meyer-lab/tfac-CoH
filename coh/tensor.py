@@ -105,7 +105,7 @@ def R2Xplot(ax, tensor, compNum: int):
 
 
 cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=20)
-lrmodel = LogisticRegressionCV(penalty="l2", max_iter=5000, cv=cv)
+lrmodel = LogisticRegressionCV(penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv)
 
 
 def CoH_LogReg_plot(ax, tFac, CoH_Array):
@@ -131,13 +131,14 @@ def BC_status_plot(compNum, CoH_Data, ax, rec=False):
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
 
     for i in range(1, compNum + 1):
-        tFacAllM = factorTensor(CoH_Data.values, r=i)
+        tFacAllM = factorTensor(CoH_Data.to_numpy(), r=i)
         coord = CoH_Data.dims.index("Patient")
         mode_facs = tFacAllM[1][coord]
 
         lrmodel.fit(mode_facs, Donor_CoH_y)
         scoresTFAC = np.max(np.mean(lrmodel.scores_[1], axis=0))
-        accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "Tensor Factorization", "Components": [i], "Accuracy (10-fold CV)": np.mean(scoresTFAC)})])
+        accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "Tensor Factorization", "Components": [i], "Accuracy (10-fold CV)": scoresTFAC})])
+
     accDF = accDF.reset_index(drop=True)
     sns.lineplot(data=accDF, x="Components", y="Accuracy (10-fold CV)", hue="Data Type", ax=ax)
     ax.set(xticks=np.arange(1, compNum + 1), ylim=(0.5, 1))
