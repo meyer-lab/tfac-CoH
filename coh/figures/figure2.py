@@ -18,9 +18,8 @@ def makeFigure():
     subplotLabel(ax)
     ax[0].axis("off")
 
-    num_comps = 12
     CoH_Data = make_CoH_Tensor(just_signal=True)
-    tFacAllM = factorTensor(CoH_Data.values, r=num_comps)
+    tFacAllM = factorTensor(CoH_Data.to_numpy(), r=12)
 
     plot_tFac_CoH(ax[2:], tFacAllM, CoH_Data)
 
