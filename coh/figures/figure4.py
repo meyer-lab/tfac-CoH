@@ -26,7 +26,7 @@ def makeFigure():
     CoH_Scat_Plot(ax[3], tFacAllM, CoH_Data, "Patient", plot_comps=[2, 9])
 
     CoH_Data_R = make_CoH_Tensor_rec()
-    tFacAllM_R = factorTensor(CoH_Data_R.to_numpy(), r=4)
+    tFacAllM_R = factorTensor(CoH_Data_R.to_numpy(), r=3)
 
     BC_status_plot(6, CoH_Data_R, ax[5], rec=True)
     CoH_LogReg_plot(ax[6], tFacAllM_R, CoH_Data_R)
