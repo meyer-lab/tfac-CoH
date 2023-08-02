@@ -23,14 +23,14 @@ def makeFigure():
 
     BC_status_plot(13, CoH_Data, ax[1])
     CoH_LogReg_plot(ax[2], tFacAllM, CoH_Data)
-    CoH_Scat_Plot(ax[3], tFacAllM, CoH_Data, "Patient", plot_comps=[2, 9])
+    CoH_Scat_Plot(ax[3], tFacAllM, CoH_Data, "Patient", plot_comps=[3, 6])
 
     CoH_Data_R = make_CoH_Tensor_rec()
     tFacAllM_R = factorTensor(CoH_Data_R.values, r=4)
 
     BC_status_plot(6, CoH_Data_R, ax[5], rec=True)
     CoH_LogReg_plot(ax[6], tFacAllM_R, CoH_Data_R)
-    CoH_Scat_Plot(ax[7], tFacAllM_R, CoH_Data_R, "Patient", plot_comps=[1, 2])
+    CoH_Scat_Plot(ax[7], tFacAllM_R, CoH_Data_R, "Patient", plot_comps=[1, 3])
 
     return f
 
