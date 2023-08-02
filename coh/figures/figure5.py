@@ -1,6 +1,7 @@
 """
 This creates Figure 5, heatmap (clustered factor correlations).
 """
+import pickle
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -22,10 +23,12 @@ def makeFigure():
     ax[0].axis("off")
 
     CoH_Data = make_CoH_Tensor(just_signal=True)
-    tFacAllM = factorTensor(CoH_Data.values, r=12)
+
+    with open('./coh/data/signaling.pkl', 'rb') as ff:
+        tFacAllM = pickle.load(ff) # 12 component
 
     CoH_Data_R = make_CoH_Tensor_rec()
-    tFacAllM_R = factorTensor(CoH_Data_R.values, r=3)
+    tFacAllM_R = factorTensor(CoH_Data_R.to_numpy(), r=3)
 
     f = CoH_Factor_HM(tFacAllM, CoH_Data, tFacAllM_R, CoH_Data_R)
 

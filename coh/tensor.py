@@ -6,12 +6,10 @@ import tensorly as tl
 from tensorly.decomposition._cp import initialize_cp
 from tensorly.cp_tensor import cp_flip_sign, CPTensor
 from tensorly.tenalg.einsum_tenalg import khatri_rao
-from tensorpack.cmtf import cp_normalize, calcR2X, mlstsq, sort_factors, tqdm, IterativeSVD
+from tensorpack.cmtf import cp_normalize, calcR2X, mlstsq, tqdm
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn.model_selection import RepeatedStratifiedKFold
 from sklearn import preprocessing
-from .flow_rec import get_status_rec_df
-from .flow import get_status_df
 
 
 def factorTensor(
@@ -26,10 +24,7 @@ def factorTensor(
     # Pre-unfold
     unfolded = [tl.unfold(tOrig, i) for i in range(tOrig.ndim)]
 
-    # Assume patients is mode 0
-    unfold = IterativeSVD(r, random_state=1).fit_transform(unfolded[0].copy())
-    tFill = tl.reshape(unfold, tOrig.shape)
-    tFac = CPTensor(initialize_cp(tFill, r))
+    tFac = CPTensor(initialize_cp(np.nan_to_num(tOrig), r))
 
     acc_pow: float = 2.0  # Extrapolate to the iteration^(1/acc_pow) ahead
     acc_fail: int = 0  # How many times acceleration have failed
@@ -84,10 +79,20 @@ def factorTensor(
     tFac = cp_flip_sign(tFac)
 
     if r > 1:
-        tFac = sort_factors(tFac)
+        gini_idx = giniIndex(tFac.factors[0])
+        tFac.factors = [f[:, gini_idx] for f in tFac.factors]
+        tFac.weights = tFac.weights[gini_idx]
 
     tFac.R2X = R2X
     return tFac
+
+
+def giniIndex(X: np.ndarray) -> np.ndarray:
+    """Calculates the Gini Coeff for each component and returns the index rearrangment"""
+    X = np.abs(X)
+    gini = np.var(X, axis=0) / np.mean(X, axis=0)
+
+    return np.argsort(gini)
 
 
 def R2Xplot(ax, tensor, compNum: int):
@@ -108,11 +113,10 @@ cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=20)
 lrmodel = LogisticRegressionCV(penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv)
 
 
-def CoH_LogReg_plot(ax, tFac, CoH_Array):
+def CoH_LogReg_plot(ax, tFac, CoH_Array, status_DF):
     """Plot factor weights for donor BC prediction"""
     coord = CoH_Array.dims.index("Patient")
     mode_facs = tFac[1][coord]
-    status_DF = get_status_df()
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
 
     LR_CoH = lrmodel.fit(mode_facs, Donor_CoH_y)
@@ -121,13 +125,9 @@ def CoH_LogReg_plot(ax, tFac, CoH_Array):
     sns.barplot(data=CoH_comp_weights, x="Component", y="Coefficient", color="k", ax=ax)
 
 
-def BC_status_plot(compNum, CoH_Data, ax, rec=False):
+def BC_status_plot(compNum, CoH_Data, ax, status_DF):
     """Plot 5 fold CV by # components"""
     accDF = pd.DataFrame()
-    if rec:
-        status_DF = get_status_rec_df()
-    else:
-        status_DF = get_status_df()
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
 
     for i in range(1, compNum + 1):
