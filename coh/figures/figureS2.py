@@ -7,7 +7,7 @@ from ..tensor import (
     CoH_LogReg_plot,
     BC_status_plot,
 )
-from ..flow import make_CoH_Tensor
+from ..flow import make_CoH_Tensor, get_status_df
 from .common import subplotLabel, getSetup, plot_tFac_CoH
 
 
@@ -22,8 +22,8 @@ def makeFigure():
 
     tFacAllM = factorTensor(CoH_Data.to_numpy(), r=8)
     R2Xplot(ax[0], CoH_Data.to_numpy(), compNum=10)
-    BC_status_plot(10, CoH_Data, ax[1])
-    CoH_LogReg_plot(ax[2], tFacAllM, CoH_Data)
+    BC_status_plot(10, CoH_Data, ax[1], get_status_df())
+    CoH_LogReg_plot(ax[2], tFacAllM, CoH_Data, get_status_df())
     
     plot_tFac_CoH(ax[3:], tFacAllM, CoH_Data)
 

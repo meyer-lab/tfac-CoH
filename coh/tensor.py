@@ -10,8 +10,6 @@ from tensorpack.cmtf import cp_normalize, calcR2X, mlstsq, tqdm
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn.model_selection import RepeatedStratifiedKFold
 from sklearn import preprocessing
-from .flow_rec import get_status_rec_df
-from .flow import get_status_df
 
 
 def factorTensor(
@@ -115,11 +113,10 @@ cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=20)
 lrmodel = LogisticRegressionCV(penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv)
 
 
-def CoH_LogReg_plot(ax, tFac, CoH_Array):
+def CoH_LogReg_plot(ax, tFac, CoH_Array, status_DF):
     """Plot factor weights for donor BC prediction"""
     coord = CoH_Array.dims.index("Patient")
     mode_facs = tFac[1][coord]
-    status_DF = get_status_df()
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
 
     LR_CoH = lrmodel.fit(mode_facs, Donor_CoH_y)
@@ -128,13 +125,9 @@ def CoH_LogReg_plot(ax, tFac, CoH_Array):
     sns.barplot(data=CoH_comp_weights, x="Component", y="Coefficient", color="k", ax=ax)
 
 
-def BC_status_plot(compNum, CoH_Data, ax, rec=False):
+def BC_status_plot(compNum, CoH_Data, ax, status_DF):
     """Plot 5 fold CV by # components"""
     accDF = pd.DataFrame()
-    if rec:
-        status_DF = get_status_rec_df()
-    else:
-        status_DF = get_status_df()
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
 
     for i in range(1, compNum + 1):
