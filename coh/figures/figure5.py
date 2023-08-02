@@ -28,7 +28,7 @@ def makeFigure():
         tFacAllM = pickle.load(ff) # 12 component
 
     CoH_Data_R = make_CoH_Tensor_rec()
-    tFacAllM_R = factorTensor(CoH_Data_R.to_numpy(), r=3)
+    tFacAllM_R = factorTensor(CoH_Data_R.to_numpy(), r=5)
 
     f = CoH_Factor_HM(tFacAllM, CoH_Data, tFacAllM_R, CoH_Data_R)
 
