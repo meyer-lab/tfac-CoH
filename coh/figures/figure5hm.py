@@ -5,7 +5,7 @@ import seaborn as sns
 import pandas as pd
 import numpy as np
 from .common import subplotLabel, getSetup
-from ..tensor import get_status_df
+from ..flow import get_status_df
 
 
 def makeFigure():
@@ -16,59 +16,59 @@ def makeFigure():
     # Add subplot labels
     subplotLabel(ax)
 
-    CoH_DF = pd.read_csv("./coh/data/CoH_Flow_DF.csv")
-    CoH_DF_B = pd.read_csv("./coh/data/CoH_Flow_DF_Basal.csv")
-    CoH_Data_DF_R = pd.read_csv("./coh/data/CoH_Rec_DF.csv")
+    df = pd.read_csv("./coh/data/CoH_Flow_DF.csv")
+    df_B = pd.read_csv("./coh/data/CoH_Flow_DF_Basal.csv")
+    df_R = pd.read_csv("./coh/data/CoH_Rec_DF.csv")
 
     # CD8
-    #f = dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_Data_DF_R, ["pSTAT3", "pSTAT5"], ["IL10-50ng", "IL2-50ng"], ["pSmad1-2", "pSTAT4"], ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI", "IL2RB"], cells=["CD8+"])
+    #f = dysreg_cor_hm_R(df, df_B, df_R, ["pSTAT3", "pSTAT5"], ["IL10-50ng", "IL2-50ng"], ["pSmad1-2", "pSTAT4"], ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI", "IL2RB"], cells=["CD8+"])
     # CD4
-    # f = dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_Data_DF_R, ["pSTAT3"], ["IL10-50ng"], ["pSmad1-2", "pSTAT4", "pSTAT1"], ["TGFB RII", "IL10R", "IL6Ra", "IL12RI", "IFNg R1"], cells=["CD4+"])
+    # f = dysreg_cor_hm_R(df, df_B, df_R, ["pSTAT3"], ["IL10-50ng"], ["pSmad1-2", "pSTAT4", "pSTAT1"], ["TGFB RII", "IL10R", "IL6Ra", "IL12RI", "IFNg R1"], cells=["CD4+"])
     # Bcell
-    f = dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_Data_DF_R, ["pSTAT3", "pSTAT5"], ["IL10-50ng", "IL2-50ng"], ["pSmad1-2", "pSTAT4"], ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI", "IL2RB", "IL2Ra"], cells=["CD20 B"])
+    f = dysreg_cor_hm_R(df, df_B, df_R, ["pSTAT3", "pSTAT5"], ["IL10-50ng", "IL2-50ng"], ["pSmad1-2", "pSTAT4"], ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI", "IL2RB", "IL2Ra"], cells=["CD20 B"])
     # Treg
-    # f = dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_Data_DF_R, ["pSTAT3", "pSTAT5", "pSmad1-2"], ["IL10-50ng", "IL2-50ng", "TGFB-50ng"], ["pSmad1-2", "pSTAT4", "pSTAT1"], ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI", "IL2RB", "IL2Ra", "IFNg R1"], cells=["Treg"])
+    # f = dysreg_cor_hm_R(df, df_B, df_R, ["pSTAT3", "pSTAT5", "pSmad1-2"], ["IL10-50ng", "IL2-50ng", "TGFB-50ng"], ["pSmad1-2", "pSTAT4", "pSTAT1"], ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI", "IL2RB", "IL2Ra", "IFNg R1"], cells=["Treg"])
     # Monocytes
-    # f = dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_Data_DF_R, ["pSTAT3", "pSTAT5", "pSmad1-2"], ["IL10-50ng", "IL2-50ng", "TGFB-50ng"], ["pSmad1-2", "pSTAT4"], ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI", "IL2RB"], cells=["Classical Monocyte"])
+    # f = dysreg_cor_hm_R(df, df_B, df_R, ["pSTAT3", "pSTAT5", "pSmad1-2"], ["IL10-50ng", "IL2-50ng", "TGFB-50ng"], ["pSmad1-2", "pSTAT4"], ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI", "IL2RB"], cells=["Classical Monocyte"])
 
     return f
 
 
-def dysreg_cor_hm_R(CoH_DF, CoH_DF_B, CoH_DF_R, markers_dysreg, cyto_dysreg, markers_dysreg_B, markers_dysreg_R, cells=False):
+def dysreg_cor_hm_R(df, df_B, df_R, markers_dysreg, cyto_dysreg, markers_dysreg_B, markers_dysreg_R, cells=False):
     """Plots possible correlation of dysregulation"""
-    CoH_DF = CoH_DF.loc[CoH_DF.Patient != "Patient 406"]
-    CoH_DF_B = CoH_DF_B.loc[CoH_DF_B.Patient != "Patient 406"]
-    CoH_DF_R = CoH_DF_R.loc[CoH_DF_R.Patient != "Patient 19186-12"]
+    df = df.loc[df.Patient != "Patient 406"]
+    df_B = df_B.loc[df_B.Patient != "Patient 406"]
+    df_R = df_R.loc[df_R.Patient != "Patient 19186-12"]
 
-    CoH_DF = CoH_DF.groupby(["Cell", "Patient", "Treatment", "Marker"]).Mean.mean().reset_index()
-    CoH_DF_B = CoH_DF_B.groupby(["Cell", "Patient", "Treatment", "Marker"]).Mean.mean().reset_index()
-    CoH_DF_R = CoH_DF_R.groupby(["Cell", "Patient", "Marker"]).Mean.mean().reset_index()
+    df = df.groupby(["Cell", "Patient", "Treatment", "Marker"]).Mean.mean().reset_index()
+    df_B = df_B.groupby(["Cell", "Patient", "Treatment", "Marker"]).Mean.mean().reset_index()
+    df_R = df_R.groupby(["Cell", "Patient", "Marker"]).Mean.mean().reset_index()
 
     dysreg_DF = pd.DataFrame()
     status_DF = get_status_df()
     BC_Patients = status_DF.loc[status_DF.Status == "BC"].Patient.unique()
-    CoH_DF = CoH_DF.loc[CoH_DF.Patient.isin(BC_Patients)]
-    CoH_DF_B = CoH_DF_B.loc[CoH_DF_B.Patient.isin(BC_Patients)]
-    CoH_DF_R = CoH_DF_R.loc[CoH_DF_R.Patient.isin(BC_Patients)]
+    df = df.loc[df.Patient.isin(BC_Patients)]
+    df_B = df_B.loc[df_B.Patient.isin(BC_Patients)]
+    df_R = df_R.loc[df_R.Patient.isin(BC_Patients)]
 
     if isinstance(cells, list):
-        CoH_DF = CoH_DF.loc[CoH_DF.Cell.isin(cells)]
-        CoH_DF_B = CoH_DF_B.loc[CoH_DF_B.Cell.isin(cells)]
-        CoH_DF_R = CoH_DF_R.loc[CoH_DF_R.Cell.isin(cells)]
+        df = df.loc[df.Cell.isin(cells)]
+        df_B = df_B.loc[df_B.Cell.isin(cells)]
+        df_R = df_R.loc[df_R.Cell.isin(cells)]
 
-    for patient in CoH_DF.Patient.unique():
-        patient_DF = CoH_DF.loc[CoH_DF.Patient == patient]
+    for patient in df.Patient.unique():
+        patient_DF = df.loc[df.Patient == patient]
         patient_row = pd.DataFrame()
         for i, marker in enumerate(markers_dysreg):
             value = patient_DF.loc[(patient_DF.Marker == marker) & (patient_DF.Treatment == cyto_dysreg[i])].Mean.values
             patient_row[markers_dysreg[i] + " response to " + cyto_dysreg[i]] = value
 
-        patient_DF_B = CoH_DF_B.loc[CoH_DF_B.Patient == patient]
+        patient_DF_B = df_B.loc[df_B.Patient == patient]
         for i, marker in enumerate(markers_dysreg_B):
             value = patient_DF_B.loc[(patient_DF_B.Marker == marker) & (patient_DF_B.Treatment == "Untreated")].Mean.values
             patient_row["Basal " + marker] = value
 
-        patient_DF_R = CoH_DF_R.loc[CoH_DF_R.Patient == patient]
+        patient_DF_R = df_R.loc[df_R.Patient == patient]
         for i, marker in enumerate(markers_dysreg_R):
             value = patient_DF_R.loc[(patient_DF_R.Marker == marker)].Mean.values
             patient_row[marker] = value

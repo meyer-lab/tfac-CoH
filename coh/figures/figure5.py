@@ -8,7 +8,7 @@ import seaborn as sns
 from scipy.cluster.hierarchy import linkage
 from .common import subplotLabel, getSetup
 
-from ..tensor import factorTensor, get_status_df
+from ..tensor import factorTensor
 from ..flow_rec import make_CoH_Tensor_rec
 from ..flow import make_CoH_Tensor
 
