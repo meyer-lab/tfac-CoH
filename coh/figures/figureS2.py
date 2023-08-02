@@ -20,8 +20,8 @@ def makeFigure():
     subplotLabel(ax)
     CoH_Data = make_CoH_Tensor(just_signal=True, foldChange=True)
 
-    tFacAllM = factorTensor(CoH_Data.values, r=8)
-    R2Xplot(ax[0], CoH_Data.values, compNum=10)
+    tFacAllM = factorTensor(CoH_Data.to_numpy(), r=8)
+    R2Xplot(ax[0], CoH_Data.to_numpy(), compNum=10)
     BC_status_plot(10, CoH_Data, ax[1])
     CoH_LogReg_plot(ax[2], tFacAllM, CoH_Data)
     

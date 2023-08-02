@@ -1,6 +1,7 @@
 """
 This creates Figure 4, classification analysis.
 """
+import pickle
 import seaborn as sns
 import pandas as pd
 from .common import subplotLabel, getSetup
@@ -19,7 +20,9 @@ def makeFigure():
     ax[0].axis("off")
 
     CoH_Data = make_CoH_Tensor(just_signal=True)
-    tFacAllM = factorTensor(CoH_Data.to_numpy(), r=12)
+
+    with open('./coh/data/signaling.pkl', 'rb') as ff:
+        tFacAllM = pickle.load(ff) # 12 component
 
     BC_status_plot(13, CoH_Data, ax[1])
     CoH_LogReg_plot(ax[2], tFacAllM, CoH_Data)

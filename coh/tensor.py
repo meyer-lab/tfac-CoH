@@ -6,7 +6,7 @@ import tensorly as tl
 from tensorly.decomposition._cp import initialize_cp
 from tensorly.cp_tensor import cp_flip_sign, CPTensor
 from tensorly.tenalg.einsum_tenalg import khatri_rao
-from tensorpack.cmtf import cp_normalize, calcR2X, mlstsq, sort_factors, tqdm, IterativeSVD
+from tensorpack.cmtf import cp_normalize, calcR2X, mlstsq, tqdm
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn.model_selection import RepeatedStratifiedKFold
 from sklearn import preprocessing
@@ -26,10 +26,7 @@ def factorTensor(
     # Pre-unfold
     unfolded = [tl.unfold(tOrig, i) for i in range(tOrig.ndim)]
 
-    # Assume patients is mode 0
-    unfold = IterativeSVD(r, random_state=1).fit_transform(unfolded[0].copy())
-    tFill = tl.reshape(unfold, tOrig.shape)
-    tFac = CPTensor(initialize_cp(tFill, r))
+    tFac = CPTensor(initialize_cp(np.nan_to_num(tOrig), r))
 
     acc_pow: float = 2.0  # Extrapolate to the iteration^(1/acc_pow) ahead
     acc_fail: int = 0  # How many times acceleration have failed
@@ -84,10 +81,20 @@ def factorTensor(
     tFac = cp_flip_sign(tFac)
 
     if r > 1:
-        tFac = sort_factors(tFac)
+        gini_idx = giniIndex(tFac.factors[0])
+        tFac.factors = [f[:, gini_idx] for f in tFac.factors]
+        tFac.weights = tFac.weights[gini_idx]
 
     tFac.R2X = R2X
     return tFac
+
+
+def giniIndex(X: np.ndarray) -> np.ndarray:
+    """Calculates the Gini Coeff for each component and returns the index rearrangment"""
+    X = np.abs(X)
+    gini = np.var(X, axis=0) / np.mean(X, axis=0)
+
+    return np.argsort(gini)
 
 
 def R2Xplot(ax, tensor, compNum: int):

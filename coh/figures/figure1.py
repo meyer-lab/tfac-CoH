@@ -1,11 +1,11 @@
 """
 This creates Figure 1.
 """
+import pickle
 import numpy as np
 import seaborn as sns
 import tensorly as tl
 from .common import subplotLabel, getSetup
-from ..tensor import factorTensor
 from ..flow import make_CoH_Tensor
 
 
@@ -20,7 +20,9 @@ def makeFigure():
 
     data = make_CoH_Tensor(just_signal=True)
 
-    tFacAllM = factorTensor(data.values, r=12)
+    with open('./coh/data/signaling.pkl', 'rb') as ff:
+        tFacAllM = pickle.load(ff) # 12 component
+
     tensor = tl.cp_to_tensor(tFacAllM)
     data.data[np.isnan(data.data)] = tensor[np.isnan(data.data)]
 
