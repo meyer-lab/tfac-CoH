@@ -11,7 +11,7 @@ import xarray as xa
 import pandas as pd
 import svgutils.transform as st
 from matplotlib import gridspec, pyplot as plt
-from scipy.stats import ttest_ind
+from scipy.stats import mannwhitneyu
 from statannot import add_stat_annotation
 from ..flow import get_status_dict
 from ..flow_rec import get_status_dict_rec
@@ -133,7 +133,7 @@ def BC_scatter_cells(ax, CoH_DF, marker, cytokine, filter=False):
     for cell in hist_DF.Cell.unique():
         BC_samps = hist_DF.loc[(hist_DF.Status == "BC") & (hist_DF.Cell == cell)].Mean.values
         H_samps = hist_DF.loc[(hist_DF.Status == "Healthy") & (hist_DF.Cell == cell)].Mean.values
-        t_res = ttest_ind(BC_samps, H_samps)
+        t_res = mannwhitneyu(BC_samps, H_samps)
         if t_res[1] < (0.05):
             filt_cells.append(cell)
             if t_res[1] < 0.0005:
@@ -191,7 +191,7 @@ def BC_scatter_ligs(ax, CoH_DF, marker, filter=False):
     for treat in hist_DF.Treatment.unique():
         BC_samps = hist_DF.loc[(hist_DF.Status == "BC") & (hist_DF.Treatment == treat)].Mean.values
         H_samps = hist_DF.loc[(hist_DF.Status == "Healthy") & (hist_DF.Treatment == treat)].Mean.values
-        t_res = ttest_ind(BC_samps, H_samps)
+        t_res = mannwhitneyu(BC_samps, H_samps)
         if t_res[1] < (0.05):
             filt_treats.append(treat)
             if t_res[1] < 0.0005:
@@ -246,7 +246,7 @@ def BC_scatter_cells_rec(ax, CoH_DF, marker, filter=False):
     for cell in hist_DF.Cell.unique():
         BC_samps = hist_DF.loc[(hist_DF.Status == "BC") & (hist_DF.Cell == cell)].Mean.values
         H_samps = hist_DF.loc[(hist_DF.Status == "Healthy") & (hist_DF.Cell == cell)].Mean.values
-        t_res = ttest_ind(BC_samps, H_samps)
+        t_res = mannwhitneyu(BC_samps, H_samps)
         if t_res[1] < (0.05):
             filt_cells.append(cell)
             if t_res[1] < 0.0005:

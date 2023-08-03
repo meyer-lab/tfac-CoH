@@ -20,6 +20,7 @@ tensorpack = {git = "https://github.com/meyer-lab/tensorpack.git", rev = "main"}
 statannot = "^0.2.3"
 flowcytometrytools = {git = "https://github.com/meyer-lab/FlowCytometryToolsFork.git"}
 fcsparser = "0.2.4"
+statsmodels = "^0.14.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
