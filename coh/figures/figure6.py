@@ -9,8 +9,11 @@ from ..tensor import (
 )
 from ..flow import make_CoH_Tensor
 from .common import subplotLabel, getSetup, BC_scatter_cells_rec
+from ..flow_rec import get_status_rec_df
 import pandas as pd
 import numpy as np
+import seaborn as sns
+from scipy.stats import zscore
 
 
 def makeFigure():
@@ -55,14 +58,40 @@ def makeFigure():
     IL2Ra_DF = DF.loc[DF.Cell.isin(["Treg"])]
     BC_scatter_cells_rec(ax[3], IL2Ra_DF, "IL2Ra", filter=False)
 
+    # Make mean Z scored DF
+    meanDF = CoH_DF.groupby(["Patient", "Cell", "Marker"]).mean().reset_index() 
+    
+    meanDF = meanDF.pivot(index=['Patient', "Cell"], columns='Marker', values='Mean').reset_index().set_index("Patient")
+    meanDF.loc[:, meanDF.columns.values != "Cell"] = meanDF.loc[:, meanDF.columns.values != "Cell"].apply(zscore)
+
+
+
     # E PD-L1 in B vs CD8 Cells
+
+    plot_by_patient(meanDF, cell1="CD8 TEM", receptor1="PD_L1", cell2="CD20 B", receptor2="PD_L1", ax=ax[4])
 
     # F IL6Ra in B vs CD8 Cells
 
+    plot_by_patient(meanDF, cell1="CD8+", receptor1="IL6Ra", cell2="CD20 B", receptor2="IL6Ra", ax=ax[5])
+
     # G IL2Ra Tregs vs PD-L1 CD8s
 
+    plot_by_patient(meanDF, cell1="Treg", receptor1="IL2Ra", cell2="CD8 TEM", receptor2="PD_L1", ax=ax[6])
+
     # H IL2Ra Tregs vs IL6Ra B
+
+    plot_by_patient(meanDF, cell1="Treg", receptor1="IL2Ra", cell2="CD20 B", receptor2="IL6Ra", ax=ax[7])
 
     # I Univariate vs coordinated ROC
 
     return f
+
+
+def plot_by_patient(recDF, cell1, receptor1, cell2, receptor2, ax):
+    """Plots receptor in pop 1 vs receptor in pop 2 per patient, by disease status"""
+    status_DF = get_status_rec_df()
+    plotDF = pd.DataFrame({"Patient": recDF.loc[recDF.Cell == cell1].index.values})
+    plotDF[cell1 + " " + receptor1] = recDF.loc[recDF.Cell == cell1][receptor1].values
+    plotDF[cell2 + " " + receptor2] = recDF.loc[recDF.Cell == cell2][receptor2].values
+    plotDF = plotDF.set_index("Patient").join(status_DF.set_index("Patient"), on="Patient")
+    sns.scatterplot(data=plotDF, x=cell1 + " " + receptor1, y=cell2 + " " + receptor2, hue="Status", ax=ax)
