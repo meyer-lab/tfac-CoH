@@ -3,33 +3,32 @@ from copy import deepcopy
 import seaborn as sns
 import pandas as pd
 import tensorly as tl
-from tensorly.cp_tensor import cp_flip_sign
+from tensorly.decomposition._cp import initialize_cp
+from tensorly.cp_tensor import cp_flip_sign, CPTensor
 from tensorly.tenalg.einsum_tenalg import khatri_rao
-from tensorpack.cmtf import initialize_cp, cp_normalize, calcR2X, mlstsq, sort_factors, tqdm
+from tensorpack.cmtf import cp_normalize, calcR2X, mlstsq, tqdm
 from sklearn.linear_model import LogisticRegressionCV
-from sklearn.model_selection import RepeatedStratifiedKFold, cross_val_score
+from sklearn.model_selection import RepeatedStratifiedKFold
 from sklearn import preprocessing
-from .flow_rec import get_status_rec_df
-from .flow import get_status_df
 
 
 def factorTensor(
     tOrig: np.ndarray,
     r: int,
-    tol: float = 1e-8,
+    tol: float = 1e-9,
     maxiter: int = 6_000,
     progress: bool = False,
     linesearch: bool = True,
 ):
     """Perform CP decomposition."""
-    tFac = initialize_cp(tOrig, r)
+    # Pre-unfold
+    unfolded = [tl.unfold(tOrig, i) for i in range(tOrig.ndim)]
+
+    tFac = CPTensor(initialize_cp(np.nan_to_num(tOrig), r))
 
     acc_pow: float = 2.0  # Extrapolate to the iteration^(1/acc_pow) ahead
     acc_fail: int = 0  # How many times acceleration have failed
     max_fail: int = 4  # Increase acc_pow with one after max_fail failure
-
-    # Pre-unfold
-    unfolded = [tl.unfold(tOrig, i) for i in range(tOrig.ndim)]
 
     R2X_last = -np.inf
     R2X = calcR2X(tFac, tOrig)
@@ -80,10 +79,20 @@ def factorTensor(
     tFac = cp_flip_sign(tFac)
 
     if r > 1:
-        tFac = sort_factors(tFac)
+        gini_idx = giniIndex(tFac.factors[0])
+        tFac.factors = [f[:, gini_idx] for f in tFac.factors]
+        tFac.weights = tFac.weights[gini_idx]
 
     tFac.R2X = R2X
     return tFac
+
+
+def giniIndex(X: np.ndarray) -> np.ndarray:
+    """Calculates the Gini Coeff for each component and returns the index rearrangment"""
+    X = np.abs(X)
+    gini = np.var(X, axis=0) / np.mean(X, axis=0)
+
+    return np.argsort(gini)
 
 
 def R2Xplot(ax, tensor, compNum: int):
@@ -101,39 +110,35 @@ def R2Xplot(ax, tensor, compNum: int):
 
 
 cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=20)
-lrmodel = LogisticRegressionCV(penalty="l2", solver="liblinear", max_iter=5000, cv=cv)
+lrmodel = LogisticRegressionCV(penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv)
 
 
-def CoH_LogReg_plot(ax, tFac, CoH_Array):
+def CoH_LogReg_plot(ax, tFac, CoH_Array, status_DF):
     """Plot factor weights for donor BC prediction"""
     coord = CoH_Array.dims.index("Patient")
     mode_facs = tFac[1][coord]
-    status_DF = get_status_df()
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
 
     LR_CoH = lrmodel.fit(mode_facs, Donor_CoH_y)
+    
     CoH_comp_weights = pd.DataFrame({"Component": np.arange(1, mode_facs.shape[1] + 1), "Coefficient": LR_CoH.coef_[0]})
     sns.barplot(data=CoH_comp_weights, x="Component", y="Coefficient", color="k", ax=ax)
 
 
-def BC_status_plot(compNum, CoH_Data, ax, rec=False):
+def BC_status_plot(compNum, CoH_Data, ax, status_DF):
     """Plot 5 fold CV by # components"""
     accDF = pd.DataFrame()
-    if rec:
-        status_DF = get_status_rec_df()
-    else:
-        status_DF = get_status_df()
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
 
     for i in range(1, compNum + 1):
-        tFacAllM = factorTensor(CoH_Data.values, r=i)
+        tFacAllM = factorTensor(CoH_Data.to_numpy(), r=i)
         coord = CoH_Data.dims.index("Patient")
         mode_facs = tFacAllM[1][coord]
 
         lrmodel.fit(mode_facs, Donor_CoH_y)
+        scoresTFAC = np.max(np.mean(lrmodel.scores_[1], axis=0))
+        accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "Tensor Factorization", "Components": [i], "Accuracy (10-fold CV)": scoresTFAC})])
 
-        scoresTFAC = cross_val_score(lrmodel, mode_facs, Donor_CoH_y, cv=cv, n_jobs=10)
-        accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "Tensor Factorization", "Components": [i], "Accuracy (10-fold CV)": np.mean(scoresTFAC)})])
     accDF = accDF.reset_index(drop=True)
     sns.lineplot(data=accDF, x="Components", y="Accuracy (10-fold CV)", hue="Data Type", ax=ax)
     ax.set(xticks=np.arange(1, compNum + 1), ylim=(0.5, 1))

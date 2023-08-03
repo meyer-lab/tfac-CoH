@@ -1,6 +1,7 @@
 """
 This creates Figure 2, tensor factorization of response data.
 """
+import pickle
 import numpy as np
 from tensorpack.plot import reduction
 from tensorpack import Decomposition
@@ -18,9 +19,14 @@ def makeFigure():
     subplotLabel(ax)
     ax[0].axis("off")
 
-    num_comps = 12
     CoH_Data = make_CoH_Tensor(just_signal=True)
-    tFacAllM = factorTensor(CoH_Data.values, r=num_comps)
+    # tFacAllM = factorTensor(CoH_Data.to_numpy(), r=12)
+
+    # with open('./coh/data/signaling.pkl', 'wb') as ff:
+    #     pickle.dump(tFacAllM, ff) # 12 component
+
+    with open('./coh/data/signaling.pkl', 'rb') as ff:
+        tFacAllM = pickle.load(ff) # 12 component
 
     plot_tFac_CoH(ax[2:], tFacAllM, CoH_Data)
 

@@ -19,7 +19,7 @@ def makeFigure():
     ax[0].axis("off")
 
     CoH_Data = make_CoH_Tensor_rec()
-    tFacAllM = factorTensor(CoH_Data.values, r=5)
+    tFacAllM = factorTensor(CoH_Data.to_numpy(), r=5)
     
     plot_tFac_CoH(ax[2:], tFacAllM, CoH_Data)
 
