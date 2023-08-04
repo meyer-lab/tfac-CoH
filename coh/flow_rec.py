@@ -210,33 +210,3 @@ def make_CoH_Tensor_rec() -> xa.DataArray:
     xdata /= np.nanstd(xdata, axis=(0, 1))[np.newaxis, np.newaxis, :]
 
     return xdata
-
-
-def make_flow_sc_dataframe_rec():
-    """Compiles data for all populations for all patients into a CSV."""
-    patients = list(get_status_dict_rec().keys())
-    cell_types = list(get_gate_dict().keys())
-    gateDF = pd.read_csv("./coh/data/CoH_Flow_Gates_Receptors.csv").reset_index().drop("Unnamed: 0", axis=1)
-    totalDF = pd.DataFrame([])
-    markerKey = pd.read_csv("./coh/data/Patient_Receptor_Panels.csv")
-
-
-    for i, patient in enumerate(patients):
-        patient_num = patient.split(" ")[1]
-        print(patient)
-        dictionary = markerKey.loc[markerKey.Patient == patient_num].Panel.values
-        marker_dict = panelDict[dictionary[0]]
-        sample = FCMeasurement(ID="Sample", datafile="/opt/CoH/Receptor Data/F" + patient_num + "_Unmixed.fcs")
-        sample, markers = process_sample_rec(sample, marker_dict)
-        sample = live_PBMC_gate(sample, patient, gateDF)
-        for cell_type in cell_types:
-            pop_sample, abund = pop_gate(sample, cell_type, patient, gateDF)
-            CoH_DF = pop_sample.data.drop("Time", axis=1)
-            CoH_DF["Cell"] = np.arange(1, CoH_DF.shape[0] + 1)
-            CoH_DF["CellType"] = np.tile(cell_type, CoH_DF.shape[0])
-            CoH_DF["Patient"] = np.tile([patient], CoH_DF.shape[0])
-            totalDF = pd.concat([totalDF, CoH_DF])
-
-    totalDF.to_csv("./coh/data/CoH_Flow_SC_Rec.csv")
-
-    return totalDF

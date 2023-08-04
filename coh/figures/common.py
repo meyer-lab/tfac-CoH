@@ -105,21 +105,6 @@ def plot_tFac_CoH(axs: list, tFac, CoH_Array: xa.DataArray):
         sns.heatmap(data=tFacDF, ax=axs[ii], cmap=cmap, vmin=-1, vmax=1, cbar=(ii == 0))
 
 
-def BC_scatter(ax, CoH_DF, marker, cytokine, cells=False):
-    """Scatters specific responses"""
-    CoH_DF = CoH_DF.loc[(CoH_DF.Time == "15min")]
-    if not cells:
-        hist_DF = CoH_DF.loc[(CoH_DF.Treatment == cytokine) & (CoH_DF.Marker == marker)]
-    else:
-        hist_DF = CoH_DF.loc[(CoH_DF.Treatment == cytokine) & (CoH_DF.Marker == marker) & (CoH_DF["Cell"].isin(cells))]
-    hist_DF = hist_DF.groupby(["Patient", "Marker"]).Mean.mean().reset_index()
-    hist_DF["Status"] = hist_DF.replace({"Patient": get_status_dict()}).Patient.values
-
-    sns.boxplot(data=hist_DF, y="Mean", x="Status", ax=ax)
-    ax.set(title=marker + " in response to " + cytokine, ylabel=marker, xlabel="Status")
-    add_stat_annotation(ax=ax, data=hist_DF, x="Status", y="Mean", test='t-test_ind', order=["Healthy", "BC"], box_pairs=[("Healthy", "BC")], text_format='full', loc='inside', verbose=2)
-
-
 def BC_scatter_cells(ax, CoH_DF, marker, cytokine, filter=False):
     """Scatters specific responses"""
     CoH_DF = CoH_DF.loc[(CoH_DF.Time == "15min")]
@@ -176,62 +161,6 @@ def BC_scatter_cells(ax, CoH_DF, marker, cytokine, filter=False):
                             perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(hist_DF.Cell.unique())), verbose=0)
     # ad
     # add_stat_annotation(ax=ax, data=hist_DF, x="Cell", y="Mean", hue="Status", test='t-test_ind', box_pairs=boxpairs, text_format='star', loc='inside', verbose=2)
-
-
-def BC_scatter_ligs(ax, CoH_DF, marker, filter=False):
-    """Scatters specific responses"""
-    CoH_DF = CoH_DF.loc[(CoH_DF.Time == "15min")]
-    status_dict = get_status_dict()
-    hist_DF = CoH_DF.loc[(CoH_DF.Marker == marker)]
-    hist_DF = hist_DF.groupby(["Treatment", "Patient", "Marker"]).Mean.mean().reset_index()
-    hist_DF["Status"] = hist_DF.replace({"Patient": status_dict}).Patient.values
-
-    filt_treats = []
-    pvals = []
-    for treat in hist_DF.Treatment.unique():
-        BC_samps = hist_DF.loc[(hist_DF.Status == "BC") & (hist_DF.Treatment == treat)].Mean.values
-        H_samps = hist_DF.loc[(hist_DF.Status == "Healthy") & (hist_DF.Treatment == treat)].Mean.values
-        t_res = mannwhitneyu(BC_samps, H_samps)
-        if t_res[1] < (0.05):
-            filt_treats.append(treat)
-            if t_res[1] < 0.0005:
-                pvals.append("***")
-            elif t_res[1] < 0.005:
-                pvals.append("**")
-            elif t_res[1] < 0.05:
-                pvals.append("*")
-            else:
-                pvals.append("****")
-        else:
-            if not filter:
-                pvals.append("ns")
-    if filter:
-        hist_DF = hist_DF.loc[hist_DF.Treatment.isin(filt_treats)]
-
-    sns.boxplot(data=hist_DF, y="Mean", x="Treatment", hue="Status", ax=ax)
-    ax.set(title=marker + " Response", ylabel=marker, xlabel="Status")
-    ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
-    boxpairs = []
-    for treat in hist_DF.Treatment.unique():
-        boxpairs.append([(treat, "Healthy"), (treat, "BC")])
-    if filter:
-        add_stat_annotation(
-            ax=ax,
-            data=hist_DF,
-            x="Treatment",
-            y="Mean",
-            hue="Status",
-            box_pairs=boxpairs,
-            text_annot_custom=pvals,
-            perform_stat_test=False,
-            loc='inside',
-            pvalues=np.tile(
-                0,
-                len(filt_treats)),
-            verbose=0)
-    else:
-        add_stat_annotation(ax=ax, data=hist_DF, x="Treatment", y="Mean", hue="Status", box_pairs=boxpairs, text_annot_custom=pvals,
-                            perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(hist_DF.Treatment.unique())), verbose=0)
 
 
 def BC_scatter_cells_rec(ax, CoH_DF, marker, filter=False):
