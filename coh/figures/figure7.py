@@ -32,6 +32,7 @@ def makeFigure():
     # C Baseline pSTAT3 vs pSTAT3 induced
 
     meanDF = CoH_DF.groupby(["Patient", "Cell", "Treatment", "Marker"]).mean().reset_index()
+    
 
     meanDF = (meanDF.pivot(index=["Patient", "Cell", "Treatment"], columns="Marker", values="Mean").reset_index().set_index("Patient"))
     meanDF.iloc[:, 2::] = meanDF.iloc[:, 2::].apply(zscore)
