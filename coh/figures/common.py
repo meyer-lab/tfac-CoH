@@ -160,3 +160,18 @@ def BC_scatter_cells_rec(ax, CoH_DF: pd.DataFrame, marker: str, filter=False):
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
 
     scatter_common(ax, hist_DF, filter=filter)
+
+
+def CoH_Scat_Plot(ax, tFac, CoH_Array, mode, plot_comps, status_df):
+    """Plots bar plot for spec"""
+    mode_labels = CoH_Array[mode]
+    coord = CoH_Array.dims.index(mode)
+    mode_facs = tFac[1][coord]
+    tFacDF = pd.DataFrame(mode_facs, index=mode_labels, columns=[i + 1 for i in range(mode_facs.shape[1])])
+
+    if mode == "Patient":
+        tFacDF = pd.concat([tFacDF, status_df.set_index("Patient")], axis=1)
+        sns.scatterplot(data=tFacDF, x=plot_comps[0], y=plot_comps[1], hue="Status", style="Status", ax=ax)
+    else:
+        sns.scatterplot(data=tFacDF, x=plot_comps[0], y=plot_comps[1], ax=ax)
+    ax.set(xlabel="Component " + str(plot_comps[0]), ylabel="Component " + str(plot_comps[1]))
