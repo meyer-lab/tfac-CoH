@@ -19,7 +19,7 @@ def makeFigure():
     subplotLabel(ax)
     CoH_DF = pd.read_csv("./coh/data/CoH_Flow_DF.csv", index_col=0)
     treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng", "Untreated"])
-    CoH_DF = CoH_DF.loc[CoH_DF.Treatment.isin(treatments)].dropna()
+    CoH_DF = CoH_DF.loc[(CoH_DF.Treatment.isin(treatments)) & (CoH_DF.Time == "15min") ].dropna()
 
     # Figure A Markers for signaling component
 
