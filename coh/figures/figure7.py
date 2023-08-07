@@ -23,11 +23,17 @@ def makeFigure():
 
     # Figure A Markers for signaling component
 
-    BC_scatter_cells(ax[0], CoH_DF, "pSTAT3", "IL10-50ng")
+    DF = CoH_DF.loc[(CoH_DF.Marker == "pSTAT3") & (CoH_DF.Treatment != "Untreated")]
+    DF["Mean"] -= np.mean(DF["Mean"].values)
+    DF["Mean"] /= np.std(DF["Mean"].values)
+    BC_scatter_cells(ax[0], DF, "pSTAT3", "IL10-50ng")
 
     # B Baseline pSTAT3
 
-    BC_scatter_cells(ax[1], CoH_DF, "pSTAT3", "Untreated")
+    DF = CoH_DF.loc[(CoH_DF.Marker == "pSTAT3") & (CoH_DF.Treatment == "Untreated")]
+    DF["Mean"] -= np.mean(DF["Mean"].values)
+    DF["Mean"] /= np.std(DF["Mean"].values)
+    BC_scatter_cells(ax[1], DF, "pSTAT3", "Untreated")
 
     # C Baseline pSTAT3 vs pSTAT3 induced
 
@@ -35,7 +41,11 @@ def makeFigure():
     
 
     meanDF = (meanDF.pivot(index=["Patient", "Cell", "Treatment"], columns="Marker", values="Mean").reset_index().set_index("Patient"))
-    meanDF.iloc[:, 2::] = meanDF.iloc[:, 2::].apply(zscore)
+    treatedDF = meanDF.loc[meanDF.Treatment != "Untreated"]
+    untreatedDF = meanDF.loc[meanDF.Treatment == "Untreated"]
+    treatedDF.iloc[:, 2::] = treatedDF.iloc[:, 2::].apply(zscore)
+    untreatedDF.iloc[:, 2::] = untreatedDF.iloc[:, 2::].apply(zscore)
+    meanDF = pd.concat([treatedDF, untreatedDF])
 
     plot_by_patient(
         meanDF,
