@@ -84,7 +84,7 @@ def makeFigure():
     DF = CoH_DF.loc[CoH_DF.Marker == "IL2Ra"]
     DF["Mean"] -= np.mean(DF["Mean"].values)
     DF["Mean"] /= np.std(DF["Mean"].values)
-    IL2Ra_DF = DF.loc[DF.Cell.isin(["Treg"])]
+    IL2Ra_DF = DF.loc[DF.Cell.isin(["Treg", "Treg 1", "Treg 2", "Treg 3"])]
     BC_scatter_cells_rec(ax[3], IL2Ra_DF, "IL2Ra", filter=False)
 
     # Make mean Z scored DF
@@ -114,7 +114,7 @@ def makeFigure():
 
     plot_by_patient(
         meanDF,
-        cell1="CD8+",
+        cell1="CD8 TEM",
         receptor1="IL6Ra",
         cell2="CD20 B",
         receptor2="IL6Ra",
@@ -127,7 +127,7 @@ def makeFigure():
         meanDF,
         cell1="Treg",
         receptor1="IL2Ra",
-        cell2="CD8 TEM",
+        cell2="CD8+",
         receptor2="PD_L1",
         ax=ax[6],
     )
@@ -149,7 +149,6 @@ def makeFigure():
     tFacAllM = factorTensor(CoH_Data.to_numpy(), r=5)
     mode = CoH_Data.dims[0]
     tFacDF = pd.DataFrame(tFacAllM.factors[0], index=CoH_Data.coords[mode], columns=[str(i + 1) for i in range(tFacAllM.factors[0].shape[1])])
-    print(tFacDF)
 
     ROC_plot(
         meanDF,
@@ -187,7 +186,6 @@ def ROC_plot(recDF, receptors, cells, tFacDF, comp, ax):
     status_DF = get_status_rec_df()
     cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=20)
     lrmodel = LogisticRegressionCV(penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv)
-    print(recDF)
     
     for i, receptor in enumerate(receptors):
         predDF = recDF.loc[recDF.Cell == cells[i]].reset_index()[["Patient", receptor]]
