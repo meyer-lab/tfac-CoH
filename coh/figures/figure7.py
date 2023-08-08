@@ -103,7 +103,7 @@ def makeFigure():
     with open('./coh/data/signaling.pkl', 'rb') as ff:
         tFacAllM = pickle.load(ff) # 12 component
     CoH_Data = make_CoH_Tensor(just_signal=True)
-    CoH_Scat_Plot(ax[6], tFacAllM, CoH_Data, "Patient", plot_comps=[4, 5], status_df=get_status_df())
+    CoH_Scat_Plot(ax[6], tFacAllM, CoH_Data, "Patient", plot_comps=[5, 10], status_df=get_status_df())
 
 
     # H Untreated pSTAT4 and pSMAD1-2 by cell
