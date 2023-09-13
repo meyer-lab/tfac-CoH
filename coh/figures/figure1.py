@@ -12,7 +12,7 @@ from ..flow import make_CoH_Tensor
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((8, 8), (2, 3), multz={0: 2})
+    ax, f = getSetup((12, 8), (2, 4), multz={0: 3})
 
     # Add subplot labels
     subplotLabel(ax)
@@ -42,6 +42,7 @@ def makeFigure():
     fullHeatMap(ax[1], data.loc[:, :, :, "pSTAT3"], cbar=False)
     fullHeatMap(ax[2], data.loc[:, :, :, "pSTAT5"], cbar=False)
     fullHeatMap(ax[3], data.loc[:, :, :, "pSTAT6"], cbar=False)
+    fullHeatMap(ax[4], data.loc[:, :, :, "pSTAT1"], cbar=False)
 
     return f
 

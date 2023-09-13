@@ -1,170 +1,78 @@
 """
-This creates Figure 3, dissection of signaling.
+This creates Figure 7, heatmap (clustered factor correlations).
 """
 import pickle
-import pandas as pd
 import numpy as np
+import pandas as pd
 import seaborn as sns
-from scipy.stats import zscore
-from .common import subplotLabel, getSetup, BC_scatter_cells, CoH_Scat_Plot
-from ..flow import make_CoH_Tensor, get_status_df
+from scipy.cluster.hierarchy import linkage
+from .common import subplotLabel, getSetup
+
+from ..tensor import factorTensor
+from ..flow_rec import make_CoH_Tensor_rec
+from ..flow import make_CoH_Tensor
 
 
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((12, 10), (3, 4))
+    ax, f = getSetup((10, 10), (1, 1))
 
     # Add subplot labels
     subplotLabel(ax)
-    CoH_DF = pd.read_csv("./coh/data/CoH_Flow_DF.csv", index_col=0)
-    treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng", "Untreated"])
-    CoH_DF = CoH_DF.loc[(CoH_DF.Treatment.isin(treatments)) & (CoH_DF.Time == "15min") ].dropna()
+    ax[0].axis("off")
 
-    # Figure A Markers for signaling component
-
-    DF = CoH_DF.loc[(CoH_DF.Marker == "pSTAT3") & (CoH_DF.Treatment != "Untreated")]
-    DF["Mean"] -= np.mean(DF["Mean"].values)
-    DF["Mean"] /= np.std(DF["Mean"].values)
-    BC_scatter_cells(ax[0], DF, "pSTAT3", "IL10-50ng")
-
-    # B Baseline pSTAT3
-
-    DF = CoH_DF.loc[(CoH_DF.Marker == "pSTAT3") & (CoH_DF.Treatment == "Untreated")]
-    DF["Mean"] -= np.mean(DF["Mean"].values)
-    DF["Mean"] /= np.std(DF["Mean"].values)
-    BC_scatter_cells(ax[1], DF, "pSTAT3", "Untreated")
-
-    # C Baseline pSTAT3 vs pSTAT3 induced
-
-    meanDF = CoH_DF.groupby(["Patient", "Cell", "Treatment", "Marker"]).mean().reset_index()
-    
-
-    meanDF = (meanDF.pivot(index=["Patient", "Cell", "Treatment"], columns="Marker", values="Mean").reset_index().set_index("Patient"))
-    treatedDF = meanDF.loc[meanDF.Treatment != "Untreated"]
-    untreatedDF = meanDF.loc[meanDF.Treatment == "Untreated"]
-    treatedDF.iloc[:, 2::] = treatedDF.iloc[:, 2::].apply(zscore)
-    untreatedDF.iloc[:, 2::] = untreatedDF.iloc[:, 2::].apply(zscore)
-    meanDF = pd.concat([treatedDF, untreatedDF])
-
-    plot_by_patient(
-        meanDF,
-        cell1="CD8+",
-        receptor1="pSTAT3",
-        treatment1="Untreated",
-        cell2="CD8+",
-        receptor2="pSTAT3",
-        treatment2="IL10-50ng",
-        ax=ax[2],
-    )
-
-    # D CD8+ pSTAT3 vs B pSTAT3 in IL10
-
-    plot_by_patient(
-        meanDF,
-        cell1="CD20 B",
-        receptor1="pSTAT3",
-        treatment1="IL10-50ng",
-        cell2="CD8 TCM",
-        receptor2="pSTAT3",
-        treatment2="IL10-50ng",
-        ax=ax[3],
-    )
-    
-    # E CD8+ pSTAT3 vs B pSTAT3 in IL10
-
-    plot_by_patient(
-        meanDF,
-        cell1="CD8+",
-        receptor1="pSTAT5",
-        treatment1="Untreated",
-        cell2="CD8+",
-        receptor2="pSTAT5",
-        treatment2="IL2-50ng",
-        ax=ax[4],
-    )
-    
-
-    # F CD8+ pSTAT5 vs Treg pSTAT5 in IL2
-
-    plot_by_patient(
-        meanDF,
-        cell1="CD8+",
-        receptor1="pSTAT5",
-        treatment1="IL2-50ng",
-        cell2="Treg",
-        receptor2="pSTAT5",
-        treatment2="IL2-50ng",
-        ax=ax[5],
-    )
-
-    # G CPD Components
+    CoH_Data = make_CoH_Tensor(just_signal=True)
 
     with open('./coh/data/signaling.pkl', 'rb') as ff:
         tFacAllM = pickle.load(ff) # 12 component
-    CoH_Data = make_CoH_Tensor(just_signal=True)
-    CoH_Scat_Plot(ax[6], tFacAllM, CoH_Data, "Patient", plot_comps=[5, 10], status_df=get_status_df())
 
+    CoH_Data_R = make_CoH_Tensor_rec()
+    tFacAllM_R = factorTensor(CoH_Data_R.to_numpy(), r=5)
 
-    # H Untreated pSTAT4 and pSMAD1-2 by cell
-
-    plot_diff_cell(meanDF, "pSmad1-2", "Untreated", "pSTAT4", "Untreated", ax[7])
-
-    # I, J pSTAT4 vs pSMAD untreated per patient
-
-    plot_by_patient(
-        meanDF,
-        cell1="CD8+",
-        receptor1="pSTAT4",
-        treatment1="Untreated",
-        cell2="CD8+",
-        receptor2="pSmad1-2",
-        treatment2="Untreated",
-        ax=ax[8],
-    )
-
-    plot_by_patient(
-        meanDF,
-        cell1="Treg",
-        receptor1="pSTAT4",
-        treatment1="Untreated",
-        cell2="Treg",
-        receptor2="pSmad1-2",
-        treatment2="Untreated",
-        ax=ax[9],
-    )
+    f = CoH_Factor_HM(tFacAllM, CoH_Data, tFacAllM_R, CoH_Data_R)
 
     return f
 
 
-def plot_by_patient(sigDF, cell1, receptor1, treatment1, cell2, receptor2, treatment2, ax):
-    """Plots receptor in pop 1 vs receptor in pop 2 per patient, by disease status"""
-    status_DF = get_status_df()
-    plotDF = pd.DataFrame({"Patient": sigDF.loc[(sigDF.Cell == cell1) & (sigDF.Treatment == treatment1)].index.values})
-    plotDF[cell1 + " " + receptor1 + " " + treatment1] = sigDF.loc[(sigDF.Cell == cell1) & (sigDF.Treatment == treatment1)][receptor1].values
-    plotDF[cell2 + " " + receptor2 + " " + treatment2] = sigDF.loc[(sigDF.Cell == cell2) & (sigDF.Treatment == treatment2)][receptor2].values
-    plotDF = plotDF.set_index("Patient").join(
-        status_DF.set_index("Patient"), on="Patient"
-    )
-    sns.scatterplot(
-        data=plotDF,
-        x=cell1 + " " + receptor1 + " " + treatment1,
-        y=cell2 + " " + receptor2 + " " + treatment2,
-        ax=ax,
-        hue="Status",
+def CoH_Factor_HM(tFac, CoH_Array, tFac_R, CoH_Array_R):
+    """Plots bar plot for spec"""
+    coord = CoH_Array.dims.index("Patient")
+    mode_facs = tFac[1][coord]
+
+    # BC_Patients = get_status_df().loc[status_DF.Status == "BC"].Patient.unique()
+
+    tFacDF = pd.DataFrame(
+        mode_facs,
+        columns=["Sig. Comp " + str(i + 1) for i in range(mode_facs.shape[1])],
+        index=CoH_Array["Patient"],
     )
 
+    coord_R = CoH_Array_R.dims.index("Patient")
+    mode_facs_R = tFac_R[1][coord_R]
 
-def plot_diff_cell(sigDF, marker1, treatment1, marker2, treatment2, ax):
-    """Plots receptor in pop 1 vs receptor in pop 2 per patient, by disease status"""
-    status_DF = get_status_df()
-    sigDF = sigDF.reset_index().set_index("Patient").join(status_DF.set_index("Patient"), on="Patient")
-    plotDF = pd.DataFrame()
-    for cell in sigDF.Cell.unique():
-        BC_val_1 = np.mean(sigDF.loc[(sigDF.Status == "BC") & (sigDF.Cell == cell) & (sigDF.Treatment == treatment1)][marker1].values)
-        BC_val_2 = np.mean(sigDF.loc[(sigDF.Status == "BC") & (sigDF.Cell == cell) & (sigDF.Treatment == treatment2)][marker2].values)
-        Healthy_val_1 = np.mean(sigDF.loc[(sigDF.Status == "Healthy") & (sigDF.Cell == cell) & (sigDF.Treatment == treatment1)][marker1].values)
-        Healthy_val_2 = np.mean(sigDF.loc[(sigDF.Status == "Healthy") & (sigDF.Cell == cell) & (sigDF.Treatment == treatment2)][marker2].values)
-        plotDF = pd.concat([plotDF, pd.DataFrame({"Cell": [cell], "BC - Healthy Baseline " + marker1: BC_val_1 - Healthy_val_1, "BC - Healthy Baseline " + marker2: BC_val_2 - Healthy_val_2})])
-    
-    sns.scatterplot(data=plotDF, x="BC - Healthy Baseline " + marker1, y="BC - Healthy Baseline " + marker2, hue="Cell", ax=ax)
+    tFacDF_R = pd.DataFrame(
+        mode_facs_R,
+        columns=["Rec. Comp " + str(i + 1) for i in range(mode_facs_R.shape[1])],
+        index=CoH_Array_R["Patient"],
+    )
+
+    plot_DF = tFacDF.join(tFacDF_R, how="inner")
+    cDF = plot_DF.corr()
+
+    Z = linkage(np.abs(cDF), optimal_ordering=True)
+
+    cmap = sns.color_palette("vlag", as_cmap=True)
+    return sns.clustermap(
+        data=cDF,
+        robust=True,
+        vmin=-1,
+        vmax=1,
+        row_cluster=True,
+        col_cluster=True,
+        annot=True,
+        cmap=cmap,
+        figsize=(8, 8),
+        row_linkage=Z,
+        col_linkage=Z,
+    )
