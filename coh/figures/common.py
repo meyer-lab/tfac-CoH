@@ -106,31 +106,35 @@ def scatter_common(ax, hist_DF: pd.DataFrame, filter):
                 pvals.append("****")
         else:
             if not filter:
-                pvals.append("ns")
+                pass
+                #pvals.append("")
     if filter:
         hist_DF = hist_DF.loc[hist_DF.Cell.isin(filt_cells)]
 
+
     boxpairs = []
-    for cell in hist_DF.Cell.unique():
+    for cell in filt_cells:
         boxpairs.append([(cell, "Healthy"), (cell, "BC")])
-    if filter:
-        add_stat_annotation(
-            ax=ax,
-            data=hist_DF,
-            x="Cell",
-            y="Mean",
-            hue="Status",
-            box_pairs=boxpairs,
-            text_annot_custom=pvals,
-            perform_stat_test=False,
-            loc='inside',
-            pvalues=np.tile(
-                0,
-                len(filt_cells)),
-            verbose=0)
-    else:
-        add_stat_annotation(ax=ax, data=hist_DF, x="Cell", y="Mean", hue="Status", box_pairs=boxpairs, text_annot_custom=pvals,
-                            perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(hist_DF.Cell.unique())), verbose=0)
+
+    if len(filt_cells) > 0:
+        if filter:
+            add_stat_annotation(
+                ax=ax,
+                data=hist_DF,
+                x="Cell",
+                y="Mean",
+                hue="Status",
+                box_pairs=boxpairs,
+                text_annot_custom=pvals,
+                perform_stat_test=False,
+                loc='inside',
+                pvalues=np.tile(
+                    0,
+                    len(filt_cells)),
+                verbose=0)
+        else:
+            add_stat_annotation(ax=ax, data=hist_DF, x="Cell", y="Mean", hue="Status", box_pairs=boxpairs, text_annot_custom=pvals,
+                                perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(filt_cells)), verbose=0)
 
 
 def BC_scatter_cells(ax, CoH_DF: pd.DataFrame, marker: str, cytokine: str, filter=False):
@@ -168,10 +172,13 @@ def CoH_Scat_Plot(ax, tFac, CoH_Array, mode, plot_comps, status_df):
     coord = CoH_Array.dims.index(mode)
     mode_facs = tFac[1][coord]
     tFacDF = pd.DataFrame(mode_facs, index=mode_labels, columns=[i + 1 for i in range(mode_facs.shape[1])])
+    colors = sns.color_palette(n_colors=2)
+    palette = {"BC": colors[0], "Healthy": colors[1]}
+
 
     if mode == "Patient":
         tFacDF = pd.concat([tFacDF, status_df.set_index("Patient")], axis=1)
-        sns.scatterplot(data=tFacDF, x=plot_comps[0], y=plot_comps[1], hue="Status", style="Status", ax=ax)
+        sns.scatterplot(data=tFacDF, x=plot_comps[0], y=plot_comps[1], hue="Status", palette=palette, ax=ax)
     else:
         sns.scatterplot(data=tFacDF, x=plot_comps[0], y=plot_comps[1], ax=ax)
     ax.set(xlabel="Component " + str(plot_comps[0]), ylabel="Component " + str(plot_comps[1]))

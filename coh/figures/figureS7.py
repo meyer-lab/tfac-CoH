@@ -1,5 +1,5 @@
 """
-This creates Figure S5, Characterization of component dependency when classifying BC patients
+This creates Figure 2I, Characterization of component dependency when classifying BC patients
 """
 import pickle
 import seaborn as sns
