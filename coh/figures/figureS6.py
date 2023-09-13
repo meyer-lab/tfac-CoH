@@ -1,5 +1,5 @@
 """
-This creates Figure S8, full panel of receptor comps.
+This creates Figure S6, full panel of receptor comps.
 """
 import numpy as np
 import pandas as pd

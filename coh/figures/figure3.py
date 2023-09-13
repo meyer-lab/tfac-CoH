@@ -13,7 +13,7 @@ from ..flow import make_CoH_Tensor, get_status_df
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((12, 10), (3, 4))
+    ax, f = getSetup((12, 10), (3, 4), multz={0: 1, 2: 1})
 
     # Add subplot labels
     subplotLabel(ax)
@@ -134,6 +134,18 @@ def makeFigure():
         ax=ax[9],
     )
 
+    ax[0].set(ylim=(-2, 8))
+    ax[1].set(ylim=(-4, 4))
+    ax[2].set(xlim=(-3, 2), ylim=(0, 5))
+    ax[3].set(xlim=(0, 6), ylim=(0, 6))
+    ax[4].set(xlim=(-3, 2), ylim=(-1, 4))
+    ax[5].set(xlim=(-1, 4), ylim=(0, 6))
+    ax[6].set(xlim=(0, 1), ylim=(-1, 0))
+    ax[7].set(xlim=(0, 1.5), ylim=(0, 1.5))
+    ax[8].set(xlim=(-3, 2), ylim=(-2, 2))
+    ax[9].set(xlim=(-3, 2), ylim=(-3, 1))
+
+
     return f
 
 
@@ -167,4 +179,4 @@ def plot_diff_cell(sigDF, marker1, treatment1, marker2, treatment2, ax):
         Healthy_val_2 = np.mean(sigDF.loc[(sigDF.Status == "Healthy") & (sigDF.Cell == cell) & (sigDF.Treatment == treatment2)][marker2].values)
         plotDF = pd.concat([plotDF, pd.DataFrame({"Cell": [cell], "BC - Healthy Baseline " + marker1: BC_val_1 - Healthy_val_1, "BC - Healthy Baseline " + marker2: BC_val_2 - Healthy_val_2})])
     
-    sns.scatterplot(data=plotDF, x="BC - Healthy Baseline " + marker1, y="BC - Healthy Baseline " + marker2, hue="Cell", ax=ax)
+    sns.scatterplot(data=plotDF, x="BC - Healthy Baseline " + marker1, y="BC - Healthy Baseline " + marker2, hue="Cell", style="Cell", ax=ax)

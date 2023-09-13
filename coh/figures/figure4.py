@@ -1,5 +1,5 @@
 """
-This creates Figure 3, tensor factorization of receptor data.
+This creates Figure 4, tensor factorization of receptor data.
 """
 import numpy as np
 from tensorpack.plot import reduction
