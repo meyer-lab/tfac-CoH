@@ -5,25 +5,21 @@ import pickle
 import numpy as np
 from tensorpack.plot import reduction
 from tensorpack import Decomposition
-from .common import subplotLabel, getSetup, plot_tFac_CoH
-from ..tensor import factorTensor
-from ..flow import make_CoH_Tensor
+from .common import subplotLabel, getSetup, plot_tFac_CoH, CoH_Scat_Plot
+from ..tensor import factorTensor, BC_status_plot, CoH_LogReg_plot
+from ..flow import make_CoH_Tensor, get_status_df
 
 
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((9, 9), (3, 3), multz={0: 2})
+    ax, f = getSetup((12, 10), (4, 3), multz={0: 2})
 
     # Add subplot labels
     subplotLabel(ax)
     ax[0].axis("off")
 
     CoH_Data = make_CoH_Tensor(just_signal=True)
-    # tFacAllM = factorTensor(CoH_Data.to_numpy(), r=12)
-
-    # with open('./coh/data/signaling.pkl', 'wb') as ff:
-    #     pickle.dump(tFacAllM, ff) # 12 component
 
     with open('./coh/data/signaling.pkl', 'rb') as ff:
         tFacAllM = pickle.load(ff) # 12 component
@@ -46,5 +42,14 @@ def makeFigure():
         xlim=(0, len(tc.TR2X) + 0.5),
         xticks=np.arange(0, len(tc.TR2X) + 1),
     )
+
+    CoH_Data = make_CoH_Tensor(just_signal=True)
+
+    with open('./coh/data/signaling.pkl', 'rb') as ff:
+        tFacAllM = pickle.load(ff) # 12 component
+
+    BC_status_plot(13, CoH_Data, ax[7], get_status_df())
+    CoH_LogReg_plot(ax[8], tFacAllM, CoH_Data, get_status_df())
+    CoH_Scat_Plot(ax[9], tFacAllM, CoH_Data, "Patient", plot_comps=[5, 10], status_df=get_status_df())
 
     return f

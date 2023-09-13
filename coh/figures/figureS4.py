@@ -1,32 +1,31 @@
 """
-This creates Figure S4, boxplots of induced responses.
+This creates Figure S4, factorization of cell type abundance.
 """
-import pandas as pd
-from .common import subplotLabel, getSetup, BC_scatter_cells
+from .common import subplotLabel, getSetup, plot_tFac_CoH
+from ..tensor import (
+    factorTensor,
+    R2Xplot,
+    BC_status_plot,
+    CoH_LogReg_plot,
+)
+from ..flow import make_CoH_Tensor_abund, get_status_df
 
 
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((16, 9), (3, 6))
+    ax, f = getSetup((9, 6), (2, 3))
 
     # Add subplot labels
     subplotLabel(ax)
 
-    CoH_DF = pd.read_csv("./coh/data/CoH_Flow_DF.csv")
-    CoH_DF = CoH_DF.loc[CoH_DF.Time == "15min"]
+    CoH_Data = make_CoH_Tensor_abund()
+    tFacAllM = factorTensor(CoH_Data.values, r=7)
 
-    BC_scatter_cells(ax[6], CoH_DF, "pSTAT1", "IFNg-50ng")
-    BC_scatter_cells(ax[7], CoH_DF, "pSTAT3", "IL10-50ng")
-    BC_scatter_cells(ax[8], CoH_DF, "pSTAT4", "IFNg-50ng")
-    BC_scatter_cells(ax[9], CoH_DF, "pSTAT5", "IL2-50ng")
-    BC_scatter_cells(ax[10], CoH_DF, "pSTAT6", "IL4-50ng")
-    BC_scatter_cells(ax[11], CoH_DF, "pSmad1-2", "TGFB-50ng")
+    R2Xplot(ax[0], CoH_Data.values, compNum=8)
+    BC_status_plot(8, CoH_Data, ax[1], get_status_df())
+    CoH_LogReg_plot(ax[2], tFacAllM, CoH_Data, get_status_df())
 
-    CoH_DF_B = pd.read_csv("./coh/data/CoH_Flow_DF_Basal.csv")
-    CoH_DF_B = CoH_DF_B.loc[CoH_DF_B.Time == "15min"]
-
-    for i, sigg in enumerate(["pSTAT1", "pSTAT3", "pSTAT4", "pSTAT5", "pSTAT6", "pSmad1-2"]):
-        BC_scatter_cells(ax[12 + i], CoH_DF_B, sigg, "Untreated")
+    plot_tFac_CoH(ax[3:], tFacAllM, CoH_Data)
 
     return f

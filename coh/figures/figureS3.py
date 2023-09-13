@@ -1,31 +1,30 @@
 """
-This creates Figure S3, factorization of cell type abundance.
+This creates Figure S3, factorization of fold-change data.
 """
-from .common import subplotLabel, getSetup, plot_tFac_CoH
 from ..tensor import (
     factorTensor,
     R2Xplot,
-    BC_status_plot,
     CoH_LogReg_plot,
+    BC_status_plot,
 )
-from ..flow import make_CoH_Tensor_abund, get_status_df
+from ..flow import make_CoH_Tensor, get_status_df
+from .common import subplotLabel, getSetup, plot_tFac_CoH
 
 
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((9, 6), (2, 3))
+    ax, f = getSetup((12, 8), (2, 4))
 
     # Add subplot labels
     subplotLabel(ax)
+    CoH_Data = make_CoH_Tensor(just_signal=True, foldChange=True)
 
-    CoH_Data = make_CoH_Tensor_abund()
-    tFacAllM = factorTensor(CoH_Data.values, r=7)
-
-    R2Xplot(ax[0], CoH_Data.values, compNum=8)
-    BC_status_plot(8, CoH_Data, ax[1], get_status_df())
+    tFacAllM = factorTensor(CoH_Data.to_numpy(), r=8)
+    R2Xplot(ax[0], CoH_Data.to_numpy(), compNum=10)
+    BC_status_plot(10, CoH_Data, ax[1], get_status_df())
     CoH_LogReg_plot(ax[2], tFacAllM, CoH_Data, get_status_df())
-
+    
     plot_tFac_CoH(ax[3:], tFacAllM, CoH_Data)
 
     return f

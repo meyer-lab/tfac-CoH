@@ -1,18 +1,20 @@
 """
-This creates Figure S2, factorization of fold-change data.
+This creates Figure 6, cross dissection of receptor and signaling data.
 """
-import pandas as pd
+import xarray as xa
 import numpy as np
 import seaborn as sns
-from scipy import stats
-from sklearn import metrics
+import pandas as pd
+import matplotlib as plt
 from scipy.stats import zscore
-from sklearn.linear_model import LogisticRegressionCV
-from sklearn import preprocessing
-from sklearn.model_selection import RepeatedStratifiedKFold
+from os.path import join, dirname
+from ..flow import make_CoH_Tensor, get_status_df
 from .common import subplotLabel, getSetup, BC_scatter_cells_rec
-from ..flow_rec import get_status_rec_df, make_CoH_Tensor_rec
-from ..tensor import factorTensor
+
+
+plt.rcParams['svg.fonttype'] = 'none'
+path_here = dirname(dirname(__file__))
+
 
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
@@ -21,190 +23,87 @@ def makeFigure():
 
     # Add subplot labels
     subplotLabel(ax)
-    CoH_DF = pd.read_csv("./coh/data/CoH_Rec_DF.csv", index_col=0)
 
-    # Figure A - plot of PD-1 CD8 Cells
+    CoH_DF = pd.read_csv("./coh/data/CoH_Flow_DF.csv", index_col=0)
+    CoH_DF = CoH_DF.loc[CoH_DF.Patient != "Patient 406"]
+    treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng", "Untreated"])
+    markers = np.array(["pSTAT1", "pSTAT3", "pSTAT4", "pSTAT5", "pSTAT6", "pSmad1-2"])
+    CoH_DF = CoH_DF.loc[(CoH_DF.Treatment.isin(treatments)) & (CoH_DF.Marker.isin(markers)) & (CoH_DF.Time == "15min") & (CoH_DF.Treatment != "Untreated")].dropna()
+    
+    CoH_DF = CoH_DF.groupby(["Patient", "Cell", "Treatment", "Marker"]).mean().reset_index()
+    CoH_DF = (CoH_DF.pivot(index=["Patient", "Cell", "Treatment"], columns="Marker", values="Mean").reset_index().set_index("Patient"))
+    CoH_DF.iloc[:, 2::] = CoH_DF.iloc[:, 2::].apply(zscore)
 
-    DF = CoH_DF.loc[CoH_DF.Marker == "PD1"]
-    DF["Mean"] -= np.mean(DF["Mean"].values)
-    DF["Mean"] /= np.std(DF["Mean"].values)
-    PD1_DF = DF.loc[
-        DF.Cell.isin(
-            ["CD8+", "CD8 TEM", "CD8 TCM", "CD8 Naive", "CD8 Naive", "CD8 TEMRA"]
-        )
-    ]
-    BC_scatter_cells_rec(ax[0], PD1_DF, "PD1", filter=False)
-
-    # B PD-L1 CD8 and B cells
-
-    DF = CoH_DF.loc[CoH_DF.Marker == "PD_L1"]
-    DF["Mean"] -= np.mean(DF["Mean"].values)
-    DF["Mean"] /= np.std(DF["Mean"].values)
-    PDL1_DF = DF.loc[
-        DF.Cell.isin(
-            [
-                "CD8+",
-                "CD8 TEM",
-                "CD8 TCM",
-                "CD8 Naive",
-                "CD8 Naive",
-                "CD8 TEMRA",
-                "CD20 B",
-                "CD20 B Naive",
-                "CD20 B Memory",
-            ]
-        )
-    ]
-    BC_scatter_cells_rec(ax[1], PDL1_DF, "PD_L1", filter=False)
-
-    # C IL6Ra B
-
-    DF = CoH_DF.loc[CoH_DF.Marker == "IL6Ra"]
-    DF["Mean"] -= np.mean(DF["Mean"].values)
-    DF["Mean"] /= np.std(DF["Mean"].values)
-    IL6Ra_DF = DF.loc[
-        DF.Cell.isin(
-            [
-                "CD8+",
-                "CD8 TEM",
-                "CD8 TCM",
-                "CD8 Naive",
-                "CD8 Naive",
-                "CD8 TEMRA",
-                "CD20 B",
-                "CD20 B Naive",
-                "CD20 B Memory",
-            ]
-        )
-    ]
-    BC_scatter_cells_rec(ax[2], IL6Ra_DF, "IL6Ra", filter=False)
-
-    # D IL2Ra Tregs
-
-    DF = CoH_DF.loc[CoH_DF.Marker == "IL2Ra"]
-    DF["Mean"] -= np.mean(DF["Mean"].values)
-    DF["Mean"] /= np.std(DF["Mean"].values)
-    IL2Ra_DF = DF.loc[DF.Cell.isin(["Treg", "Treg 1", "Treg 2", "Treg 3"])]
-    BC_scatter_cells_rec(ax[3], IL2Ra_DF, "IL2Ra", filter=False)
-
-    # Make mean Z scored DF
-    meanDF = CoH_DF.groupby(["Patient", "Cell", "Marker"]).mean().reset_index()
-
-    meanDF = (
-        meanDF.pivot(index=["Patient", "Cell"], columns="Marker", values="Mean")
+    CoH_DF_R = pd.read_csv("./coh/data/CoH_Rec_DF.csv", index_col=0).dropna()
+    CoH_DF_R = CoH_DF_R.loc[CoH_DF_R.Patient != "Patient 19186-12"]
+    CoH_DF_R = CoH_DF_R.groupby(["Patient", "Cell", "Marker"]).mean().reset_index()
+    CoH_DF_R = (
+        CoH_DF_R.pivot(index=["Patient", "Cell"], columns="Marker", values="Mean")
         .reset_index()
         .set_index("Patient")
     )
-    meanDF.loc[:, meanDF.columns.values != "Cell"] = meanDF.loc[
-        :, meanDF.columns.values != "Cell"
+    CoH_DF_R.loc[:, CoH_DF_R.columns.values != "Cell"] = CoH_DF_R.loc[
+        :, CoH_DF_R.columns.values != "Cell"
     ].apply(zscore)
 
-    # E PD-L1 in B vs CD8 Cells
+    # A B - response vs receptor across cell types
+    plot_rec_resp_cell(CoH_DF, CoH_DF_R, "IFNg R1", "pSTAT1", "IFNg-50ng", ax[0])
+    plot_rec_resp_cell(CoH_DF, CoH_DF_R, "IL2Ra", "pSTAT5", "IL2-50ng", ax[1])
 
-    plot_by_patient(
-        meanDF,
-        cell1="CD8 TEM",
-        receptor1="PD_L1",
-        cell2="CD20 B",
-        receptor2="PD_L1",
-        ax=ax[4],
-    )
+    # C IL-10R by BC status
+    recDF = pd.read_csv("./coh/data/CoH_Rec_DF.csv", index_col=0)
+    DF = recDF.loc[recDF.Marker == "IL10R"]
+    #DF["Mean"] -= np.mean(DF["Mean"].values)
+    #DF["Mean"] /= np.std(DF["Mean"].values)
+    BC_scatter_cells_rec(ax[2], DF, "IL10R", filter=False)
 
-    # F IL6Ra in B vs CD8 Cells
+    # D Response to IL10 per patient in monocytes
 
-    plot_by_patient(
-        meanDF,
-        cell1="CD8 TEM",
-        receptor1="IL6Ra",
-        cell2="CD20 B",
-        receptor2="IL6Ra",
-        ax=ax[5],
-    )
+    rec_vs_induced(CoH_DF, CoH_DF_R, receptor= "IL10R", marker="pSTAT3", treatment="IL10-50ng", cell="Classical Monocyte", ax=ax[3])
+    
+    # E-F IL2Ra and IL2RB by BC status
 
-    # G IL2Ra Tregs vs PD-L1 CD8s
+    DF = recDF.loc[recDF.Marker == "IL2Ra"]
+    DF["Mean"] -= np.mean(DF["Mean"].values)
+    DF["Mean"] /= np.std(DF["Mean"].values)
+    BC_scatter_cells_rec(ax[4], DF, "IL2Ra", filter=False)
 
-    plot_by_patient(
-        meanDF,
-        cell1="Treg",
-        receptor1="IL2Ra",
-        cell2="CD8+",
-        receptor2="PD_L1",
-        ax=ax[6],
-    )
+    DF = recDF.loc[recDF.Marker == "IL2RB"]
+    DF["Mean"] -= np.mean(DF["Mean"].values)
+    DF["Mean"] /= np.std(DF["Mean"].values)
+    BC_scatter_cells_rec(ax[5], DF, "IL2RB", filter=False)
 
-    # H IL2Ra Tregs vs IL6Ra B
+    rec_vs_induced(CoH_DF, CoH_DF_R, receptor= "IL2Ra", marker="pSTAT5", treatment="IL2-50ng", cell="CD8+", ax=ax[6])
+    rec_vs_induced(CoH_DF, CoH_DF_R, receptor= "IL2Ra", marker="pSTAT5", treatment="IL2-50ng", cell="Treg", ax=ax[7])
+    rec_vs_induced(CoH_DF, CoH_DF_R, receptor= "IL2RB", marker="pSTAT5", treatment="IL2-50ng", cell="CD8+", ax=ax[8])
+    rec_vs_induced(CoH_DF, CoH_DF_R, receptor= "IL2RB", marker="pSTAT5", treatment="IL10-50ng", cell="Treg", ax=ax[9])
 
-    plot_by_patient(
-        meanDF,
-        cell1="Treg",
-        receptor1="IL2Ra",
-        cell2="CD20 B",
-        receptor2="IL6Ra",
-        ax=ax[7],
-    )
 
-    # I Univariate vs coordinated ROC
-
-    CoH_Data = make_CoH_Tensor_rec()
-    tFacAllM = factorTensor(CoH_Data.to_numpy(), r=5)
-    mode = CoH_Data.dims[0]
-    tFacDF = pd.DataFrame(tFacAllM.factors[0], index=CoH_Data.coords[mode], columns=[str(i + 1) for i in range(tFacAllM.factors[0].shape[1])])
-
-    ROC_plot(
-        meanDF,
-        receptors=["IL6Ra", "IL6Ra", "PD_L1", "PD_L1", "IL2Ra"],
-        cells=["CD8 TEM", "CD20 B", "CD8 TEM", "CD20 B", "Treg"],
-        tFacDF=tFacDF,
-        comp=2,
-        ax=ax[8],
-    )
+   
 
     return f
 
 
-def plot_by_patient(recDF, cell1, receptor1, cell2, receptor2, ax):
+def rec_vs_induced(CoH_DF, CoH_DF_R, receptor, marker, treatment, cell, ax):
+    """Plots receptor level vs response to treatment"""
+    sigDF = CoH_DF.loc[(CoH_DF.Treatment == treatment) & (CoH_DF.Cell == cell)][marker].to_frame()
+    recDF = CoH_DF_R.loc[(CoH_DF_R.Cell == cell)][receptor].to_frame()
+    jointDF = sigDF.join(recDF)
+
+    status_DF = get_status_df().set_index("Patient")
+    jointDF = jointDF.join(status_DF)
+    sns.scatterplot(data=jointDF, x=receptor, y=marker, hue="Status", ax=ax)
+    ax.set(xlabel=receptor + " in " + cell, ylabel = marker + " in " + treatment + " in " + cell)
+
+
+def plot_rec_resp_cell(sigDF, recDF, receptor, marker, treatment, ax):
     """Plots receptor in pop 1 vs receptor in pop 2 per patient, by disease status"""
-    status_DF = get_status_rec_df()
-    plotDF = pd.DataFrame({"Patient": recDF.loc[recDF.Cell == cell1].index.values})
-    plotDF[cell1 + " " + receptor1] = recDF.loc[recDF.Cell == cell1][receptor1].values
-    plotDF[cell2 + " " + receptor2] = recDF.loc[recDF.Cell == cell2][receptor2].values
-    plotDF = plotDF.set_index("Patient").join(
-        status_DF.set_index("Patient"), on="Patient"
-    )
-    print(plotDF.corr())
-    sns.scatterplot(
-        data=plotDF,
-        x=cell1 + " " + receptor1,
-        y=cell2 + " " + receptor2,
-        ax=ax,
-        hue="Status",
-    )
+    status_DF = get_status_df()
+    sigDF = sigDF.reset_index().set_index("Patient").join(status_DF.set_index("Patient"), on="Patient")
+    plotDF = pd.DataFrame()
+    for cell in sigDF.Cell.unique():
+        rec = np.mean(recDF.loc[(recDF.Cell == cell)][receptor].values)
+        resp = np.mean(sigDF.loc[(sigDF.Cell == cell) & (sigDF.Treatment == treatment)][marker].values)
+        plotDF = pd.concat([plotDF, pd.DataFrame({"Cell": [cell], receptor: rec, marker + " response to " + treatment: resp})])
 
-
-def ROC_plot(recDF, receptors, cells, tFacDF, comp, ax):
-    """Plots accuracy of classification using receptors and a tfac component"""
-    status_DF = get_status_rec_df()
-    cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=20)
-    lrmodel = LogisticRegressionCV(penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv)
-    
-    for i, receptor in enumerate(receptors):
-        predDF = recDF.loc[recDF.Cell == cells[i]].reset_index()[["Patient", receptor]]
-        predDF = predDF.set_index("Patient").join(status_DF.set_index("Patient"), on="Patient")
-        Donor_CoH_y = preprocessing.label_binarize(predDF.Status.values, classes=['Healthy', 'BC']).flatten()
-        LR_CoH = lrmodel.fit(stats.zscore(predDF[receptor][:, np.newaxis]), Donor_CoH_y)
-        y_pred = LR_CoH.predict_proba(stats.zscore(predDF[receptor][:, np.newaxis]))[:, 1]
-        fpr, tpr, _ = metrics.roc_curve(Donor_CoH_y, y_pred)
-        auc = round(metrics.roc_auc_score(Donor_CoH_y, y_pred), 4)
-        ax.plot(fpr, tpr, label=cells[i] + " " + receptor + ", AUC=" + str(auc))
-       
-    predDF = tFacDF[str(comp)].reset_index()
-    predDF.columns = ["Patient", "Comp. " + str(comp)]
-    predDF = predDF.set_index("Patient").join(status_DF.set_index("Patient"), on="Patient")
-    Donor_CoH_y = preprocessing.label_binarize(predDF.Status.values, classes=['Healthy', 'BC']).flatten()
-    LR_CoH = lrmodel.fit(stats.zscore(predDF["Comp. " + str(comp)][:, np.newaxis]), Donor_CoH_y)
-    y_pred = LR_CoH.predict_proba(stats.zscore(predDF["Comp. " + str(comp)][:, np.newaxis]))[:, 1]
-    fpr, tpr, _ = metrics.roc_curve(Donor_CoH_y, y_pred)
-    auc = round(metrics.roc_auc_score(Donor_CoH_y, y_pred), 4)
-    ax.plot(fpr, tpr, label="Comp. " + str(comp) + ", AUC=" + str(auc))
-    
-    ax.legend()
+    sns.scatterplot(data=plotDF, x=receptor, y=marker + " response to " + treatment, hue="Cell", ax=ax)
