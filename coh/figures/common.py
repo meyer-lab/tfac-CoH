@@ -116,24 +116,25 @@ def scatter_common(ax, hist_DF: pd.DataFrame, filter):
     for cell in filt_cells:
         boxpairs.append([(cell, "Healthy"), (cell, "BC")])
 
-    if filter:
-        add_stat_annotation(
-            ax=ax,
-            data=hist_DF,
-            x="Cell",
-            y="Mean",
-            hue="Status",
-            box_pairs=boxpairs,
-            text_annot_custom=pvals,
-            perform_stat_test=False,
-            loc='inside',
-            pvalues=np.tile(
-                0,
-                len(filt_cells)),
-            verbose=0)
-    else:
-        add_stat_annotation(ax=ax, data=hist_DF, x="Cell", y="Mean", hue="Status", box_pairs=boxpairs, text_annot_custom=pvals,
-                            perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(filt_cells)), verbose=0)
+    if len(filt_cells) > 0:
+        if filter:
+            add_stat_annotation(
+                ax=ax,
+                data=hist_DF,
+                x="Cell",
+                y="Mean",
+                hue="Status",
+                box_pairs=boxpairs,
+                text_annot_custom=pvals,
+                perform_stat_test=False,
+                loc='inside',
+                pvalues=np.tile(
+                    0,
+                    len(filt_cells)),
+                verbose=0)
+        else:
+            add_stat_annotation(ax=ax, data=hist_DF, x="Cell", y="Mean", hue="Status", box_pairs=boxpairs, text_annot_custom=pvals,
+                                perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(filt_cells)), verbose=0)
 
 
 def BC_scatter_cells(ax, CoH_DF: pd.DataFrame, marker: str, cytokine: str, filter=False):
