@@ -19,10 +19,23 @@ path_here = dirname(dirname(__file__))
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((12, 10), (3, 4))
+    ax, f = getSetup((9, 8), (3, 5), multz={3: 1, 6: 1, 8: 1})
 
     # Add subplot labels
     subplotLabel(ax)
+    ax[0].axis("off")
+
+    ax[1].set(xlim=(-1, 3), ylim=(-1, 3))
+    ax[2].set(xlim=(-1, 3), ylim=(-1, 3))
+    ax[3].set(ylim=(0, 7000))
+    ax[4].set(xlim=(-1, 1), ylim=(-0.5, 3.5))
+    ax[5].set(ylim=(-2, 4))
+    ax[5].set(ylim=(-3, 4))
+    ax[7].set(xlim=(-2, 0), ylim=(-1, 4))
+    ax[8].set(xlim=(1, 3), ylim=(1, 6))
+    ax[9].set(xlim=(-0.5, 2.5), ylim=(-1, 4))
+    ax[10].set(xlim=(-2, 1), ylim=(-1.5, 2))
+
 
     CoH_DF = pd.read_csv("./coh/data/CoH_Flow_DF.csv", index_col=0)
     CoH_DF = CoH_DF.loc[CoH_DF.Patient != "Patient 406"]
@@ -47,36 +60,36 @@ def makeFigure():
     ].apply(zscore)
 
     # A B - response vs receptor across cell types
-    plot_rec_resp_cell(CoH_DF, CoH_DF_R, "IFNg R1", "pSTAT1", "IFNg-50ng", ax[0])
-    plot_rec_resp_cell(CoH_DF, CoH_DF_R, "IL2Ra", "pSTAT5", "IL2-50ng", ax[1])
+    plot_rec_resp_cell(CoH_DF, CoH_DF_R, "IFNg R1", "pSTAT1", "IFNg-50ng", ax[1])
+    plot_rec_resp_cell(CoH_DF, CoH_DF_R, "IL2Ra", "pSTAT5", "IL2-50ng", ax[2])
 
     # C IL-10R by BC status
     recDF = pd.read_csv("./coh/data/CoH_Rec_DF.csv", index_col=0)
     DF = recDF.loc[recDF.Marker == "IL10R"]
     #DF["Mean"] -= np.mean(DF["Mean"].values)
     #DF["Mean"] /= np.std(DF["Mean"].values)
-    BC_scatter_cells_rec(ax[2], DF, "IL10R", filter=False)
+    BC_scatter_cells_rec(ax[3], DF, "IL10R", filter=False)
 
     # D Response to IL10 per patient in monocytes
 
-    rec_vs_induced(CoH_DF, CoH_DF_R, receptor= "IL10R", marker="pSTAT3", treatment="IL10-50ng", cell="Classical Monocyte", ax=ax[3])
+    rec_vs_induced(CoH_DF, CoH_DF_R, receptor= "IL10R", marker="pSTAT3", treatment="IL10-50ng", cell="Classical Monocyte", ax=ax[4])
     
     # E-F IL2Ra and IL2RB by BC status
 
     DF = recDF.loc[recDF.Marker == "IL2Ra"]
     DF["Mean"] -= np.mean(DF["Mean"].values)
     DF["Mean"] /= np.std(DF["Mean"].values)
-    BC_scatter_cells_rec(ax[4], DF, "IL2Ra", filter=False)
+    BC_scatter_cells_rec(ax[5], DF, "IL2Ra", filter=False)
 
     DF = recDF.loc[recDF.Marker == "IL2RB"]
     DF["Mean"] -= np.mean(DF["Mean"].values)
     DF["Mean"] /= np.std(DF["Mean"].values)
-    BC_scatter_cells_rec(ax[5], DF, "IL2RB", filter=False)
+    BC_scatter_cells_rec(ax[6], DF, "IL2RB", filter=False)
 
-    rec_vs_induced(CoH_DF, CoH_DF_R, receptor= "IL2Ra", marker="pSTAT5", treatment="IL2-50ng", cell="CD8+", ax=ax[6])
-    rec_vs_induced(CoH_DF, CoH_DF_R, receptor= "IL2Ra", marker="pSTAT5", treatment="IL2-50ng", cell="Treg", ax=ax[7])
-    rec_vs_induced(CoH_DF, CoH_DF_R, receptor= "IL2RB", marker="pSTAT5", treatment="IL2-50ng", cell="CD8+", ax=ax[8])
-    rec_vs_induced(CoH_DF, CoH_DF_R, receptor= "IL2RB", marker="pSTAT5", treatment="IL10-50ng", cell="Treg", ax=ax[9])
+    rec_vs_induced(CoH_DF, CoH_DF_R, receptor= "IL2Ra", marker="pSTAT5", treatment="IL2-50ng", cell="CD8+", ax=ax[7])
+    rec_vs_induced(CoH_DF, CoH_DF_R, receptor= "IL2Ra", marker="pSTAT5", treatment="IL2-50ng", cell="Treg", ax=ax[8])
+    rec_vs_induced(CoH_DF, CoH_DF_R, receptor= "IL2RB", marker="pSTAT5", treatment="IL2-50ng", cell="CD8+", ax=ax[9])
+    rec_vs_induced(CoH_DF, CoH_DF_R, receptor= "IL2RB", marker="pSTAT5", treatment="IL10-50ng", cell="Treg", ax=ax[10])
 
 
    
