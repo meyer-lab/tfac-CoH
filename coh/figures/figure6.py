@@ -27,7 +27,7 @@ def makeFigure():
 
     ax[1].set(xlim=(-1, 3), ylim=(-1, 3))
     ax[2].set(xlim=(-1, 3), ylim=(-1, 3))
-    ax[3].set(ylim=(0, 7000))
+    #ax[3].set(ylim=(0, 7000))
     ax[4].set(xlim=(-1, 1), ylim=(-0.5, 3.5))
     ax[5].set(ylim=(-2, 4))
     ax[5].set(ylim=(-3, 4))
@@ -66,8 +66,8 @@ def makeFigure():
     # C IL-10R by BC status
     recDF = pd.read_csv("./coh/data/CoH_Rec_DF.csv", index_col=0)
     DF = recDF.loc[recDF.Marker == "IL10R"]
-    #DF["Mean"] -= np.mean(DF["Mean"].values)
-    #DF["Mean"] /= np.std(DF["Mean"].values)
+    DF["Mean"] -= np.mean(DF["Mean"].values)
+    DF["Mean"] /= np.std(DF["Mean"].values)
     BC_scatter_cells_rec(ax[3], DF, "IL10R", filter=False)
 
     # D Response to IL10 per patient in monocytes
@@ -119,4 +119,4 @@ def plot_rec_resp_cell(sigDF, recDF, receptor, marker, treatment, ax):
         resp = np.mean(sigDF.loc[(sigDF.Cell == cell) & (sigDF.Treatment == treatment)][marker].values)
         plotDF = pd.concat([plotDF, pd.DataFrame({"Cell": [cell], receptor: rec, marker + " response to " + treatment: resp})])
 
-    sns.scatterplot(data=plotDF, x=receptor, y=marker + " response to " + treatment, hue="Cell", ax=ax)
+    sns.scatterplot(data=plotDF, x=receptor, y=marker + " response to " + treatment, hue="Cell", style="Cell", ax=ax)

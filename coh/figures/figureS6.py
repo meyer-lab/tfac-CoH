@@ -9,12 +9,12 @@ from .common import subplotLabel, getSetup, BC_scatter_cells_rec
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((15, 9), (4, 3))
+    ax, f = getSetup((9, 12), (4, 3))
 
     # Add subplot labels
     subplotLabel(ax)
 
-    f.set_layout_engine(None)
+    #f.set_layout_engine(None)
 
     CoH_Data_DF = pd.read_csv("./coh/data/CoH_Rec_DF.csv")
     for i, rec in enumerate(np.array(["IFNg R1", "TGFB RII", "PD1", "PD_L1", "IL2Ra", "IL2RB", "IL4Ra", "IL6Ra", "IL6RB", "IL7Ra", "IL10R", "IL12RI"])):
