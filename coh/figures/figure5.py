@@ -17,10 +17,19 @@ from ..tensor import factorTensor
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((12, 10), (3, 4))
+    ax, f = getSetup((9, 7.5), (3, 4))
 
     # Add subplot labels
     subplotLabel(ax)
+    ax[0].set(ylim=(-2, 4))
+    ax[1].set(ylim=(-3, 3))
+    ax[2].set(ylim=(-3, 2))
+    ax[3].set(ylim=(0, 4))
+    ax[4].set(xlim=(-2, 0.5), ylim=(-3, 1))
+    ax[5].set(xlim=(-2.5, 0), ylim=(-3, 1))
+    ax[6].set(xlim=(1, 3), ylim=(-2, 1))
+    ax[7].set(xlim=(1, 3), ylim=(-3, 1))
+
     CoH_DF = pd.read_csv("./coh/data/CoH_Rec_DF.csv", index_col=0)
 
     # Figure A - plot of PD-1 CD8 Cells
@@ -159,6 +168,9 @@ def makeFigure():
         ax=ax[8],
     )
 
+
+    #ax[8].set(xlim=(0, 1), ylim=(0, 1))
+
     return f
 
 
@@ -171,13 +183,21 @@ def plot_by_patient(recDF, cell1, receptor1, cell2, receptor2, ax):
     plotDF = plotDF.set_index("Patient").join(
         status_DF.set_index("Patient"), on="Patient"
     )
-    print(plotDF.corr())
     sns.scatterplot(
         data=plotDF,
         x=cell1 + " " + receptor1,
         y=cell2 + " " + receptor2,
         ax=ax,
         hue="Status",
+    )
+    sns.regplot(
+        data=plotDF,
+        x=cell1 + " " + receptor1,
+        y=cell2 + " " + receptor2,
+        ax=ax,
+        scatter=False,
+        line_kws={"color": "gray"},
+        truncate=False
     )
 
 
