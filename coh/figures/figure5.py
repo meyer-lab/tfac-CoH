@@ -136,7 +136,7 @@ def makeFigure():
         meanDF,
         cell1="Treg",
         receptor1="IL2Ra",
-        cell2="CD8+",
+        cell2="CD8 TEM",
         receptor2="PD_L1",
         ax=ax[6],
     )
@@ -183,6 +183,7 @@ def plot_by_patient(recDF, cell1, receptor1, cell2, receptor2, ax):
     plotDF = plotDF.set_index("Patient").join(
         status_DF.set_index("Patient"), on="Patient"
     )
+    print(plotDF.corr())
     sns.scatterplot(
         data=plotDF,
         x=cell1 + " " + receptor1,
