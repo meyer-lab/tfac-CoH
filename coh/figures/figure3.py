@@ -5,7 +5,7 @@ import pickle
 import pandas as pd
 import numpy as np
 import seaborn as sns
-from scipy.stats import zscore
+from scipy.stats import zscore, pearsonr
 from .common import subplotLabel, getSetup, BC_scatter_cells, CoH_Scat_Plot
 from ..flow import make_CoH_Tensor, get_status_df
 
@@ -17,6 +17,18 @@ def makeFigure():
 
     # Add subplot labels
     subplotLabel(ax)
+
+    ax[0].set(ylim=(-2, 8))
+    ax[1].set(ylim=(-4, 4))
+    ax[2].set(xlim=(-3, 2), ylim=(0, 5))
+    ax[3].set(xlim=(0, 6), ylim=(0, 6))
+    ax[4].set(xlim=(-3, 2), ylim=(-1, 4))
+    ax[5].set(xlim=(-1, 4), ylim=(0, 6))
+    ax[6].set(xlim=(0, 1), ylim=(-1, 0))
+    ax[7].set(xlim=(0, 1.5), ylim=(0, 1.5))
+    ax[8].set(xlim=(-3, 2), ylim=(-2, 2))
+    ax[9].set(xlim=(-3, 2), ylim=(-3, 1))
+
     CoH_DF = pd.read_csv("./coh/data/CoH_Flow_DF.csv", index_col=0)
     treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng", "Untreated"])
     CoH_DF = CoH_DF.loc[(CoH_DF.Treatment.isin(treatments)) & (CoH_DF.Time == "15min") ].dropna()
@@ -134,17 +146,6 @@ def makeFigure():
         ax=ax[9],
     )
 
-    ax[0].set(ylim=(-2, 8))
-    ax[1].set(ylim=(-4, 4))
-    ax[2].set(xlim=(-3, 2), ylim=(0, 5))
-    ax[3].set(xlim=(0, 6), ylim=(0, 6))
-    ax[4].set(xlim=(-3, 2), ylim=(-1, 4))
-    ax[5].set(xlim=(-1, 4), ylim=(0, 6))
-    ax[6].set(xlim=(0, 1), ylim=(-1, 0))
-    ax[7].set(xlim=(0, 1.5), ylim=(0, 1.5))
-    ax[8].set(xlim=(-3, 2), ylim=(-2, 2))
-    ax[9].set(xlim=(-3, 2), ylim=(-3, 1))
-
 
     return f
 
@@ -165,6 +166,9 @@ def plot_by_patient(sigDF, cell1, receptor1, treatment1, cell2, receptor2, treat
         ax=ax,
         hue="Status",
     )
+    print(plotDF.corr())
+    print(pearsonr(plotDF[cell1 + " " + receptor1 + " " + treatment1].values, plotDF[cell2 + " " + receptor2 + " " + treatment2].values))
+    sns.regplot(data=plotDF, x=cell1 + " " + receptor1 + " " + treatment1, y=cell2 + " " + receptor2 + " " + treatment2, ax=ax, scatter=False, line_kws={"color": "gray"}, truncate=False)
 
 
 def plot_diff_cell(sigDF, marker1, treatment1, marker2, treatment2, ax):
@@ -180,3 +184,6 @@ def plot_diff_cell(sigDF, marker1, treatment1, marker2, treatment2, ax):
         plotDF = pd.concat([plotDF, pd.DataFrame({"Cell": [cell], "BC - Healthy Baseline " + marker1: BC_val_1 - Healthy_val_1, "BC - Healthy Baseline " + marker2: BC_val_2 - Healthy_val_2})])
     
     sns.scatterplot(data=plotDF, x="BC - Healthy Baseline " + marker1, y="BC - Healthy Baseline " + marker2, hue="Cell", style="Cell", ax=ax)
+    print(plotDF.corr())
+    print(pearsonr(plotDF["BC - Healthy Baseline " + marker1].values, plotDF["BC - Healthy Baseline " + marker2].values))
+    sns.regplot(data=plotDF, x="BC - Healthy Baseline " + marker1, y="BC - Healthy Baseline " + marker2, ax=ax, scatter=False, line_kws={"color": "gray"}, truncate=False)
