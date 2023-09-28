@@ -167,7 +167,7 @@ def plot_by_patient(sigDF, cell1, receptor1, treatment1, cell2, receptor2, treat
         hue="Status",
     )
     print(plotDF.corr())
-    print(pearsonr(plotDF.values[:, 0], plotDF.values[:, 1]))
+    print(pearsonr(plotDF[cell1 + " " + receptor1 + " " + treatment1].values, plotDF[cell2 + " " + receptor2 + " " + treatment2].values))
     sns.regplot(data=plotDF, x=cell1 + " " + receptor1 + " " + treatment1, y=cell2 + " " + receptor2 + " " + treatment2, ax=ax, scatter=False, line_kws={"color": "gray"}, truncate=False)
 
 
@@ -185,5 +185,5 @@ def plot_diff_cell(sigDF, marker1, treatment1, marker2, treatment2, ax):
     
     sns.scatterplot(data=plotDF, x="BC - Healthy Baseline " + marker1, y="BC - Healthy Baseline " + marker2, hue="Cell", style="Cell", ax=ax)
     print(plotDF.corr())
-    print(pearsonr(plotDF.values[:, 1], plotDF.values[:, 2]))
+    print(pearsonr(plotDF["BC - Healthy Baseline " + marker1].values, plotDF["BC - Healthy Baseline " + marker2].values))
     sns.regplot(data=plotDF, x="BC - Healthy Baseline " + marker1, y="BC - Healthy Baseline " + marker2, ax=ax, scatter=False, line_kws={"color": "gray"}, truncate=False)

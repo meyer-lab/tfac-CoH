@@ -91,9 +91,6 @@ def makeFigure():
     rec_vs_induced(CoH_DF, CoH_DF_R, receptor= "IL2RB", marker="pSTAT5", treatment="IL2-50ng", cell="CD8+", ax=ax[9])
     rec_vs_induced(CoH_DF, CoH_DF_R, receptor= "IL2RB", marker="pSTAT5", treatment="IL10-50ng", cell="Treg", ax=ax[10])
 
-
-   
-
     return f
 
 
@@ -108,7 +105,7 @@ def rec_vs_induced(CoH_DF, CoH_DF_R, receptor, marker, treatment, cell, ax):
     sns.scatterplot(data=jointDF, x=receptor, y=marker, hue="Status", ax=ax)
     print(jointDF.corr())
     jointDF = jointDF.reset_index(drop=True)
-    print(pearsonr(jointDF.values[:, 0], jointDF.values[:, 1]))
+    print(pearsonr(jointDF[receptor].values, jointDF[marker].values))
     sns.regplot(data=jointDF, x=receptor, y=marker, ax=ax, scatter=False, line_kws={"color": "gray"}, truncate=False)
     ax.set(xlabel=receptor + " in " + cell, ylabel = marker + " in " + treatment + " in " + cell)
 
@@ -125,5 +122,5 @@ def plot_rec_resp_cell(sigDF, recDF, receptor, marker, treatment, ax):
 
     sns.scatterplot(data=plotDF, x=receptor, y=marker + " response to " + treatment, hue="Cell", style="Cell", ax=ax)
     print(plotDF.corr())
-    print(pearsonr(plotDF.values[:, 1], plotDF.values[:, 2]))
+    print(pearsonr(plotDF[receptor].values, plotDF[marker + " response to " + treatment].values))
     sns.regplot(data=plotDF, x=receptor, y=marker + " response to " + treatment, ax=ax, scatter=False, line_kws={"color": "gray"}, truncate=False)
