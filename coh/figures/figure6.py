@@ -6,7 +6,7 @@ import numpy as np
 import seaborn as sns
 import pandas as pd
 import matplotlib as plt
-from scipy.stats import zscore
+from scipy.stats import zscore, pearsonr
 from os.path import join, dirname
 from ..flow import make_CoH_Tensor, get_status_df
 from .common import subplotLabel, getSetup, BC_scatter_cells_rec
@@ -106,6 +106,10 @@ def rec_vs_induced(CoH_DF, CoH_DF_R, receptor, marker, treatment, cell, ax):
     status_DF = get_status_df().set_index("Patient")
     jointDF = jointDF.join(status_DF)
     sns.scatterplot(data=jointDF, x=receptor, y=marker, hue="Status", ax=ax)
+    print(jointDF.corr())
+    jointDF = jointDF.reset_index(drop=True)
+    print(pearsonr(jointDF.values[:, 0], jointDF.values[:, 1]))
+    sns.regplot(data=jointDF, x=receptor, y=marker, ax=ax, scatter=False, line_kws={"color": "gray"}, truncate=False)
     ax.set(xlabel=receptor + " in " + cell, ylabel = marker + " in " + treatment + " in " + cell)
 
 
@@ -120,3 +124,6 @@ def plot_rec_resp_cell(sigDF, recDF, receptor, marker, treatment, ax):
         plotDF = pd.concat([plotDF, pd.DataFrame({"Cell": [cell], receptor: rec, marker + " response to " + treatment: resp})])
 
     sns.scatterplot(data=plotDF, x=receptor, y=marker + " response to " + treatment, hue="Cell", style="Cell", ax=ax)
+    print(plotDF.corr())
+    print(pearsonr(plotDF.values[:, 1], plotDF.values[:, 2]))
+    sns.regplot(data=plotDF, x=receptor, y=marker + " response to " + treatment, ax=ax, scatter=False, line_kws={"color": "gray"}, truncate=False)
