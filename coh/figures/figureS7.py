@@ -8,7 +8,8 @@ import itertools
 import numpy as np
 from .common import subplotLabel, getSetup
 from ..flow import make_CoH_Tensor, get_status_df
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegressionCV
+from sklearn.model_selection import RepeatedStratifiedKFold
 from sklearn import preprocessing
 
 
@@ -31,7 +32,8 @@ def makeFigure():
 
 def CoH_comp_scan_plot(ax, tFac, CoH_Array, status_DF):
     """Plot factor weights for donor BC prediction"""
-    lrmodel = LogisticRegression(penalty="l2", C=1000.0)
+    cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=20)
+    lrmodel = LogisticRegressionCV(penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv)
     coord = CoH_Array.dims.index("Patient")
     mode_facs = tFac[1][coord]
 
