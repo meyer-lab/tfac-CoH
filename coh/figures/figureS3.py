@@ -14,7 +14,7 @@ from .common import subplotLabel, getSetup, plot_tFac_CoH
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((12, 8), (2, 4))
+    ax, f = getSetup((9, 3), (2, 4))
 
     # Add subplot labels
     subplotLabel(ax)

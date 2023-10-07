@@ -140,5 +140,5 @@ def BC_status_plot(compNum, CoH_Data, ax, status_DF):
         accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "Tensor Factorization", "Components": [i], "Accuracy (10-fold CV)": scoresTFAC})])
 
     accDF = accDF.reset_index(drop=True)
-    sns.lineplot(data=accDF, x="Components", y="Accuracy (10-fold CV)", hue="Data Type", ax=ax)
+    sns.scatterplot(data=accDF, x="Components", y="Accuracy (10-fold CV)", hue="Data Type", ax=ax, color='k')
     ax.set(xticks=np.arange(1, compNum + 1), ylim=(0.5, 1))

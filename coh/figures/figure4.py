@@ -12,7 +12,7 @@ from ..flow_rec import make_CoH_Tensor_rec, get_status_rec_df
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((9, 9), (3, 3))
+    ax, f = getSetup((9, 7), (3, 3))
 
     # Add subplot labels
     subplotLabel(ax)
