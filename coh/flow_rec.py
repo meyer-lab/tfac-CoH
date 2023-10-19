@@ -172,7 +172,7 @@ def make_flow_df_rec():
     """Compiles data for all populations for all patients into .csv"""
     patients = list(get_status_dict_rec().keys())
     cell_types = list(get_gate_dict().keys())
-    gateDF = pd.read_csv("./coh/data/CoH_Flow_Gates_Receptors.csv").reset_index().drop("Unnamed: 0", axis=1)
+    gateDF = pd.read_csv("./coh/data/CoH_Flow_Gates_Receptors_Mono.csv").reset_index().drop("Unnamed: 0", axis=1)
     CoH_DF_rec = pd.DataFrame([])
     markerKey = pd.read_csv("./coh/data/Patient_Receptor_Panels.csv")
 

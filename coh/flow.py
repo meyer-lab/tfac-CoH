@@ -151,8 +151,8 @@ gate_dict = OrderedDict(
         "CD20 B Naive": ["CD20 B Gate", "B Naive Gate"],
         "CD20 B Memory": ["CD20 B Gate", "B Memory Gate"],
         "CD33 Myeloid": ["CD33 Myeloid Gate"],
-        "Classical Monocyte": ["Classical Monocyte Gate"],
-        "NC Monocyte": ["Non-Classical Monocyte Gate"],
+        "Classical Monocyte": ["CD33 Myeloid Gate", "Classical Monocyte Gate"],
+        "NC Monocyte": ["CD33 Myeloid Gate", "Non-Classical Monocyte Gate"],
     }
 )
 
@@ -211,7 +211,7 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
     ]
     cell_types = list(gate_dict.keys())
     gateDF = (
-        pd.read_csv("./coh/data/CoH_Flow_Gates.csv")
+        pd.read_csv("./coh/data/CoH_Flow_Gates_New_Mono_All.csv")
         .reset_index()
         .drop("Unnamed: 0", axis=1)
     )

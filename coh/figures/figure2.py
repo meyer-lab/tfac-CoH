@@ -7,7 +7,7 @@ from tensorpack.plot import reduction
 from tensorpack import Decomposition
 from .common import subplotLabel, getSetup, plot_tFac_CoH, CoH_Scat_Plot
 from ..tensor import factorTensor, BC_status_plot, CoH_LogReg_plot
-from ..flow import make_CoH_Tensor, get_status_df
+from ..flow import make_CoH_Tensor, get_status_df, make_flow_df
 
 
 def makeFigure():
@@ -18,11 +18,13 @@ def makeFigure():
     # Add subplot labels
     subplotLabel(ax)
     ax[0].axis("off")
+    #make_flow_df()
 
     CoH_Data = make_CoH_Tensor(just_signal=True)
 
-    with open('./coh/data/signaling.pkl', 'rb') as ff:
-        tFacAllM = pickle.load(ff) # 12 component
+    #with open('./coh/data/signaling.pkl', 'rb') as ff:
+    #    tFacAllM = pickle.load(ff) # 12 component
+    tFacAllM = factorTensor(CoH_Data.to_numpy(), r=13)
 
     plot_tFac_CoH(ax[2:], tFacAllM, CoH_Data)
 
@@ -43,10 +45,10 @@ def makeFigure():
         xticks=np.arange(0, len(tc.TR2X) + 1),
     )
 
-    CoH_Data = make_CoH_Tensor(just_signal=True)
+    #CoH_Data = make_CoH_Tensor(just_signal=True)
 
-    with open('./coh/data/signaling.pkl', 'rb') as ff:
-        tFacAllM = pickle.load(ff) # 12 component
+    #with open('./coh/data/signaling.pkl', 'rb') as ff:
+    #    tFacAllM = pickle.load(ff) # 12 component
 
     BC_status_plot(13, CoH_Data, ax[7], get_status_df())
     CoH_LogReg_plot(ax[8], tFacAllM, CoH_Data, get_status_df())

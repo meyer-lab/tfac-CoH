@@ -6,20 +6,22 @@ from tensorpack.plot import reduction
 from tensorpack import Decomposition
 from .common import subplotLabel, getSetup, plot_tFac_CoH, CoH_Scat_Plot
 from ..tensor import factorTensor, CoH_LogReg_plot, BC_status_plot
-from ..flow_rec import make_CoH_Tensor_rec, get_status_rec_df
+from ..flow_rec import make_CoH_Tensor_rec, get_status_rec_df, make_flow_df_rec
 
 
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((9, 7), (3, 3))
+    #ax, f = getSetup((9, 7), (3, 3))
+    ax, f = getSetup((18, 14), (3, 3))
 
     # Add subplot labels
     subplotLabel(ax)
     ax[0].axis("off")
+    #make_flow_df_rec()
 
     CoH_Data = make_CoH_Tensor_rec()
-    tFacAllM = factorTensor(CoH_Data.to_numpy(), r=5)
+    tFacAllM = factorTensor(CoH_Data.to_numpy(), r=4)
     
     plot_tFac_CoH(ax[2:], tFacAllM, CoH_Data)
 

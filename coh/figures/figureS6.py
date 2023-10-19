@@ -19,8 +19,8 @@ def makeFigure():
     CoH_Data_DF = pd.read_csv("./coh/data/CoH_Rec_DF.csv")
     for i, rec in enumerate(np.array(["IFNg R1", "TGFB RII", "PD1", "PD_L1", "IL2Ra", "IL2RB", "IL4Ra", "IL6Ra", "IL6RB", "IL7Ra", "IL10R", "IL12RI"])):
         DF = CoH_Data_DF.loc[CoH_Data_DF.Marker == rec]
-        DF["Mean"] -= np.mean(DF["Mean"].values)
-        DF["Mean"] /= np.std(DF["Mean"].values)
+        DF["Mean"] -= np.nanmean(DF["Mean"].values)
+        DF["Mean"] /= np.nanstd(DF["Mean"].values)
         BC_scatter_cells_rec(ax[i], DF, rec, filter=False)
 
     return f
