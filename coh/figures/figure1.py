@@ -7,6 +7,7 @@ import seaborn as sns
 import tensorly as tl
 from .common import subplotLabel, getSetup
 from ..flow import make_CoH_Tensor
+import pandas as pd
 
 
 def makeFigure():
@@ -38,6 +39,9 @@ def makeFigure():
     ]
 
     data = data.loc[:, treatments, :, :]
+    print(data.Patient.values)
+    patientDF = pd.DataFrame({"Patient": data.Patient.values})
+    patientDF.to_csv("PatientDF.csv")
 
     fullHeatMap(ax[1], data.loc[:, :, :, "pSTAT3"], cbar=False)
     fullHeatMap(ax[2], data.loc[:, :, :, "pSTAT5"], cbar=False)

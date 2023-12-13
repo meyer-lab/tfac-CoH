@@ -13,7 +13,7 @@ from ..flow import make_CoH_Tensor, get_status_df, make_flow_df
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((12, 10), (4, 3), multz={0: 2})
+    ax, f = getSetup((24, 20), (4, 3), multz={0: 2})
 
     # Add subplot labels
     subplotLabel(ax)
@@ -22,13 +22,13 @@ def makeFigure():
 
     CoH_Data = make_CoH_Tensor(just_signal=True)
 
-    #with open('./coh/data/signaling.pkl', 'rb') as ff:
-    #    tFacAllM = pickle.load(ff) # 12 component
-    tFacAllM = factorTensor(CoH_Data.to_numpy(), r=13)
+    with open('./coh/data/signaling.pkl', 'rb') as ff:
+        tFacAllM = pickle.load(ff) # 12 component
+    #tFacAllM = factorTensor(CoH_Data.to_numpy(), r=13)
 
     plot_tFac_CoH(ax[2:], tFacAllM, CoH_Data)
 
-    tc = Decomposition(CoH_Data.to_numpy(), max_rr=14, method=factorTensor)
+    tc = Decomposition(CoH_Data.to_numpy(), max_rr=15, method=factorTensor)
     tc.perform_tfac()
     tc.perform_PCA(flattenon=0)
 
@@ -50,7 +50,7 @@ def makeFigure():
     #with open('./coh/data/signaling.pkl', 'rb') as ff:
     #    tFacAllM = pickle.load(ff) # 12 component
 
-    BC_status_plot(13, CoH_Data, ax[7], get_status_df())
+    BC_status_plot(20, CoH_Data, ax[7], get_status_df())
     CoH_LogReg_plot(ax[8], tFacAllM, CoH_Data, get_status_df())
     CoH_Scat_Plot(ax[9], tFacAllM, CoH_Data, "Patient", plot_comps=[5, 10], status_df=get_status_df())
 
