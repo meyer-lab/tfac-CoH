@@ -68,7 +68,9 @@ def makeFigure():
     DF = recDF.loc[recDF.Marker == "IL10R"]
     DF["Mean"] -= np.mean(DF["Mean"].values)
     DF["Mean"] /= np.std(DF["Mean"].values)
-    BC_scatter_cells_rec(ax[3], DF, "IL10R", filter=False)
+    figure6C = BC_scatter_cells_rec(ax[3], DF, "IL10R", filter=False)
+    figure6C.to_csv("/home/brianoj/tfac-CoH/JCI Data/figure6C.csv")
+    
 
     # D Response to IL10 per patient in monocytes
 
@@ -79,12 +81,15 @@ def makeFigure():
     DF = recDF.loc[recDF.Marker == "IL2Ra"]
     DF["Mean"] -= np.mean(DF["Mean"].values)
     DF["Mean"] /= np.std(DF["Mean"].values)
-    BC_scatter_cells_rec(ax[5], DF, "IL2Ra", filter=False)
+    figure6E = BC_scatter_cells_rec(ax[5], DF, "IL2Ra", filter=False)
+    figure6E.to_csv("/home/brianoj/tfac-CoH/JCI Data/figure6E.csv")
 
     DF = recDF.loc[recDF.Marker == "IL2RB"]
     DF["Mean"] -= np.mean(DF["Mean"].values)
     DF["Mean"] /= np.std(DF["Mean"].values)
-    BC_scatter_cells_rec(ax[6], DF, "IL2RB", filter=False)
+    figure6F = BC_scatter_cells_rec(ax[6], DF, "IL2RB", filter=False)
+    figure6F.to_csv("/home/brianoj/tfac-CoH/JCI Data/figure6F.csv")
+    
 
     rec_vs_induced(CoH_DF, CoH_DF_R, receptor= "IL2Ra", marker="pSTAT5", treatment="IL2-50ng", cell="CD8+", ax=ax[7])
     rec_vs_induced(CoH_DF, CoH_DF_R, receptor= "IL2Ra", marker="pSTAT5", treatment="IL2-50ng", cell="Treg", ax=ax[8])

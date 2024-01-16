@@ -38,14 +38,17 @@ def makeFigure():
     DF = CoH_DF.loc[(CoH_DF.Marker == "pSTAT3") & (CoH_DF.Treatment != "Untreated")]
     DF["Mean"] -= np.mean(DF["Mean"].values)
     DF["Mean"] /= np.std(DF["Mean"].values)
-    BC_scatter_cells(ax[0], DF, "pSTAT3", "IL10-50ng")
+    figure3A = BC_scatter_cells(ax[0], DF, "pSTAT3", "IL10-50ng")
+    figure3A.to_csv("/home/brianoj/tfac-CoH/JCI Data/figure3A.csv")
+
 
     # B Baseline pSTAT3
 
     DF = CoH_DF.loc[(CoH_DF.Marker == "pSTAT3") & (CoH_DF.Treatment == "Untreated")]
     DF["Mean"] -= np.mean(DF["Mean"].values)
     DF["Mean"] /= np.std(DF["Mean"].values)
-    BC_scatter_cells(ax[1], DF, "pSTAT3", "Untreated")
+    figure3B = BC_scatter_cells(ax[1], DF, "pSTAT3", "Untreated")
+    figure3B.to_csv("/home/brianoj/tfac-CoH/JCI Data/figure3B.csv")
 
     # C Baseline pSTAT3 vs pSTAT3 induced
 

@@ -42,7 +42,8 @@ def makeFigure():
             ["CD8+", "CD8 TEM", "CD8 TCM", "CD8 Naive", "CD8 Naive", "CD8 TEMRA"]
         )
     ]
-    BC_scatter_cells_rec(ax[0], PD1_DF, "PD1", filter=False)
+    figure5A = BC_scatter_cells_rec(ax[0], PD1_DF, "PD1", filter=False)
+    figure5A.to_csv("/home/brianoj/tfac-CoH/JCI Data/figure5A.csv")
 
     # B PD-L1 CD8 and B cells
 
@@ -64,7 +65,8 @@ def makeFigure():
             ]
         )
     ]
-    BC_scatter_cells_rec(ax[1], PDL1_DF, "PD_L1", filter=False)
+    figure5B = BC_scatter_cells_rec(ax[1], PDL1_DF, "PD_L1", filter=False)
+    figure5B.to_csv("/home/brianoj/tfac-CoH/JCI Data/figure5B.csv")
 
     # C IL6Ra B
 
@@ -86,7 +88,8 @@ def makeFigure():
             ]
         )
     ]
-    BC_scatter_cells_rec(ax[2], IL6Ra_DF, "IL6Ra", filter=False)
+    figure5C = BC_scatter_cells_rec(ax[2], IL6Ra_DF, "IL6Ra", filter=False)
+    figure5C.to_csv("/home/brianoj/tfac-CoH/JCI Data/figure5C.csv")
 
     # D IL2Ra Tregs
 
@@ -94,7 +97,8 @@ def makeFigure():
     DF["Mean"] -= np.mean(DF["Mean"].values)
     DF["Mean"] /= np.std(DF["Mean"].values)
     IL2Ra_DF = DF.loc[DF.Cell.isin(["Treg", "Treg 1", "Treg 2", "Treg 3"])]
-    BC_scatter_cells_rec(ax[3], IL2Ra_DF, "IL2Ra", filter=False)
+    figure5D = BC_scatter_cells_rec(ax[3], IL2Ra_DF, "IL2Ra", filter=False)
+    figure5D.to_csv("/home/brianoj/tfac-CoH/JCI Data/figure5D.csv")
 
     # Make mean Z scored DF
     meanDF = CoH_DF.groupby(["Patient", "Cell", "Marker"]).mean().reset_index()

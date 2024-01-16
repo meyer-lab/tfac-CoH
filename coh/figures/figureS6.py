@@ -15,12 +15,14 @@ def makeFigure():
     subplotLabel(ax)
 
     #f.set_layout_engine(None)
+    subs = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"]
 
     CoH_Data_DF = pd.read_csv("./coh/data/CoH_Rec_DF.csv")
     for i, rec in enumerate(np.array(["IFNg R1", "TGFB RII", "PD1", "PD_L1", "IL2Ra", "IL2RB", "IL4Ra", "IL6Ra", "IL6RB", "IL7Ra", "IL10R", "IL12RI"])):
         DF = CoH_Data_DF.loc[CoH_Data_DF.Marker == rec]
         DF["Mean"] -= np.mean(DF["Mean"].values)
         DF["Mean"] /= np.std(DF["Mean"].values)
-        BC_scatter_cells_rec(ax[i], DF, rec, filter=False)
+        fig = BC_scatter_cells_rec(ax[i], DF, rec, filter=False)
+        fig.to_csv("/home/brianoj/tfac-CoH/JCI Data/figureS6" + subs[i] + ".csv")
 
     return f

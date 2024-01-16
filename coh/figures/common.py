@@ -150,6 +150,7 @@ def BC_scatter_cells(ax, CoH_DF: pd.DataFrame, marker: str, cytokine: str, filte
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
 
     scatter_common(ax, hist_DF, filter=filter)
+    return hist_DF
 
 
 def BC_scatter_cells_rec(ax, CoH_DF: pd.DataFrame, marker: str, filter=False):
@@ -164,6 +165,7 @@ def BC_scatter_cells_rec(ax, CoH_DF: pd.DataFrame, marker: str, filter=False):
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
 
     scatter_common(ax, hist_DF, filter=filter)
+    return hist_DF
 
 
 def CoH_Scat_Plot(ax, tFac, CoH_Array, mode, plot_comps, status_df):

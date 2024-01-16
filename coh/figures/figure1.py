@@ -39,10 +39,15 @@ def makeFigure():
 
     data = data.loc[:, treatments, :, :]
 
-    fullHeatMap(ax[1], data.loc[:, :, :, "pSTAT3"], cbar=False)
-    fullHeatMap(ax[2], data.loc[:, :, :, "pSTAT5"], cbar=False)
-    fullHeatMap(ax[3], data.loc[:, :, :, "pSTAT6"], cbar=False)
-    fullHeatMap(ax[4], data.loc[:, :, :, "pSTAT1"], cbar=False)
+    figure1C = fullHeatMap(ax[1], data.loc[:, :, :, "pSTAT3"], cbar=False)
+    figure1D = fullHeatMap(ax[2], data.loc[:, :, :, "pSTAT5"], cbar=False)
+    figure1E = fullHeatMap(ax[3], data.loc[:, :, :, "pSTAT6"], cbar=False)
+    figure1F = fullHeatMap(ax[4], data.loc[:, :, :, "pSTAT1"], cbar=False)
+
+    figure1C.to_csv("/home/brianoj/tfac-CoH/JCI Data/figure1C.csv")
+    figure1D.to_csv("/home/brianoj/tfac-CoH/JCI Data/figure1D.csv")
+    figure1E.to_csv("/home/brianoj/tfac-CoH/JCI Data/figure1E.csv")
+    figure1F.to_csv("/home/brianoj/tfac-CoH/JCI Data/figure1F.csv")
 
     return f
 
@@ -64,3 +69,4 @@ def fullHeatMap(ax, data, cbar=True):
         cbar_kws={"label": data.coords["Marker"]},
     )
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
+    return dataFlat
