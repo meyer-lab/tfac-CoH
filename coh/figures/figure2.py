@@ -33,8 +33,8 @@ def makeFigure():
     with open('./coh/data/signaling.pkl', 'rb') as ff:
         tFacAllM = pickle.load(ff) # 12 component
 
-    #BC_status_plot(13, CoH_Data, ax[5], get_status_df())
-    ##CoH_LogReg_plot(ax[6], tFacAllM, CoH_Data, get_status_df())
+    BC_status_plot(13, CoH_Data, ax[5], get_status_df())
+    CoH_LogReg_plot(ax[6], tFacAllM, CoH_Data, get_status_df())
     
     # B cells and Tregs in response to different stimulations
     CoH_DF = pd.read_csv("./coh/data/CoH_Flow_DF.csv")
@@ -84,5 +84,5 @@ def comp_corr_plot(tFac, CoH_Array, status_DF, ax):
     corrDF = corrDF.loc["BC Status", :].to_frame()
     corrDF = corrDF.drop("BC Status").reset_index()
     corrDF.columns = ["Component", "BC Correlation"]
-    sns.barplot(data=corrDF, x="Component", y="BC Correlation", color='k', ax=ax)
-    ax.set(ylim=(-1, 1), xlabel="Component", ylabel="Correlation with BC")
+    sns.barplot(data=corrDF, y="BC Correlation", x="Component", color='k', ax=ax)
+    ax.set(xlim=(-1, 1), ylabel="Component", xlabel="Correlation with BC")
