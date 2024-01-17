@@ -131,7 +131,8 @@ def scatter_common(ax, hist_DF: pd.DataFrame, filter):
                 pvalues=np.tile(
                     0,
                     len(filt_cells)),
-                verbose=0)
+                verbose=0,
+                )
         else:
             add_stat_annotation(ax=ax, data=hist_DF, x="Cell", y="Mean", hue="Status", box_pairs=boxpairs, text_annot_custom=pvals,
                                 perform_stat_test=False, loc='inside', pvalues=np.tile(0, len(filt_cells)), verbose=0)
@@ -145,7 +146,7 @@ def BC_scatter_cells(ax, CoH_DF: pd.DataFrame, marker: str, cytokine: str, filte
     hist_DF = hist_DF.groupby(["Cell", "Patient", "Marker"]).Mean.mean().reset_index()
     hist_DF["Status"] = hist_DF.replace({"Patient": status_dict}).Patient.values
 
-    sns.boxplot(data=hist_DF, y="Mean", x="Cell", hue="Status", ax=ax)
+    sns.boxplot(data=hist_DF, y="Mean", x="Cell", hue="Status", showfliers=False, ax=ax)
     ax.set(title=marker + " in response to " + cytokine, ylabel=marker, xlabel="Status")
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
 
@@ -159,7 +160,7 @@ def BC_scatter_cells_rec(ax, CoH_DF: pd.DataFrame, marker: str, filter=False):
     hist_DF = hist_DF.groupby(["Cell", "Patient", "Marker"]).Mean.mean().reset_index()
     hist_DF["Status"] = hist_DF.replace({"Patient": status_dict}).Patient.values
     
-    sns.boxplot(data=hist_DF, y="Mean", x="Cell", hue="Status", ax=ax)
+    sns.boxplot(data=hist_DF, y="Mean", x="Cell", hue="Status", showfliers=False, ax=ax)
     ax.set(title=marker, ylabel=marker, xlabel="Status")
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
 
