@@ -13,7 +13,7 @@ from ..flow import make_CoH_Tensor, get_status_df
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((12, 10), (3, 4), multz={0: 1, 2: 1})
+    ax, f = getSetup((12, 9), (3, 4))
 
     # Add subplot labels
     subplotLabel(ax)
@@ -24,20 +24,23 @@ def makeFigure():
     ax[3].set(xlim=(0, 6), ylim=(0, 6))
     ax[4].set(xlim=(-3, 2), ylim=(-1, 4))
     ax[5].set(xlim=(-1, 4), ylim=(0, 6))
-    ax[6].set(xlim=(0, 1), ylim=(-1, 0))
+    ax[6].set(xlim=(0, 1), ylim=(0, 1))
     ax[7].set(xlim=(0, 1.5), ylim=(0, 1.5))
     ax[8].set(xlim=(-3, 2), ylim=(-2, 2))
     ax[9].set(xlim=(-3, 2), ylim=(-3, 1))
+    ax[9].set(xlim=(0, 6), ylim=(0, 6))
 
     CoH_DF = pd.read_csv("./coh/data/CoH_Flow_DF.csv", index_col=0)
     treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng", "Untreated"])
     CoH_DF = CoH_DF.loc[(CoH_DF.Treatment.isin(treatments)) & (CoH_DF.Time == "15min") ].dropna()
 
-    # Figure A Markers for signaling component
 
+    # Figure A Markers for signaling component
+    cells = ["CD16 NK", "CD20 B", "CD4+", "CD8+", "CD33 Myeloid", "Treg"]
     DF = CoH_DF.loc[(CoH_DF.Marker == "pSTAT3") & (CoH_DF.Treatment != "Untreated")]
     DF["Mean"] -= np.mean(DF["Mean"].values)
     DF["Mean"] /= np.std(DF["Mean"].values)
+    #DF = DF[(CoH_DF.Cell.isin(cells))]
     BC_scatter_cells(ax[0], DF, "pSTAT3", "IL10-50ng")
 
     # B Baseline pSTAT3
@@ -45,7 +48,9 @@ def makeFigure():
     DF = CoH_DF.loc[(CoH_DF.Marker == "pSTAT3") & (CoH_DF.Treatment == "Untreated")]
     DF["Mean"] -= np.mean(DF["Mean"].values)
     DF["Mean"] /= np.std(DF["Mean"].values)
+    DF = DF[(CoH_DF.Cell.isin(cells))]
     BC_scatter_cells(ax[1], DF, "pSTAT3", "Untreated")
+    print("HI1")
 
     # C Baseline pSTAT3 vs pSTAT3 induced
 
@@ -69,6 +74,7 @@ def makeFigure():
         treatment2="IL10-50ng",
         ax=ax[2],
     )
+    print("HI4")
 
     # D CD8+ pSTAT3 vs B pSTAT3 in IL10
 
@@ -82,6 +88,7 @@ def makeFigure():
         treatment2="IL10-50ng",
         ax=ax[3],
     )
+    print("HI5")
     
     # E CD8+ pSTAT3 vs B pSTAT3 in IL10
 
@@ -115,7 +122,7 @@ def makeFigure():
     with open('./coh/data/signaling.pkl', 'rb') as ff:
         tFacAllM = pickle.load(ff) # 12 component
     CoH_Data = make_CoH_Tensor(just_signal=True)
-    CoH_Scat_Plot(ax[6], tFacAllM, CoH_Data, "Patient", plot_comps=[5, 10], status_df=get_status_df())
+    CoH_Scat_Plot(ax[6], tFacAllM, CoH_Data, "Patient", plot_comps=[5, 6], status_df=get_status_df())
 
 
     # H Untreated pSTAT4 and pSMAD1-2 by cell
@@ -144,6 +151,17 @@ def makeFigure():
         receptor2="pSmad1-2",
         treatment2="Untreated",
         ax=ax[9],
+    )
+
+    plot_by_patient(
+        meanDF,
+        cell1="Treg",
+        receptor1="pSTAT5",
+        treatment1="IL2-50ng",
+        cell2="CD20 B",
+        receptor2="pSTAT3",
+        treatment2="IL10-50ng",
+        ax=ax[10],
     )
 
 
