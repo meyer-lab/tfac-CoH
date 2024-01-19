@@ -5,7 +5,7 @@ import pickle
 import numpy as np
 from tensorpack.plot import reduction
 from tensorpack import Decomposition
-from .common import subplotLabel, getSetup, plot_tFac_CoH
+from .common import subplotLabel, getSetup
 from ..tensor import factorTensor
 from ..flow import make_CoH_Tensor
 
@@ -13,11 +13,10 @@ from ..flow import make_CoH_Tensor
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((12, 10), (4, 3), multz={0: 2})
+    ax, f = getSetup((6, 3), (1, 2))
 
     # Add subplot labels
     subplotLabel(ax)
-    ax[0].axis("off")
 
     CoH_Data = make_CoH_Tensor(just_signal=True)
 
