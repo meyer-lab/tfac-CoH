@@ -6,10 +6,8 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn import preprocessing
-from tensorpack.plot import reduction
-from tensorpack import Decomposition
-from .common import subplotLabel, getSetup, plot_tFac_CoH, CoH_Scat_Plot, BC_scatter_cells
-from ..tensor import factorTensor, BC_status_plot, CoH_LogReg_plot
+from .common import subplotLabel, getSetup, plot_tFac_CoH, BC_scatter_cells
+from ..tensor import BC_status_plot, CoH_LogReg_plot
 from ..flow import make_CoH_Tensor, get_status_df
 
 
