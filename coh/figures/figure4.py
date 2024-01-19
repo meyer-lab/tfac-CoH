@@ -13,7 +13,7 @@ from ..flow_rec import make_CoH_Tensor_rec, get_status_rec_df
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((9, 7), (3, 3))
+    ax, f = getSetup((7, 7), (3, 3))
 
     # Add subplot labels
     subplotLabel(ax)
@@ -24,12 +24,12 @@ def makeFigure():
     
     plot_tFac_CoH(ax[0:], tFacAllM, CoH_Data)
 
-
     CoH_Data_R = make_CoH_Tensor_rec()
     tFacAllM_R = factorTensor(CoH_Data_R.to_numpy(), r=5)
 
     BC_status_plot(6, CoH_Data_R, ax[3], get_status_rec_df())
     CoH_LogReg_plot(ax[4], tFacAllM_R, CoH_Data_R, get_status_rec_df())
+    
 
     CoH_Data_DF = pd.read_csv("./coh/data/CoH_Rec_DF.csv")
 
@@ -37,6 +37,7 @@ def makeFigure():
     DF["Mean"] -= np.mean(DF["Mean"].values)
     DF["Mean"] /= np.std(DF["Mean"].values)
     rec_cell_plot(DF, "IL7Ra", ["CD16 NK", "CD20 B", "CD4+", "CD8+", "CD33 Myeloid", "Treg"], ax[5])
+    ax[5].set(ylim=(-4, 2))
 
     DF = CoH_Data_DF.loc[CoH_Data_DF.Marker == "PD1"]
     DF["Mean"] -= np.mean(DF["Mean"].values)
