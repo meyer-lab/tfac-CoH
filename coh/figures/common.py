@@ -12,6 +12,7 @@ import pandas as pd
 from matplotlib import gridspec, pyplot as plt
 from scipy.stats import mannwhitneyu
 from statannot import add_stat_annotation
+from sklearn import preprocessing
 from ..flow import get_status_dict
 from ..flow_rec import get_status_dict_rec
 
@@ -183,3 +184,18 @@ def CoH_Scat_Plot(ax, tFac, CoH_Array, mode, plot_comps, status_df):
     else:
         sns.scatterplot(data=tFacDF, x=plot_comps[0], y=plot_comps[1], ax=ax)
     ax.set(xlabel="Component " + str(plot_comps[0]), ylabel="Component " + str(plot_comps[1]))
+
+
+def comp_corr_plot(tFac, CoH_Array, status_DF, ax):
+    """Plots correlation which each component has with outcome across patients"""
+    coord = CoH_Array.dims.index("Patient")
+    mode_facs = tFac[1][coord]
+    Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
+    corrDF = pd.DataFrame(data=mode_facs, columns=np.arange(1, mode_facs.shape[1] + 1))
+    corrDF["BC Status"] = Donor_CoH_y
+    corrDF = corrDF.corr()
+    corrDF = corrDF.loc["BC Status", :].to_frame()
+    corrDF = corrDF.drop("BC Status").reset_index()
+    corrDF.columns = ["Component", "BC Correlation"]
+    sns.barplot(data=corrDF, y="BC Correlation", x="Component", color='k', ax=ax)
+    ax.set(ylim=(-1, 1), ylabel="Component", xlabel="Correlation with BC")

@@ -10,19 +10,19 @@ from scipy.stats import zscore
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn import preprocessing
 from sklearn.model_selection import RepeatedStratifiedKFold
-from .common import subplotLabel, getSetup, BC_scatter_cells_rec
+from .common import subplotLabel, getSetup
 from ..flow_rec import get_status_rec_df, make_CoH_Tensor_rec
 from ..tensor import factorTensor
 
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((9, 7.5), (3, 4))
+    ax, f = getSetup((9, 6.75), (3, 4))
 
     # Add subplot labels
     subplotLabel(ax)
-    ax[0].set(ylim=(-2, 4))
-    ax[1].set(ylim=(-3, 3))
+    ax[0].set(xlim=(-1, 3), ylim=(-6, 2))
+    ax[1].set(xlim=(-1, 3), ylim=(-3, 2))
     ax[2].set(ylim=(-3, 2))
     ax[3].set(ylim=(0, 4))
     ax[4].set(xlim=(-2, 0.5), ylim=(-3, 1))
@@ -31,70 +31,6 @@ def makeFigure():
     ax[7].set(xlim=(1, 3), ylim=(-3, 1))
 
     CoH_DF = pd.read_csv("./coh/data/CoH_Rec_DF.csv", index_col=0)
-
-    # Figure A - plot of PD-1 CD8 Cells
-
-    DF = CoH_DF.loc[CoH_DF.Marker == "PD1"]
-    DF["Mean"] -= np.mean(DF["Mean"].values)
-    DF["Mean"] /= np.std(DF["Mean"].values)
-    PD1_DF = DF.loc[
-        DF.Cell.isin(
-            ["CD8+", "CD8 TEM", "CD8 TCM", "CD8 Naive", "CD8 Naive", "CD8 TEMRA"]
-        )
-    ]
-    BC_scatter_cells_rec(ax[0], PD1_DF, "PD1", filter=False)
-
-    # B PD-L1 CD8 and B cells
-
-    DF = CoH_DF.loc[CoH_DF.Marker == "PD_L1"]
-    DF["Mean"] -= np.mean(DF["Mean"].values)
-    DF["Mean"] /= np.std(DF["Mean"].values)
-    PDL1_DF = DF.loc[
-        DF.Cell.isin(
-            [
-                "CD8+",
-                "CD8 TEM",
-                "CD8 TCM",
-                "CD8 Naive",
-                "CD8 Naive",
-                "CD8 TEMRA",
-                "CD20 B",
-                "CD20 B Naive",
-                "CD20 B Memory",
-            ]
-        )
-    ]
-    BC_scatter_cells_rec(ax[1], PDL1_DF, "PD_L1", filter=False)
-
-    # C IL6Ra B
-
-    DF = CoH_DF.loc[CoH_DF.Marker == "IL6Ra"]
-    DF["Mean"] -= np.mean(DF["Mean"].values)
-    DF["Mean"] /= np.std(DF["Mean"].values)
-    IL6Ra_DF = DF.loc[
-        DF.Cell.isin(
-            [
-                "CD8+",
-                "CD8 TEM",
-                "CD8 TCM",
-                "CD8 Naive",
-                "CD8 Naive",
-                "CD8 TEMRA",
-                "CD20 B",
-                "CD20 B Naive",
-                "CD20 B Memory",
-            ]
-        )
-    ]
-    BC_scatter_cells_rec(ax[2], IL6Ra_DF, "IL6Ra", filter=False)
-
-    # D IL2Ra Tregs
-
-    DF = CoH_DF.loc[CoH_DF.Marker == "IL2Ra"]
-    DF["Mean"] -= np.mean(DF["Mean"].values)
-    DF["Mean"] /= np.std(DF["Mean"].values)
-    IL2Ra_DF = DF.loc[DF.Cell.isin(["Treg", "Treg 1", "Treg 2", "Treg 3"])]
-    BC_scatter_cells_rec(ax[3], IL2Ra_DF, "IL2Ra", filter=False)
 
     # Make mean Z scored DF
     meanDF = CoH_DF.groupby(["Patient", "Cell", "Marker"]).mean().reset_index()
@@ -109,6 +45,25 @@ def makeFigure():
     ].apply(zscore)
 
     # E PD-L1 in B vs CD8 Cells
+
+    plot_by_patient(
+        meanDF,
+        cell1="CD8 Naive",
+        receptor1="IL2RB",
+        cell2="CD8 Naive",
+        receptor2="IL12RI",
+        ax=ax[0],
+    )
+
+    plot_by_patient(
+        meanDF,
+        cell1="CD8 Naive",
+        receptor1="IL2RB",
+        cell2="CD20 B",
+        receptor2="IL12RI",
+        ax=ax[1],
+    )
+
 
     plot_by_patient(
         meanDF,

@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn import preprocessing
-from .common import subplotLabel, getSetup, plot_tFac_CoH, BC_scatter_cells
+from .common import subplotLabel, getSetup, plot_tFac_CoH, BC_scatter_cells, comp_corr_plot
 from ..tensor import BC_status_plot, CoH_LogReg_plot
 from ..flow import make_CoH_Tensor, get_status_df
 
@@ -69,18 +69,3 @@ def cytok_stim_plot(CoH_DF, cytok, cells, ax):
     CoH_DF = CoH_DF.loc[(CoH_DF.Treatment == cytok) & (CoH_DF.Cell.isin(cells)) & CoH_DF.Marker.isin(["pSTAT1", "pSTAT3", "pSTAT3", "pSTAT5", "pSTAT6", "pSmad1-2"])]
     sns.boxplot(data=CoH_DF, x="Cell", y="Mean", hue="Marker", palette='husl', showfliers=False, ax=ax)
     ax.set(ylabel="Response to " + cytok)
-
-
-def comp_corr_plot(tFac, CoH_Array, status_DF, ax):
-    """Plots correlation which each component has with outcome across patients"""
-    coord = CoH_Array.dims.index("Patient")
-    mode_facs = tFac[1][coord]
-    Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
-    corrDF = pd.DataFrame(data=mode_facs, columns=np.arange(1, mode_facs.shape[1] + 1))
-    corrDF["BC Status"] = Donor_CoH_y
-    corrDF = corrDF.corr()
-    corrDF = corrDF.loc["BC Status", :].to_frame()
-    corrDF = corrDF.drop("BC Status").reset_index()
-    corrDF.columns = ["Component", "BC Correlation"]
-    sns.barplot(data=corrDF, y="BC Correlation", x="Component", color='k', ax=ax)
-    ax.set(xlim=(-1, 1), ylabel="Component", xlabel="Correlation with BC")
