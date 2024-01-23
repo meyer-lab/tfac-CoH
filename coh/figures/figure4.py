@@ -4,10 +4,9 @@ This creates Figure 4, tensor factorization of receptor data.
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from .common import subplotLabel, getSetup, plot_tFac_CoH, BC_scatter_cells_rec
+from .common import subplotLabel, getSetup, plot_tFac_CoH, BC_scatter_cells_rec, comp_corr_plot
 from ..tensor import factorTensor, CoH_LogReg_plot, BC_status_plot
 from ..flow_rec import make_CoH_Tensor_rec, get_status_rec_df
-
 
 
 def makeFigure():
@@ -28,8 +27,7 @@ def makeFigure():
     tFacAllM_R = factorTensor(CoH_Data_R.to_numpy(), r=5)
 
     BC_status_plot(6, CoH_Data_R, ax[3], get_status_rec_df())
-    CoH_LogReg_plot(ax[4], tFacAllM_R, CoH_Data_R, get_status_rec_df())
-    
+    comp_corr_plot(tFacAllM_R, CoH_Data, get_status_rec_df(), ax[4])
 
     CoH_Data_DF = pd.read_csv("./coh/data/CoH_Rec_DF.csv")
 
