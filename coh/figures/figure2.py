@@ -5,7 +5,6 @@ import pickle
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from sklearn import preprocessing
 from .common import subplotLabel, getSetup, plot_tFac_CoH, BC_scatter_cells, comp_corr_plot
 from ..tensor import BC_status_plot, CoH_LogReg_plot
 from ..flow import make_CoH_Tensor, get_status_df
@@ -43,11 +42,11 @@ def makeFigure():
     # IFNg by status
     CoH_DF = pd.read_csv("./coh/data/CoH_Flow_DF.csv")
     CoH_DF = CoH_DF.loc[CoH_DF.Time == "15min"]
-    ligs = ["IL2-50ng", "IL10-50ng"]
-    axes = [7, 9]
+    ligs = ["IL2-50ng", "IL10-50ng", "Untreated"]
+    axes = [7, 9, 10]
     cells = ["CD16 NK", "CD20 B", "CD4+", "CD8+", "CD33 Myeloid", "Treg"]
 
-    for i, sigg in enumerate(["pSTAT5", "pSTAT3"]):
+    for i, sigg in enumerate(["pSTAT5", "pSTAT3", "pSTAT4"]):
         DF = CoH_DF.loc[(CoH_DF.Marker == sigg) & (CoH_DF.Treatment == ligs[i])]
         DF["Mean"] -= np.nanmean(DF["Mean"].values)
         DF["Mean"] /= np.nanstd(DF["Mean"].values)
@@ -55,6 +54,7 @@ def makeFigure():
         BC_scatter_cells(ax[axes[i]], DF, sigg, ligs[i])
     ax[7].set(ylim=(-3, 4))
     ax[9].set(ylim=(-2, 4))
+    ax[10].set(ylim=(-4, 3))
 
     # Correlation plot
     comp_corr_plot(tFacAllM, CoH_Data, get_status_df(), ax[8])

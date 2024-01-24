@@ -13,7 +13,7 @@ from ..flow import make_CoH_Tensor
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
     # Get list of axis objects
-    ax, f = getSetup((15, 8), (3, 6), multz={0: 5})
+    ax, f = getSetup((15, 7), (3, 6), multz={0: 5})
 
     # Add subplot labels
     subplotLabel(ax)
@@ -56,6 +56,12 @@ def makeFigure():
     cytok_marker_plot(CoH_DF, "IL4-50ng", ["CD16 NK", "CD20 B", "CD4+", "CD8+", "CD33 Myeloid", "Treg"], "pSTAT6", ax[11])
     multi_cytoks_plot(CoH_DF, ["TGFB-50ng", "Untreated"], ["CD16 NK", "CD20 B", "CD4+", "CD8+", "CD33 Myeloid", "Treg"], "pSmad1-2", ax[12])
 
+    ax[7].set(ylim=(-300, 1200))
+    ax[8].set(ylim=(0, 1500))
+    ax[9].set(ylim=(2500, 6000))
+    ax[10].set(ylim=(-500, 1000))
+    ax[11].set(ylim=(0, 1200))
+    ax[12].set(ylim=(0, 6000))
 
 
     return f
