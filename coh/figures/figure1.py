@@ -40,6 +40,10 @@ def makeFigure():
 
     data = data.loc[:, treatments, :, :]
 
+    print(np.count_nonzero(np.isnan(data[:, -2, :, :])) / data[:, -2, :, :].size)
+    print(np.count_nonzero(np.isnan(data[:, 1, :, :])) / data[:, 1, :, :].size)
+
+
     fullHeatMap(ax[1], data.loc[:, :, :, "pSTAT1"], cbar=False)
     fullHeatMap(ax[2], data.loc[:, :, :, "pSTAT3"], cbar=False)
     fullHeatMap(ax[3], data.loc[:, :, :, "pSTAT4"], cbar=False)
