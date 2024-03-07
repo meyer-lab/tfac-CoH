@@ -114,7 +114,7 @@ def makeFigure():
     mode = CoH_Data.dims[0]
     tFacDF = pd.DataFrame(tFacAllM.factors[0], index=CoH_Data.coords[mode], columns=[str(i + 1) for i in range(tFacAllM.factors[0].shape[1])])
 
-    ROC_plot(
+    AUC_DF = ROC_plot(
         meanDF,
         receptors=["IL6Ra", "IL6Ra", "PD_L1", "PD_L1", "IL2Ra"],
         cells=["CD8 TEM", "CD20 B", "CD8 TEM", "CD20 B", "Treg"],
@@ -123,6 +123,7 @@ def makeFigure():
         ax=ax[8],
     )
 
+    plot_AUC_bar(AUC_DF, ax[9])
 
     #ax[8].set(xlim=(0, 1), ylim=(0, 1))
 
@@ -162,7 +163,8 @@ def ROC_plot(recDF, receptors, cells, tFacDF, comp, ax):
     status_DF = get_status_rec_df()
     cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=20)
     lrmodel = LogisticRegressionCV(penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv)
-    
+    AUC_DF = pd.DataFrame()
+
     for i, receptor in enumerate(receptors):
         predDF = recDF.loc[recDF.Cell == cells[i]].reset_index()[["Patient", receptor]]
         predDF = predDF.set_index("Patient").join(status_DF.set_index("Patient"), on="Patient")
@@ -171,7 +173,8 @@ def ROC_plot(recDF, receptors, cells, tFacDF, comp, ax):
         y_pred = LR_CoH.predict_proba(stats.zscore(predDF[receptor][:, np.newaxis]))[:, 1]
         fpr, tpr, _ = metrics.roc_curve(Donor_CoH_y, y_pred)
         auc = round(metrics.roc_auc_score(Donor_CoH_y, y_pred), 4)
-        ax.plot(fpr, tpr, label=cells[i] + " " + receptor + ", AUC=" + str(auc))
+        ax.plot(fpr, tpr, label=cells[i] + " " + receptor)
+        AUC_DF = pd.concat([AUC_DF, pd.DataFrame({"Feature": cells[i] + " " + receptor, "AUC": [auc]})])
        
     predDF = tFacDF[str(comp)].reset_index()
     predDF.columns = ["Patient", "Comp. " + str(comp)]
@@ -182,5 +185,13 @@ def ROC_plot(recDF, receptors, cells, tFacDF, comp, ax):
     fpr, tpr, _ = metrics.roc_curve(Donor_CoH_y, y_pred)
     auc = round(metrics.roc_auc_score(Donor_CoH_y, y_pred), 4)
     ax.plot(fpr, tpr, label="Comp. " + str(comp) + ", AUC=" + str(auc))
+    AUC_DF = pd.concat([AUC_DF, pd.DataFrame({"Feature": "Comp. " + str(comp), "AUC": [auc]})])
     
     ax.legend()
+    return AUC_DF
+
+
+def plot_AUC_bar(AUC_DF, ax):
+    """Plots AUC from AUC analysis"""
+    sns.barplot(data=AUC_DF, x="Feature", y="AUC", ax=ax)
+    ax.set(ylim=(0.5, 1))
