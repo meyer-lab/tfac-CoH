@@ -120,7 +120,7 @@ def CoH_LogReg_plot(ax, tFac, CoH_Array, status_DF):
     Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
 
     LR_CoH = lrmodel.fit(mode_facs, Donor_CoH_y)
-    
+    print(np.max(np.mean(lrmodel.scores_[1], axis=0)))
     CoH_comp_weights = pd.DataFrame({"Component": np.arange(1, mode_facs.shape[1] + 1), "Coefficient": LR_CoH.coef_[0]})
     sns.barplot(data=CoH_comp_weights, x="Component", y="Coefficient", color="k", ax=ax)
 

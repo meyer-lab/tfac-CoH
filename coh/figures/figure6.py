@@ -79,15 +79,15 @@ def makeFigure():
     DF = recDF.loc[recDF.Marker == "IL2Ra"]
     DF["Mean"] -= np.mean(DF["Mean"].values)
     DF["Mean"] /= np.std(DF["Mean"].values)
-    BC_scatter_cells_rec(ax[5], DF, "IL2Ra", filter=False)
+    BC_scatter_cells_rec(ax[5], DF, "IL2Ra", filter=True)
 
     DF = recDF.loc[recDF.Marker == "IL2RB"]
     DF["Mean"] -= np.mean(DF["Mean"].values)
     DF["Mean"] /= np.std(DF["Mean"].values)
-    BC_scatter_cells_rec(ax[6], DF, "IL2RB", filter=False)
+    BC_scatter_cells_rec(ax[6], DF, "IL2RB", filter=True)
 
-    rec_vs_induced(CoH_DF, CoH_DF_R, receptor= "IL2Ra", marker="pSTAT5", treatment="IL2-50ng", cell="CD8+", ax=ax[7])
-    rec_vs_induced(CoH_DF, CoH_DF_R, receptor= "IL2Ra", marker="pSTAT5", treatment="IL2-50ng", cell="Treg", ax=ax[8])
+    rec_vs_induced_add(CoH_DF, CoH_DF_R, receptor1= "IL2Ra", receptor2= "IL2RB", marker="pSTAT5", treatment="IL2-50ng", cell="CD8+", ax=ax[7])
+    rec_vs_induced_add(CoH_DF, CoH_DF_R, receptor1= "IL2Ra", receptor2= "IL2RB", marker="pSTAT5", treatment="IL2-50ng", cell="Treg", ax=ax[8])
     rec_vs_induced(CoH_DF, CoH_DF_R, receptor= "IL2RB", marker="pSTAT5", treatment="IL2-50ng", cell="CD8+", ax=ax[9])
     rec_vs_induced(CoH_DF, CoH_DF_R, receptor= "IL2RB", marker="pSTAT5", treatment="IL10-50ng", cell="Treg", ax=ax[10])
 
@@ -124,3 +124,22 @@ def plot_rec_resp_cell(sigDF, recDF, receptor, marker, treatment, ax):
     print(plotDF.corr())
     print(pearsonr(plotDF[receptor].values, plotDF[marker + " response to " + treatment].values))
     sns.regplot(data=plotDF, x=receptor, y=marker + " response to " + treatment, ax=ax, scatter=False, line_kws={"color": "gray"}, truncate=False)
+
+
+def rec_vs_induced_add(CoH_DF, CoH_DF_R, receptor1, receptor2, marker, treatment, cell, ax):
+    """Plots receptor level vs response to treatment"""
+    sigDF = CoH_DF.loc[(CoH_DF.Treatment == treatment) & (CoH_DF.Cell == cell)][marker].to_frame()
+    recDF = CoH_DF_R.loc[(CoH_DF_R.Cell == cell)][receptor1].to_frame()
+    recDF[receptor2] = CoH_DF_R.loc[(CoH_DF_R.Cell == cell)][receptor2].to_frame().values
+    recDF[receptor1 + " + " + receptor2] = recDF[receptor1].values + recDF[receptor2].values
+    
+    jointDF = sigDF.join(recDF)
+
+    status_DF = get_status_df().set_index("Patient")
+    jointDF = jointDF.join(status_DF)
+    sns.scatterplot(data=jointDF, x=receptor1 + " + " + receptor2, y=marker, hue="Status", ax=ax)
+    print(jointDF.corr())
+    jointDF = jointDF.reset_index(drop=True)
+    print(pearsonr(jointDF[receptor1 + " + " + receptor2].values, jointDF[marker].values))
+    sns.regplot(data=jointDF, x=receptor1 + " + " + receptor2, y=marker, ax=ax, scatter=False, line_kws={"color": "gray"}, truncate=False)
+    ax.set(xlabel=receptor1 + " + " + receptor2 + " in " + cell, ylabel = marker + " in " + treatment + " in " + cell)
