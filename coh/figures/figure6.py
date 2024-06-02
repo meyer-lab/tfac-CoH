@@ -32,7 +32,7 @@ def makeFigure():
     ax[5].set(ylim=(-2, 4))
     ax[5].set(ylim=(-3, 4))
     ax[7].set(xlim=(-2, 0), ylim=(-1, 4))
-    ax[8].set(xlim=(1, 3), ylim=(1, 6))
+    ax[8].set(xlim=(-1, 3), ylim=(1, 6))
     ax[9].set(xlim=(-0.5, 2.5), ylim=(-1, 4))
     ax[10].set(xlim=(-2, 1), ylim=(-1.5, 2))
 
@@ -79,12 +79,41 @@ def makeFigure():
     DF = recDF.loc[recDF.Marker == "IL2Ra"]
     DF["Mean"] -= np.mean(DF["Mean"].values)
     DF["Mean"] /= np.std(DF["Mean"].values)
-    BC_scatter_cells_rec(ax[5], DF, "IL2Ra", filter=True)
+    IL2RaDF =  DF.loc[DF.Cell.isin(
+            [
+                "CD20 B",
+                "CD4 TEM",
+                "CD4-/CD8-",
+                "cM0",
+                "Treg",
+                "Treg 1",
+                "Treg 2",
+                "Treg 3",
+            ]
+        )]
+    BC_scatter_cells_rec(ax[5], IL2RaDF, "IL2Ra", filter=True)
+    
 
     DF = recDF.loc[recDF.Marker == "IL2RB"]
     DF["Mean"] -= np.mean(DF["Mean"].values)
     DF["Mean"] /= np.std(DF["Mean"].values)
-    BC_scatter_cells_rec(ax[6], DF, "IL2RB", filter=True)
+    IL2RBDF = DF.loc[DF.Cell.isin(
+            [
+                "CD16+",
+                "CD20 B",
+                "CD20 B Memory",
+                "CD20 B Naive",
+                "CD33 Myeloid",
+                "CD4 Naive"
+                "CD4+",
+                "T",
+                "Treg",
+                "Treg 1",
+                "Treg 2",
+                "Treg 3",
+            ]
+        )]
+    BC_scatter_cells_rec(ax[6], IL2RBDF, "IL2RB", filter=True)
 
     rec_vs_induced_add(CoH_DF, CoH_DF_R, receptor1= "IL2Ra", receptor2= "IL2RB", marker="pSTAT5", treatment="IL2-50ng", cell="CD8+", ax=ax[7])
     rec_vs_induced_add(CoH_DF, CoH_DF_R, receptor1= "IL2Ra", receptor2= "IL2RB", marker="pSTAT5", treatment="IL2-50ng", cell="Treg", ax=ax[8])
@@ -129,9 +158,12 @@ def plot_rec_resp_cell(sigDF, recDF, receptor, marker, treatment, ax):
 def rec_vs_induced_add(CoH_DF, CoH_DF_R, receptor1, receptor2, marker, treatment, cell, ax):
     """Plots receptor level vs response to treatment"""
     sigDF = CoH_DF.loc[(CoH_DF.Treatment == treatment) & (CoH_DF.Cell == cell)][marker].to_frame()
-    recDF = CoH_DF_R.loc[(CoH_DF_R.Cell == cell)][receptor1].to_frame()
-    recDF[receptor2] = CoH_DF_R.loc[(CoH_DF_R.Cell == cell)][receptor2].to_frame().values
+    recDF = CoH_DF_R[receptor1].to_frame()
+    recDF[receptor2] = CoH_DF_R[receptor2].to_frame().values
     recDF[receptor1 + " + " + receptor2] = recDF[receptor1].values + recDF[receptor2].values
+    recDF[receptor1 + " + " + receptor2] -= np.mean(recDF[receptor1 + " + " + receptor2].values)
+    recDF[receptor1 + " + " + receptor2] /= np.std(recDF[receptor1 + " + " + receptor2].values)
+    recDF = recDF.loc[(CoH_DF_R.Cell == cell)]
     
     jointDF = sigDF.join(recDF)
 
