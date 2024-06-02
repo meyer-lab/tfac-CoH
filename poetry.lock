@@ -998,6 +998,26 @@ files = [
 lxml = "*"
 
 [[package]]
+name = "tensordata"
+version = "0.0.8"
+description = "A common repository for tensor structured datasets."
+optional = false
+python-versions = ">=3.11,<3.13"
+files = []
+develop = false
+
+[package.dependencies]
+numpy = "^1.23"
+pandas = "^1.5.0"
+xarray = "^2022.3.0"
+
+[package.source]
+type = "git"
+url = "https://github.com/meyer-lab/tensordata.git"
+reference = "HEAD"
+resolved_reference = "3be767a8290258e5a052d91b0dea4fd8405c9a00"
+
+[[package]]
 name = "tensorly"
 version = "0.8.1"
 description = "Tensor learning in Python."
@@ -1095,4 +1115,4 @@ viz = ["matplotlib", "nc-time-axis", "seaborn"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11,<3.13"
-content-hash = "ea95843d4ef5315e2e5e95c8ed3c9b89950bd9ec85bc3922623f12854acc4317"
+content-hash = "e04213936e4ceee85c7c5ab6e04ed99f8f6825fd75c4a4332381b8b535a88af2"
