@@ -6,7 +6,7 @@ import numpy as np
 import seaborn as sns
 import pandas as pd
 import matplotlib as plt
-from scipy.stats import zscore, pearsonr
+from scipy.stats import zscore
 from os.path import dirname
 from ..flow import get_status_df
 from .common import subplotLabel, getSetup, BC_scatter_cells_rec

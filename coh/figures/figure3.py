@@ -6,7 +6,7 @@ import pickle
 import pandas as pd
 import numpy as np
 import seaborn as sns
-from scipy.stats import zscore, pearsonr
+from scipy.stats import zscore
 from .common import subplotLabel, getSetup, BC_scatter_cells, CoH_Scat_Plot
 from ..flow import make_CoH_Tensor, get_status_df
 
