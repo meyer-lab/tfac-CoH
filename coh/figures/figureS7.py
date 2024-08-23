@@ -7,11 +7,10 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn import preprocessing
-from sklearn.linear_model import LogisticRegressionCV
-from sklearn.model_selection import RepeatedStratifiedKFold
 
 from ..flow import get_status_df, make_CoH_Tensor
 from .common import getSetup, subplotLabel
+from ..tensor import lrmodel
 
 
 def makeFigure():
@@ -33,10 +32,6 @@ def makeFigure():
 
 def CoH_comp_scan_plot(ax, tFac, CoH_Array, status_DF) -> None:
     """Plot factor weights for donor BC prediction."""
-    cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=20)
-    lrmodel = LogisticRegressionCV(
-        penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv,
-    )
     coord = CoH_Array.dims.index("Patient")
     mode_facs = tFac[1][coord]
 

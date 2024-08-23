@@ -4,14 +4,13 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from sklearn import preprocessing
-from sklearn.linear_model import LogisticRegressionCV
-from sklearn.model_selection import RepeatedStratifiedKFold
 from tensorpack.decomposition import Decomposition
 from tensorpack.plot import tucker_reduction
 from tensorpack.tucker import tucker_decomp
 
 from ..flow import get_status_df, make_CoH_Tensor
 from ..flow_rec import get_status_rec_df, make_CoH_Tensor_rec
+from ..tensor import lrmodel
 from .common import getSetup, subplotLabel
 
 
@@ -25,51 +24,26 @@ def makeFigure():
 
     # Response Data
     CoH_Data = make_CoH_Tensor(just_signal=True)
-    CoH_Data = np.nan_to_num(CoH_Data)
 
     tuck_decomp = Decomposition(CoH_Data, method=tucker_decomp)
-    cp_decomp = Decomposition(CoH_Data, max_rr=15)
-
     tuck_decomp.perform_tucker()
+
+    cp_decomp = Decomposition(CoH_Data.to_numpy(), max_rr=12)
+    
     tucker_reduction(ax[0], tuck_decomp, cp_decomp)
     BC_status_plot_tuck(tuck_decomp, ax[1], get_status_df())
 
     # Receptor data
     CoH_Data_R = make_CoH_Tensor_rec()
-    CoH_Data_R = np.nan_to_num(CoH_Data_R)
-
     tuck_decomp_R = Decomposition(CoH_Data_R, method=tucker_decomp)
-    cp_decomp_R = Decomposition(CoH_Data_R, max_rr=8)
-
     tuck_decomp.perform_tucker()
+
+    cp_decomp_R = Decomposition(CoH_Data_R.to_numpy(), max_rr=8)
+    
     tucker_reduction(ax[2], tuck_decomp_R, cp_decomp_R)
     BC_status_plot_tuck(tuck_decomp_R, ax[3], get_status_rec_df())
 
     return f
-
-
-cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=20)
-lrmodel = LogisticRegressionCV(
-    penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv,
-)
-
-
-def CoH_tuck_LogReg_plot(ax, tFac, CoH_Array, status_DF) -> None:
-    """Plot factor weights for donor BC prediction."""
-    mode_facs = tFac[0]
-    Donor_CoH_y = preprocessing.label_binarize(
-        status_DF.Status, classes=["Healthy", "BC"],
-    ).flatten()
-
-    LR_CoH = lrmodel.fit(mode_facs, Donor_CoH_y)
-
-    CoH_comp_weights = pd.DataFrame(
-        {
-            "Component": np.arange(1, mode_facs.shape[1] + 1),
-            "Coefficient": LR_CoH.coef_[0],
-        },
-    )
-    sns.barplot(data=CoH_comp_weights, x="Component", y="Coefficient", color="k", ax=ax)
 
 
 def BC_status_plot_tuck(tuck_decomp, ax, status_DF) -> None:
@@ -90,7 +64,6 @@ def BC_status_plot_tuck(tuck_decomp, ax, status_DF) -> None:
                 accDF,
                 pd.DataFrame(
                     {
-                        "Data Type": "Tensor Factorization",
                         "Components": [i],
                         "Accuracy (10-fold CV)": scoresTFAC,
                     },
@@ -104,7 +77,6 @@ def BC_status_plot_tuck(tuck_decomp, ax, status_DF) -> None:
         data=accDF,
         x="Components",
         y="Accuracy (10-fold CV)",
-        hue="Data Type",
         ax=ax,
         color="k",
     )

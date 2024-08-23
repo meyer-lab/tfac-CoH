@@ -86,13 +86,14 @@ def subplotLabel(axs) -> None:
 def genFigure() -> None:
     """Main figure generation function."""
     fdir = "./output/"
-    time.time()
+    start = time.time()
     nameOut = "figure" + sys.argv[1]
 
     exec("from coh.figures." + nameOut + " import makeFigure", globals())
     ff = makeFigure()  # noqa: F821
     ff.savefig(fdir + nameOut + ".svg", dpi=300, bbox_inches="tight", pad_inches=0)
-    ff.savefig(fdir + nameOut + ".pdf", dpi=300, bbox_inches="tight", pad_inches=0)
+
+    print(f"Figure {sys.argv[1]} is done after {time.time() - start} seconds.\n")
 
 
 

@@ -7,20 +7,19 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = ">=3.11,<3.13"
-numpy = "^1.24.2"
+numpy = "^1.26"
 seaborn = "^0.12.2"
-scipy = "^1.7.3"
-pandas = "^1.5.3"
-matplotlib = "^3.5.0"
+scipy = "^1.14"
+pandas = "^1.5"
+matplotlib = "^3.9"
 scikit-learn = "^1.2.1"
 tensorly = "^0.8.0"
-xarray = "^2022.3.0"
+xarray = "^2024"
 tensorpack = {git = "https://github.com/meyer-lab/tensorpack.git", rev = "main"}
 statannot = "^0.2.3"
 flowcytometrytools = {git = "https://github.com/meyer-lab/FlowCytometryToolsFork.git"}
-fcsparser = "0.2.4"
+fcsparser = "^0.2.4"
 statsmodels = "^0.14.0"
-pip = "^24.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

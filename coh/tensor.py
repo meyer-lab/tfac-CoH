@@ -114,7 +114,7 @@ def R2Xplot(ax, tensor, compNum: int) -> None:
 
 cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=20)
 lrmodel = LogisticRegressionCV(
-    penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv,
+    penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv, n_jobs=4,
 )
 
 
