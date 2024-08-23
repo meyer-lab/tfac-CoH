@@ -201,9 +201,8 @@ def rec_vs_induced(CoH_DF, CoH_DF_R, receptor, marker, treatment, cell, ax):
     status_DF = get_status_df().set_index("Patient")
     jointDF = jointDF.join(status_DF)
     sns.scatterplot(data=jointDF, x=receptor, y=marker, hue="Status", ax=ax)
-    print(jointDF.corr())
     jointDF = jointDF.reset_index(drop=True)
-    print(pearsonr(jointDF[receptor].values, jointDF[marker].values))
+
     sns.regplot(
         data=jointDF,
         x=receptor,
@@ -256,12 +255,7 @@ def plot_rec_resp_cell(sigDF, recDF, receptor, marker, treatment, ax):
         style="Cell",
         ax=ax,
     )
-    print(plotDF.corr())
-    print(
-        pearsonr(
-            plotDF[receptor].values, plotDF[marker + " response to " + treatment].values
-        )
-    )
+
     sns.regplot(
         data=plotDF,
         x=receptor,
@@ -300,11 +294,8 @@ def rec_vs_induced_add(
     sns.scatterplot(
         data=jointDF, x=receptor1 + " + " + receptor2, y=marker, hue="Status", ax=ax
     )
-    print(jointDF.corr())
     jointDF = jointDF.reset_index(drop=True)
-    print(
-        pearsonr(jointDF[receptor1 + " + " + receptor2].values, jointDF[marker].values)
-    )
+
     sns.regplot(
         data=jointDF,
         x=receptor1 + " + " + receptor2,

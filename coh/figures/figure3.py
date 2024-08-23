@@ -93,7 +93,6 @@ def makeFigure():
         treatment2="IL10-50ng",
         ax=ax[2],
     )
-    print("HI4")
 
     # D CD8+ pSTAT3 vs B pSTAT3 in IL10
 
@@ -107,7 +106,6 @@ def makeFigure():
         treatment2="IL10-50ng",
         ax=ax[3],
     )
-    print("HI5")
 
     # E CD8+ pSTAT3 vs B pSTAT3 in IL10
 
@@ -219,13 +217,6 @@ def plot_by_patient(
         ax=ax,
         hue="Status",
     )
-    print(plotDF.corr())
-    print(
-        pearsonr(
-            plotDF[cell1 + " " + receptor1 + " " + treatment1].values,
-            plotDF[cell2 + " " + receptor2 + " " + treatment2].values,
-        )
-    )
     sns.regplot(
         data=plotDF,
         x=cell1 + " " + receptor1 + " " + treatment1,
@@ -295,13 +286,6 @@ def plot_diff_cell(sigDF, marker1, treatment1, marker2, treatment2, ax):
         hue="Cell",
         style="Cell",
         ax=ax,
-    )
-    print(plotDF.corr())
-    print(
-        pearsonr(
-            plotDF["BC - Healthy Baseline " + marker1].values,
-            plotDF["BC - Healthy Baseline " + marker2].values,
-        )
     )
     sns.regplot(
         data=plotDF,
