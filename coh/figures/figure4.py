@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from .common import subplotLabel, getSetup, plot_tFac_CoH, BC_scatter_cells_rec, comp_corr_plot
-from ..tensor import factorTensor, CoH_LogReg_plot, BC_status_plot
+from ..tensor import factorTensor, BC_status_plot
 from ..flow_rec import make_CoH_Tensor_rec, get_status_rec_df
 
 

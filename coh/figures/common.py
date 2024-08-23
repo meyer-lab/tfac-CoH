@@ -71,7 +71,7 @@ def genFigure():
     nameOut = "figure" + sys.argv[1]
 
     exec("from coh.figures." + nameOut + " import makeFigure", globals())
-    ff = makeFigure()
+    ff = makeFigure()  # noqa: F821
     ff.savefig(fdir + nameOut + ".svg", dpi=300, bbox_inches="tight", pad_inches=0)
     ff.savefig(fdir + nameOut + ".pdf", dpi=300, bbox_inches="tight", pad_inches=0)
 

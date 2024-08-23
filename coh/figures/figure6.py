@@ -1,14 +1,13 @@
 """
 This creates Figure 6, cross dissection of receptor and signaling data.
 """
-import xarray as xa
 import numpy as np
 import seaborn as sns
 import pandas as pd
 import matplotlib as plt
 from scipy.stats import zscore, pearsonr
-from os.path import join, dirname
-from ..flow import make_CoH_Tensor, get_status_df
+from os.path import dirname
+from ..flow import get_status_df
 from .common import subplotLabel, getSetup, BC_scatter_cells_rec
 
 

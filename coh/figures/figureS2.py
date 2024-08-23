@@ -1,11 +1,8 @@
 """
 This creates Figure 1.
 """
-import pickle
 import numpy as np
 import seaborn as sns
-import tensorly as tl
-import pandas as pd
 from .common import subplotLabel, getSetup
 from ..flow import make_CoH_Tensor
 

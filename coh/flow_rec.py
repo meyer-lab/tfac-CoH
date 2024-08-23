@@ -7,7 +7,7 @@ import numpy as np
 import warnings
 import xarray as xa
 from FlowCytometryTools import FCMeasurement
-from .flow import pop_gate, live_PBMC_gate, pop_gate, get_gate_dict
+from .flow import pop_gate, live_PBMC_gate, get_gate_dict
 
 
 warnings.filterwarnings("ignore")
