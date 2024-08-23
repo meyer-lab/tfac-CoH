@@ -107,7 +107,7 @@ def plot_tFac_CoH(axs: list, tFac, CoH_Array: xa.DataArray):
         sns.heatmap(data=tFacDF, ax=axs[ii], cmap=cmap, vmin=-1, vmax=1, cbar=(ii == 0))
 
 
-def scatter_common(ax, hist_DF: pd.DataFrame, filter):
+def scatter_common(ax, hist_DF: pd.DataFrame, filter: bool):
     filt_cells = []
     pvals = []
     for cell in hist_DF.Cell.unique():
@@ -131,7 +131,7 @@ def scatter_common(ax, hist_DF: pd.DataFrame, filter):
         else:
             if not filter:
                 pass
-                # pvals.append("")
+
     if filter:
         hist_DF = hist_DF.loc[hist_DF.Cell.isin(filt_cells)]
 
@@ -140,34 +140,19 @@ def scatter_common(ax, hist_DF: pd.DataFrame, filter):
         boxpairs.append([(cell, "Healthy"), (cell, "BC")])
 
     if len(filt_cells) > 0:
-        if filter:
-            add_stat_annotation(
-                ax=ax,
-                data=hist_DF,
-                x="Cell",
-                y="Mean",
-                hue="Status",
-                box_pairs=boxpairs,
-                text_annot_custom=pvals,
-                perform_stat_test=False,
-                loc="inside",
-                pvalues=np.tile(0, len(filt_cells)),
-                verbose=0,
-            )
-        else:
-            add_stat_annotation(
-                ax=ax,
-                data=hist_DF,
-                x="Cell",
-                y="Mean",
-                hue="Status",
-                box_pairs=boxpairs,
-                text_annot_custom=pvals,
-                perform_stat_test=False,
-                loc="inside",
-                pvalues=np.tile(0, len(filt_cells)),
-                verbose=0,
-            )
+        add_stat_annotation(
+            ax=ax,
+            data=hist_DF,
+            x="Cell",
+            y="Mean",
+            hue="Status",
+            box_pairs=boxpairs,
+            text_annot_custom=pvals,
+            perform_stat_test=False,
+            loc="inside",
+            pvalues=np.tile(0, len(filt_cells)),
+            verbose=0,
+        )
 
 
 def BC_scatter_cells(
