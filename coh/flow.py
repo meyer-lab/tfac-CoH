@@ -253,7 +253,6 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
             patient_files.append(str(name))
         for time in times:
             for treatment in treatments:
-                print(patient, time, treatment)
                 if treatment == "Untreated" and subtract:
                     untreatedDF = pd.DataFrame()
                 if (
@@ -397,7 +396,6 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
                                         ]
                                     )
                 else:
-                    print("Skipped")
                     for cell_type in cell_types:
                         for marker in markers:
                             if abundance:
@@ -566,7 +564,6 @@ def make_flow_sc_dataframe():
             patient_files.append(str(name))
         for j, time in enumerate(times):
             for k, treatment in enumerate(treatments):
-                print(patient, time, treatment)
                 if (
                     "/opt/CoH/"
                     + patient

@@ -197,7 +197,6 @@ def make_flow_df_rec():
     markerKey = pd.read_csv("./coh/data/Patient_Receptor_Panels.csv")
 
     for patient in patients:
-        print(patient)
         patient_num = patient.split(" ")[1]
         dictionary = markerKey.loc[markerKey.Patient == patient_num].Panel.values
         marker_dict = panelDict[dictionary[0]]

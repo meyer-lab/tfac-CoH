@@ -144,7 +144,6 @@ def plot_by_patient(recDF, cell1, receptor1, cell2, receptor2, ax):
     plotDF = plotDF.set_index("Patient").join(
         status_DF.set_index("Patient"), on="Patient"
     )
-    print(plotDF.corr())
     sns.scatterplot(
         data=plotDF,
         x=cell1 + " " + receptor1,
