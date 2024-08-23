@@ -34,9 +34,9 @@ matplotlib.rcParams["legend.borderpad"] = 0.35
 matplotlib.rcParams["svg.fonttype"] = "none"
 
 
-def getSetup(figsize, gridd, multz=None):
+def getSetup(figsize: tuple[float, float], gridd: tuple[int, int], multz=None):
     """Establish figure set-up with subplots."""
-    sns.set(
+    sns.set_theme(
         style="whitegrid",
         font_scale=0.7,
         color_codes=True,
