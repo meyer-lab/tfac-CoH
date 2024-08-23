@@ -1,14 +1,14 @@
-"""
-This creates Figure 1.
-"""
+"""This creates Figure 1."""
 
 import pickle
+
 import numpy as np
+import pandas as pd
 import seaborn as sns
 import tensorly as tl
-import pandas as pd
-from .common import subplotLabel, getSetup
+
 from ..flow import make_CoH_Tensor
+from .common import getSetup, subplotLabel
 
 
 def makeFigure():
@@ -112,8 +112,8 @@ def makeFigure():
     return f
 
 
-def fullHeatMap(ax, data, cbar=True):
-    """Plots the various affinities for IL-2 Muteins"""
+def fullHeatMap(ax, data, cbar=True) -> None:
+    """Plots the various affinities for IL-2 Muteins."""
     dataFlat = data.stack(condition=["Cell", "Patient"]).T
     dataFlat = dataFlat.to_pandas()
     # dataFlat.iloc[:, :] = dataFlat.values - np.array(dataFlat.loc[:, "Basal"])[:, np.newaxis]
@@ -131,13 +131,13 @@ def fullHeatMap(ax, data, cbar=True):
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
 
 
-def cytok_stim_plot(CoH_DF, cytok, cells, ax):
-    """Plots cells responses across signaling products for a single stimulatiom"""
+def cytok_stim_plot(CoH_DF, cytok, cells, ax) -> None:
+    """Plots cells responses across signaling products for a single stimulatiom."""
     CoH_DF = CoH_DF.loc[
         (CoH_DF.Treatment == cytok)
         & (CoH_DF.Cell.isin(cells))
         & CoH_DF.Marker.isin(
-            ["pSTAT1", "pSTAT3", "pSTAT3", "pSTAT5", "pSTAT6", "pSmad1-2"]
+            ["pSTAT1", "pSTAT3", "pSTAT3", "pSTAT5", "pSTAT6", "pSmad1-2"],
         )
     ]
     sns.boxplot(
@@ -152,22 +152,22 @@ def cytok_stim_plot(CoH_DF, cytok, cells, ax):
     ax.set(ylabel="Response to " + cytok)
 
 
-def cytok_marker_plot(CoH_DF, cytok, cells, marker, ax):
-    """Plots cells responses across signaling products for a single stimulatiom"""
+def cytok_marker_plot(CoH_DF, cytok, cells, marker, ax) -> None:
+    """Plots cells responses across signaling products for a single stimulatiom."""
     CoH_DF = CoH_DF.loc[
         (CoH_DF.Treatment == cytok)
         & (CoH_DF.Cell.isin(cells))
         & (CoH_DF.Marker == marker)
     ]
     sns.boxplot(
-        data=CoH_DF, x="Cell", y="Mean", palette="husl", showfliers=False, ax=ax
+        data=CoH_DF, x="Cell", y="Mean", palette="husl", showfliers=False, ax=ax,
     )
     ax.set(ylabel=marker + " response to " + cytok)
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
 
 
-def multi_cytoks_plot(CoH_DF, cytoks, cells, marker, ax):
-    """Plots cells responses across signaling products for a single stimulatiom"""
+def multi_cytoks_plot(CoH_DF, cytoks, cells, marker, ax) -> None:
+    """Plots cells responses across signaling products for a single stimulatiom."""
     CoH_DF = CoH_DF.loc[
         (CoH_DF.Treatment.isin(cytoks))
         & (CoH_DF.Cell.isin(cells))
@@ -175,7 +175,7 @@ def multi_cytoks_plot(CoH_DF, cytoks, cells, marker, ax):
     ]
     for patient in CoH_DF.Patient.unique():
         CoH_DF.loc[
-            (CoH_DF.Treatment != "Untreated") & (CoH_DF.Patient == patient), "Mean"
+            (CoH_DF.Treatment != "Untreated") & (CoH_DF.Patient == patient), "Mean",
         ] += CoH_DF.loc[
             (CoH_DF.Treatment == "Untreated") & (CoH_DF.Patient == patient)
         ].Mean.values

@@ -1,10 +1,9 @@
-"""
-This creates Figure S6, full panel of receptor comps.
-"""
+"""This creates Figure S6, full panel of receptor comps."""
 
 import numpy as np
 import pandas as pd
-from .common import subplotLabel, getSetup, BC_scatter_cells_rec
+
+from .common import BC_scatter_cells_rec, getSetup, subplotLabel
 
 
 def makeFigure():
@@ -33,8 +32,8 @@ def makeFigure():
                 "IL7Ra",
                 "IL10R",
                 "IL12RI",
-            ]
-        )
+            ],
+        ),
     ):
         DF = CoH_Data_DF.loc[CoH_Data_DF.Marker == rec]
         DF["Mean"] -= np.mean(DF["Mean"].values)

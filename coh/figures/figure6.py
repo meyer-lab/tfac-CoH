@@ -1,18 +1,17 @@
-"""
-This creates Figure 6, cross dissection of receptor and signaling data.
-"""
+"""This creates Figure 6, cross dissection of receptor and signaling data."""
 
-import numpy as np
-import seaborn as sns
-import pandas as pd
-import matplotlib as plt
-from scipy.stats import zscore
 from os.path import dirname
+
+import matplotlib as mpl
+import numpy as np
+import pandas as pd
+import seaborn as sns
+from scipy.stats import zscore
+
 from ..flow import get_status_df
-from .common import subplotLabel, getSetup, BC_scatter_cells_rec
+from .common import BC_scatter_cells_rec, getSetup, subplotLabel
 
-
-plt.rcParams["svg.fonttype"] = "none"
+mpl.rcParams["svg.fonttype"] = "none"
 path_here = dirname(dirname(__file__))
 
 
@@ -48,7 +47,7 @@ def makeFigure():
             "TGFB-50ng",
             "IFNg-50ng+IL6-50ng",
             "Untreated",
-        ]
+        ],
     )
     markers = np.array(["pSTAT1", "pSTAT3", "pSTAT4", "pSTAT5", "pSTAT6", "pSmad1-2"])
     CoH_DF = CoH_DF.loc[
@@ -63,7 +62,7 @@ def makeFigure():
     )
     CoH_DF = (
         CoH_DF.pivot(
-            index=["Patient", "Cell", "Treatment"], columns="Marker", values="Mean"
+            index=["Patient", "Cell", "Treatment"], columns="Marker", values="Mean",
         )
         .reset_index()
         .set_index("Patient")
@@ -79,7 +78,7 @@ def makeFigure():
         .set_index("Patient")
     )
     CoH_DF_R.loc[:, CoH_DF_R.columns.values != "Cell"] = CoH_DF_R.loc[
-        :, CoH_DF_R.columns.values != "Cell"
+        :, CoH_DF_R.columns.values != "Cell",
     ].apply(zscore)
 
     # A B - response vs receptor across cell types
@@ -121,7 +120,7 @@ def makeFigure():
                 "Treg 1",
                 "Treg 2",
                 "Treg 3",
-            ]
+            ],
         )
     ]
     BC_scatter_cells_rec(ax[5], IL2RaDF, "IL2Ra", filter=True)
@@ -137,13 +136,14 @@ def makeFigure():
                 "CD20 B Memory",
                 "CD20 B Naive",
                 "CD33 Myeloid",
-                "CD4 Naive" "CD4+",
+                "CD4 Naive",
+                "CD4+",
                 "T",
                 "Treg",
                 "Treg 1",
                 "Treg 2",
                 "Treg 3",
-            ]
+            ],
         )
     ]
     BC_scatter_cells_rec(ax[6], IL2RBDF, "IL2RB", filter=True)
@@ -190,8 +190,8 @@ def makeFigure():
     return f
 
 
-def rec_vs_induced(CoH_DF, CoH_DF_R, receptor, marker, treatment, cell, ax):
-    """Plots receptor level vs response to treatment"""
+def rec_vs_induced(CoH_DF, CoH_DF_R, receptor, marker, treatment, cell, ax) -> None:
+    """Plots receptor level vs response to treatment."""
     sigDF = CoH_DF.loc[(CoH_DF.Treatment == treatment) & (CoH_DF.Cell == cell)][
         marker
     ].to_frame()
@@ -218,8 +218,8 @@ def rec_vs_induced(CoH_DF, CoH_DF_R, receptor, marker, treatment, cell, ax):
     )
 
 
-def plot_rec_resp_cell(sigDF, recDF, receptor, marker, treatment, ax):
-    """Plots receptor in pop 1 vs receptor in pop 2 per patient, by disease status"""
+def plot_rec_resp_cell(sigDF, recDF, receptor, marker, treatment, ax) -> None:
+    """Plots receptor in pop 1 vs receptor in pop 2 per patient, by disease status."""
     status_DF = get_status_df()
     sigDF = (
         sigDF.reset_index()
@@ -232,7 +232,7 @@ def plot_rec_resp_cell(sigDF, recDF, receptor, marker, treatment, ax):
         resp = np.mean(
             sigDF.loc[(sigDF.Cell == cell) & (sigDF.Treatment == treatment)][
                 marker
-            ].values
+            ].values,
         )
         plotDF = pd.concat(
             [
@@ -242,9 +242,9 @@ def plot_rec_resp_cell(sigDF, recDF, receptor, marker, treatment, ax):
                         "Cell": [cell],
                         receptor: rec,
                         marker + " response to " + treatment: resp,
-                    }
+                    },
                 ),
-            ]
+            ],
         )
 
     sns.scatterplot(
@@ -268,9 +268,9 @@ def plot_rec_resp_cell(sigDF, recDF, receptor, marker, treatment, ax):
 
 
 def rec_vs_induced_add(
-    CoH_DF, CoH_DF_R, receptor1, receptor2, marker, treatment, cell, ax
-):
-    """Plots receptor level vs response to treatment"""
+    CoH_DF, CoH_DF_R, receptor1, receptor2, marker, treatment, cell, ax,
+) -> None:
+    """Plots receptor level vs response to treatment."""
     sigDF = CoH_DF.loc[(CoH_DF.Treatment == treatment) & (CoH_DF.Cell == cell)][
         marker
     ].to_frame()
@@ -280,10 +280,10 @@ def rec_vs_induced_add(
         recDF[receptor1].values + recDF[receptor2].values
     )
     recDF[receptor1 + " + " + receptor2] -= np.mean(
-        recDF[receptor1 + " + " + receptor2].values
+        recDF[receptor1 + " + " + receptor2].values,
     )
     recDF[receptor1 + " + " + receptor2] /= np.std(
-        recDF[receptor1 + " + " + receptor2].values
+        recDF[receptor1 + " + " + receptor2].values,
     )
     recDF = recDF.loc[(CoH_DF_R.Cell == cell)]
 
@@ -292,7 +292,7 @@ def rec_vs_induced_add(
     status_DF = get_status_df().set_index("Patient")
     jointDF = jointDF.join(status_DF)
     sns.scatterplot(
-        data=jointDF, x=receptor1 + " + " + receptor2, y=marker, hue="Status", ax=ax
+        data=jointDF, x=receptor1 + " + " + receptor2, y=marker, hue="Status", ax=ax,
     )
     jointDF = jointDF.reset_index(drop=True)
 

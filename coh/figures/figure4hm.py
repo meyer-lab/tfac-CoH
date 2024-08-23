@@ -1,12 +1,11 @@
-"""
-This creates Figure 4's clustered heat map.
-"""
+"""This creates Figure 4's clustered heat map."""
 
 import pandas as pd
 import seaborn as sns
-from .common import getSetup
+
+from ..flow_rec import get_status_rec_df, make_CoH_Tensor_rec
 from ..tensor import factorTensor
-from ..flow_rec import make_CoH_Tensor_rec, get_status_rec_df
+from .common import getSetup
 
 
 def makeFigure():
@@ -16,13 +15,12 @@ def makeFigure():
 
     CoH_Data = make_CoH_Tensor_rec()
     tFacAllM = factorTensor(CoH_Data.values, r=5)
-    f = plot_coh_clust(tFacAllM, CoH_Data, "Patient", get_status_rec_df())
+    return plot_coh_clust(tFacAllM, CoH_Data, "Patient", get_status_rec_df())
 
-    return f
 
 
 def plot_coh_clust(tFac, CoH_Array, mode, status_df):
-    """Plots tensor factorization of cells"""
+    """Plots tensor factorization of cells."""
     mode_labels = CoH_Array[mode]
     coord = CoH_Array.dims.index(mode)
     mode_facs = tFac[1][coord]
@@ -39,7 +37,7 @@ def plot_coh_clust(tFac, CoH_Array, mode, status_df):
     col_colors = pd.DataFrame(status.map(lut))
     col_colors["Patient"] = status_df.Patient.values
     col_colors = col_colors.set_index("Patient")
-    f = sns.clustermap(
+    return sns.clustermap(
         data=tFacDF,
         robust=True,
         cmap=cmap,
@@ -49,4 +47,3 @@ def plot_coh_clust(tFac, CoH_Array, mode, status_df):
         col_colors=col_colors,
         figsize=(8, 3),
     )
-    return f

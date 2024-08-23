@@ -1,20 +1,20 @@
-"""
-This creates Figure 2, tensor factorization of response data.
-"""
+"""This creates Figure 2, tensor factorization of response data."""
 
 import pickle
+
 import numpy as np
 import pandas as pd
 import seaborn as sns
+
+from ..flow import get_status_df, make_CoH_Tensor
+from ..tensor import BC_status_plot, CoH_LogReg_plot
 from .common import (
-    subplotLabel,
-    getSetup,
-    plot_tFac_CoH,
     BC_scatter_cells,
     comp_corr_plot,
+    getSetup,
+    plot_tFac_CoH,
+    subplotLabel,
 )
-from ..tensor import BC_status_plot, CoH_LogReg_plot
-from ..flow import make_CoH_Tensor, get_status_df
 
 
 def makeFigure():
@@ -71,13 +71,13 @@ def makeFigure():
     return f
 
 
-def cytok_stim_plot(CoH_DF, cytok, cells, ax):
-    """Plots cells responses across signaling products for a single stimulatiom"""
+def cytok_stim_plot(CoH_DF, cytok, cells, ax) -> None:
+    """Plots cells responses across signaling products for a single stimulatiom."""
     CoH_DF = CoH_DF.loc[
         (CoH_DF.Treatment == cytok)
         & (CoH_DF.Cell.isin(cells))
         & CoH_DF.Marker.isin(
-            ["pSTAT1", "pSTAT3", "pSTAT3", "pSTAT5", "pSTAT6", "pSmad1-2"]
+            ["pSTAT1", "pSTAT3", "pSTAT3", "pSTAT5", "pSTAT6", "pSmad1-2"],
         )
     ]
     sns.boxplot(

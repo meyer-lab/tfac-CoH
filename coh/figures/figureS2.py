@@ -1,11 +1,10 @@
-"""
-This creates Figure 1.
-"""
+"""This creates Figure 1."""
 
 import numpy as np
 import seaborn as sns
-from .common import subplotLabel, getSetup
+
 from ..flow import make_CoH_Tensor
+from .common import getSetup, subplotLabel
 
 
 def makeFigure():
@@ -38,8 +37,8 @@ def makeFigure():
     return f
 
 
-def fullHeatMap(ax, data, cbar=True):
-    """Plots the various affinities for IL-2 Muteins"""
+def fullHeatMap(ax, data, cbar=True) -> None:
+    """Plots the various affinities for IL-2 Muteins."""
     dataFlat = data.stack(condition=["Cell", "Patient"]).T
     dataFlat = dataFlat.to_pandas()
     dataFlat.iloc[:, :] = dataFlat.values / np.max(dataFlat.values)

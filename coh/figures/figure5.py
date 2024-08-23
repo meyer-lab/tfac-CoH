@@ -1,19 +1,17 @@
-"""
-This creates Figure 5, dissection of receptor data.
-"""
+"""This creates Figure 5, dissection of receptor data."""
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 import seaborn as sns
 from scipy import stats
-from sklearn import metrics
 from scipy.stats import zscore
+from sklearn import metrics, preprocessing
 from sklearn.linear_model import LogisticRegressionCV
-from sklearn import preprocessing
 from sklearn.model_selection import RepeatedStratifiedKFold
-from .common import subplotLabel, getSetup
+
 from ..flow_rec import get_status_rec_df, make_CoH_Tensor_rec
 from ..tensor import factorTensor
+from .common import getSetup, subplotLabel
 
 
 def makeFigure():
@@ -43,7 +41,7 @@ def makeFigure():
         .set_index("Patient")
     )
     meanDF.loc[:, meanDF.columns.values != "Cell"] = meanDF.loc[
-        :, meanDF.columns.values != "Cell"
+        :, meanDF.columns.values != "Cell",
     ].apply(zscore)
 
     # E PD-L1 in B vs CD8 Cells
@@ -135,14 +133,14 @@ def makeFigure():
     return f
 
 
-def plot_by_patient(recDF, cell1, receptor1, cell2, receptor2, ax):
-    """Plots receptor in pop 1 vs receptor in pop 2 per patient, by disease status"""
+def plot_by_patient(recDF, cell1, receptor1, cell2, receptor2, ax) -> None:
+    """Plots receptor in pop 1 vs receptor in pop 2 per patient, by disease status."""
     status_DF = get_status_rec_df()
     plotDF = pd.DataFrame({"Patient": recDF.loc[recDF.Cell == cell1].index.values})
     plotDF[cell1 + " " + receptor1] = recDF.loc[recDF.Cell == cell1][receptor1].values
     plotDF[cell2 + " " + receptor2] = recDF.loc[recDF.Cell == cell2][receptor2].values
     plotDF = plotDF.set_index("Patient").join(
-        status_DF.set_index("Patient"), on="Patient"
+        status_DF.set_index("Patient"), on="Patient",
     )
     sns.scatterplot(
         data=plotDF,
@@ -163,59 +161,59 @@ def plot_by_patient(recDF, cell1, receptor1, cell2, receptor2, ax):
 
 
 def ROC_plot(recDF, receptors, cells, tFacDF, comp, ax):
-    """Plots accuracy of classification using receptors and a tfac component"""
+    """Plots accuracy of classification using receptors and a tfac component."""
     status_DF = get_status_rec_df()
     cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=20)
     lrmodel = LogisticRegressionCV(
-        penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv
+        penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv,
     )
     AUC_DF = pd.DataFrame()
 
     for i, receptor in enumerate(receptors):
         predDF = recDF.loc[recDF.Cell == cells[i]].reset_index()[["Patient", receptor]]
         predDF = predDF.set_index("Patient").join(
-            status_DF.set_index("Patient"), on="Patient"
+            status_DF.set_index("Patient"), on="Patient",
         )
         Donor_CoH_y = preprocessing.label_binarize(
-            predDF.Status.values, classes=["Healthy", "BC"]
+            predDF.Status.values, classes=["Healthy", "BC"],
         ).flatten()
         LR_CoH = lrmodel.fit(stats.zscore(predDF[receptor][:, np.newaxis]), Donor_CoH_y)
         y_pred = LR_CoH.predict_proba(stats.zscore(predDF[receptor][:, np.newaxis]))[
-            :, 1
+            :, 1,
         ]
         fpr, tpr, _ = metrics.roc_curve(Donor_CoH_y, y_pred)
         auc = round(metrics.roc_auc_score(Donor_CoH_y, y_pred), 4)
         ax.plot(fpr, tpr, label=cells[i] + " " + receptor)
         AUC_DF = pd.concat(
-            [AUC_DF, pd.DataFrame({"Feature": cells[i] + " " + receptor, "AUC": [auc]})]
+            [AUC_DF, pd.DataFrame({"Feature": cells[i] + " " + receptor, "AUC": [auc]})],
         )
 
     predDF = tFacDF[str(comp)].reset_index()
     predDF.columns = ["Patient", "Comp. " + str(comp)]
     predDF = predDF.set_index("Patient").join(
-        status_DF.set_index("Patient"), on="Patient"
+        status_DF.set_index("Patient"), on="Patient",
     )
     Donor_CoH_y = preprocessing.label_binarize(
-        predDF.Status.values, classes=["Healthy", "BC"]
+        predDF.Status.values, classes=["Healthy", "BC"],
     ).flatten()
     LR_CoH = lrmodel.fit(
-        stats.zscore(predDF["Comp. " + str(comp)][:, np.newaxis]), Donor_CoH_y
+        stats.zscore(predDF["Comp. " + str(comp)][:, np.newaxis]), Donor_CoH_y,
     )
     y_pred = LR_CoH.predict_proba(
-        stats.zscore(predDF["Comp. " + str(comp)][:, np.newaxis])
+        stats.zscore(predDF["Comp. " + str(comp)][:, np.newaxis]),
     )[:, 1]
     fpr, tpr, _ = metrics.roc_curve(Donor_CoH_y, y_pred)
     auc = round(metrics.roc_auc_score(Donor_CoH_y, y_pred), 4)
     ax.plot(fpr, tpr, label="Comp. " + str(comp) + ", AUC=" + str(auc))
     AUC_DF = pd.concat(
-        [AUC_DF, pd.DataFrame({"Feature": "Comp. " + str(comp), "AUC": [auc]})]
+        [AUC_DF, pd.DataFrame({"Feature": "Comp. " + str(comp), "AUC": [auc]})],
     )
 
     ax.legend()
     return AUC_DF
 
 
-def plot_AUC_bar(AUC_DF, ax):
-    """Plots AUC from AUC analysis"""
+def plot_AUC_bar(AUC_DF, ax) -> None:
+    """Plots AUC from AUC analysis."""
     sns.barplot(data=AUC_DF, x="Feature", y="AUC", ax=ax)
     ax.set(ylim=(0.5, 1))

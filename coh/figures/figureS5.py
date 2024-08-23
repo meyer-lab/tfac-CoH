@@ -1,10 +1,9 @@
-"""
-This creates Figure S5, boxplots of induced responses.
-"""
+"""This creates Figure S5, boxplots of induced responses."""
 
-import pandas as pd
 import numpy as np
-from .common import subplotLabel, getSetup, BC_scatter_cells
+import pandas as pd
+
+from .common import BC_scatter_cells, getSetup, subplotLabel
 
 
 def makeFigure():
@@ -20,7 +19,7 @@ def makeFigure():
     ligs = ["IFNg-50ng", "IL10-50ng", "IL6-50ng", "IL2-50ng", "IL4-50ng", "TGFB-50ng"]
 
     for i, sigg in enumerate(
-        ["pSTAT1", "pSTAT3", "pSTAT3", "pSTAT5", "pSTAT6", "pSmad1-2"]
+        ["pSTAT1", "pSTAT3", "pSTAT3", "pSTAT5", "pSTAT6", "pSmad1-2"],
     ):
         DF = CoH_DF.loc[(CoH_DF.Marker == sigg) & (CoH_DF.Treatment == ligs[i])]
         DF["Mean"] -= np.nanmean(DF["Mean"].values)
@@ -31,7 +30,7 @@ def makeFigure():
     CoH_DF_B = CoH_DF_B.loc[CoH_DF_B.Time == "15min"]
 
     for i, sigg in enumerate(
-        ["pSTAT1", "pSTAT3", "pSTAT4", "pSTAT5", "pSTAT6", "pSmad1-2"]
+        ["pSTAT1", "pSTAT3", "pSTAT4", "pSTAT5", "pSTAT6", "pSmad1-2"],
     ):
         DF = CoH_DF_B.loc[
             (CoH_DF_B.Marker == sigg) & (CoH_DF_B.Treatment == "Untreated")
