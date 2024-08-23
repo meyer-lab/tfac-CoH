@@ -1,6 +1,7 @@
 """
 This creates Figure S3, factorization of fold-change data.
 """
+
 from ..tensor import (
     factorTensor,
     R2Xplot,
@@ -24,7 +25,7 @@ def makeFigure():
     R2Xplot(ax[0], CoH_Data.to_numpy(), compNum=10)
     BC_status_plot(10, CoH_Data, ax[1], get_status_df())
     CoH_LogReg_plot(ax[2], tFacAllM, CoH_Data, get_status_df())
-    
+
     plot_tFac_CoH(ax[3:], tFacAllM, CoH_Data)
 
     return f

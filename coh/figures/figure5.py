@@ -1,6 +1,7 @@
 """
 This creates Figure 5, dissection of receptor data.
 """
+
 import pandas as pd
 import numpy as np
 import seaborn as sns
@@ -13,6 +14,7 @@ from sklearn.model_selection import RepeatedStratifiedKFold
 from .common import subplotLabel, getSetup
 from ..flow_rec import get_status_rec_df, make_CoH_Tensor_rec
 from ..tensor import factorTensor
+
 
 def makeFigure():
     """Get a list of the axis objects and create a figure."""
@@ -64,7 +66,6 @@ def makeFigure():
         ax=ax[1],
     )
 
-
     plot_by_patient(
         meanDF,
         cell1="CD8 TEM",
@@ -112,7 +113,11 @@ def makeFigure():
     CoH_Data = make_CoH_Tensor_rec()
     tFacAllM = factorTensor(CoH_Data.to_numpy(), r=5)
     mode = CoH_Data.dims[0]
-    tFacDF = pd.DataFrame(tFacAllM.factors[0], index=CoH_Data.coords[mode], columns=[str(i + 1) for i in range(tFacAllM.factors[0].shape[1])])
+    tFacDF = pd.DataFrame(
+        tFacAllM.factors[0],
+        index=CoH_Data.coords[mode],
+        columns=[str(i + 1) for i in range(tFacAllM.factors[0].shape[1])],
+    )
 
     AUC_DF = ROC_plot(
         meanDF,
@@ -125,7 +130,7 @@ def makeFigure():
 
     plot_AUC_bar(AUC_DF, ax[9])
 
-    #ax[8].set(xlim=(0, 1), ylim=(0, 1))
+    # ax[8].set(xlim=(0, 1), ylim=(0, 1))
 
     return f
 
@@ -154,7 +159,7 @@ def plot_by_patient(recDF, cell1, receptor1, cell2, receptor2, ax):
         ax=ax,
         scatter=False,
         line_kws={"color": "gray"},
-        truncate=False
+        truncate=False,
     )
 
 
@@ -162,31 +167,51 @@ def ROC_plot(recDF, receptors, cells, tFacDF, comp, ax):
     """Plots accuracy of classification using receptors and a tfac component"""
     status_DF = get_status_rec_df()
     cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=20)
-    lrmodel = LogisticRegressionCV(penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv)
+    lrmodel = LogisticRegressionCV(
+        penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv
+    )
     AUC_DF = pd.DataFrame()
 
     for i, receptor in enumerate(receptors):
         predDF = recDF.loc[recDF.Cell == cells[i]].reset_index()[["Patient", receptor]]
-        predDF = predDF.set_index("Patient").join(status_DF.set_index("Patient"), on="Patient")
-        Donor_CoH_y = preprocessing.label_binarize(predDF.Status.values, classes=['Healthy', 'BC']).flatten()
+        predDF = predDF.set_index("Patient").join(
+            status_DF.set_index("Patient"), on="Patient"
+        )
+        Donor_CoH_y = preprocessing.label_binarize(
+            predDF.Status.values, classes=["Healthy", "BC"]
+        ).flatten()
         LR_CoH = lrmodel.fit(stats.zscore(predDF[receptor][:, np.newaxis]), Donor_CoH_y)
-        y_pred = LR_CoH.predict_proba(stats.zscore(predDF[receptor][:, np.newaxis]))[:, 1]
+        y_pred = LR_CoH.predict_proba(stats.zscore(predDF[receptor][:, np.newaxis]))[
+            :, 1
+        ]
         fpr, tpr, _ = metrics.roc_curve(Donor_CoH_y, y_pred)
         auc = round(metrics.roc_auc_score(Donor_CoH_y, y_pred), 4)
         ax.plot(fpr, tpr, label=cells[i] + " " + receptor)
-        AUC_DF = pd.concat([AUC_DF, pd.DataFrame({"Feature": cells[i] + " " + receptor, "AUC": [auc]})])
-       
+        AUC_DF = pd.concat(
+            [AUC_DF, pd.DataFrame({"Feature": cells[i] + " " + receptor, "AUC": [auc]})]
+        )
+
     predDF = tFacDF[str(comp)].reset_index()
     predDF.columns = ["Patient", "Comp. " + str(comp)]
-    predDF = predDF.set_index("Patient").join(status_DF.set_index("Patient"), on="Patient")
-    Donor_CoH_y = preprocessing.label_binarize(predDF.Status.values, classes=['Healthy', 'BC']).flatten()
-    LR_CoH = lrmodel.fit(stats.zscore(predDF["Comp. " + str(comp)][:, np.newaxis]), Donor_CoH_y)
-    y_pred = LR_CoH.predict_proba(stats.zscore(predDF["Comp. " + str(comp)][:, np.newaxis]))[:, 1]
+    predDF = predDF.set_index("Patient").join(
+        status_DF.set_index("Patient"), on="Patient"
+    )
+    Donor_CoH_y = preprocessing.label_binarize(
+        predDF.Status.values, classes=["Healthy", "BC"]
+    ).flatten()
+    LR_CoH = lrmodel.fit(
+        stats.zscore(predDF["Comp. " + str(comp)][:, np.newaxis]), Donor_CoH_y
+    )
+    y_pred = LR_CoH.predict_proba(
+        stats.zscore(predDF["Comp. " + str(comp)][:, np.newaxis])
+    )[:, 1]
     fpr, tpr, _ = metrics.roc_curve(Donor_CoH_y, y_pred)
     auc = round(metrics.roc_auc_score(Donor_CoH_y, y_pred), 4)
     ax.plot(fpr, tpr, label="Comp. " + str(comp) + ", AUC=" + str(auc))
-    AUC_DF = pd.concat([AUC_DF, pd.DataFrame({"Feature": "Comp. " + str(comp), "AUC": [auc]})])
-    
+    AUC_DF = pd.concat(
+        [AUC_DF, pd.DataFrame({"Feature": "Comp. " + str(comp), "AUC": [auc]})]
+    )
+
     ax.legend()
     return AUC_DF
 

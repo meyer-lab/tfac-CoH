@@ -1,6 +1,7 @@
 """
 This creates Figure 1.
 """
+
 import numpy as np
 import seaborn as sns
 from .common import subplotLabel, getSetup
@@ -16,7 +17,6 @@ def makeFigure():
     subplotLabel(ax)
 
     data = make_CoH_Tensor(just_signal=True)
-
 
     treatments = [
         "IFNg-50ng",

@@ -1,6 +1,7 @@
 """
 This creates Figure S4, factorization of cell type abundance.
 """
+
 from .common import subplotLabel, getSetup, plot_tFac_CoH
 from ..tensor import (
     factorTensor,

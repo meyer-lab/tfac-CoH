@@ -1,6 +1,7 @@
 """
 This file includes various methods for flow cytometry analysis of fixed cells.
 """
+
 import ast
 import textwrap
 import warnings
@@ -18,46 +19,50 @@ warnings.filterwarnings("ignore")
 
 def get_status_dict():
     """Returns status dictionary"""
-    return OrderedDict([("Patient 26", "Healthy"),
-                        ("Patient 28", "Healthy"),
-                        ("Patient 30", "Healthy"),
-                        ("Patient 34", "Healthy"),
-                        ("Patient 35", "Healthy"),
-                        ("Patient 43", "Healthy"),
-                        ("Patient 44", "Healthy"),
-                        ("Patient 45", "Healthy"),
-                        ("Patient 52", "Healthy"),
-                        ("Patient 52A", "Healthy"),
-                        ("Patient 54", "Healthy"),
-                        ("Patient 56", "Healthy"),
-                        ("Patient 58", "Healthy"),
-                        ("Patient 60", "Healthy"),
-                        ("Patient 61", "Healthy"),
-                        ("Patient 62", "Healthy"),
-                        ("Patient 63", "Healthy"),
-                        ("Patient 66", "Healthy"),
-                        ("Patient 68", "Healthy"),
-                        ("Patient 69", "Healthy"),
-                        ("Patient 70", "Healthy"),
-                        ("Patient 79", "Healthy"),
-                        ("Patient 19186-4", "BC"),
-                        ("Patient 19186-8", "BC"),
-                        ("Patient 406", "BC"),
-                        ("Patient 19186-10-T1", "BC"),
-                        ("Patient 19186-10-T2", "BC"),
-                        ("Patient 19186-10-T3", "BC"),
-                        ("Patient 19186-15-T1", "BC"),
-                        ("Patient 19186-15-T2", "BC"),
-                        ("Patient 19186-15-T3", "BC"),
-                        ("Patient 19186-2", "BC"),
-                        ("Patient 19186-3", "BC"),
-                        ("Patient 19186-14", "BC"),
-                        ("Patient 21368-3", "BC"),
-                        ("Patient 21368-4", "BC")])
+    return OrderedDict(
+        [
+            ("Patient 26", "Healthy"),
+            ("Patient 28", "Healthy"),
+            ("Patient 30", "Healthy"),
+            ("Patient 34", "Healthy"),
+            ("Patient 35", "Healthy"),
+            ("Patient 43", "Healthy"),
+            ("Patient 44", "Healthy"),
+            ("Patient 45", "Healthy"),
+            ("Patient 52", "Healthy"),
+            ("Patient 52A", "Healthy"),
+            ("Patient 54", "Healthy"),
+            ("Patient 56", "Healthy"),
+            ("Patient 58", "Healthy"),
+            ("Patient 60", "Healthy"),
+            ("Patient 61", "Healthy"),
+            ("Patient 62", "Healthy"),
+            ("Patient 63", "Healthy"),
+            ("Patient 66", "Healthy"),
+            ("Patient 68", "Healthy"),
+            ("Patient 69", "Healthy"),
+            ("Patient 70", "Healthy"),
+            ("Patient 79", "Healthy"),
+            ("Patient 19186-4", "BC"),
+            ("Patient 19186-8", "BC"),
+            ("Patient 406", "BC"),
+            ("Patient 19186-10-T1", "BC"),
+            ("Patient 19186-10-T2", "BC"),
+            ("Patient 19186-10-T3", "BC"),
+            ("Patient 19186-15-T1", "BC"),
+            ("Patient 19186-15-T2", "BC"),
+            ("Patient 19186-15-T3", "BC"),
+            ("Patient 19186-2", "BC"),
+            ("Patient 19186-3", "BC"),
+            ("Patient 19186-14", "BC"),
+            ("Patient 21368-3", "BC"),
+            ("Patient 21368-4", "BC"),
+        ]
+    )
 
 
 def get_status_df():
-    statusDF = pd.DataFrame.from_dict(get_status_dict(), orient='index').reset_index()
+    statusDF = pd.DataFrame.from_dict(get_status_dict(), orient="index").reset_index()
     statusDF.columns = ["Patient", "Status"]
     return statusDF
 
@@ -108,7 +113,9 @@ def combineWells(samples, cellFrac):
     for sample in samples[1:]:
         log_markers = markers[np.isin(markers, sample.data.columns)]
         sample = sample.transform("tlog", channels=log_markers)
-        combinedSamples.data = pd.concat([combinedSamples.data, sample.data.sample(frac=cellFrac)])
+        combinedSamples.data = pd.concat(
+            [combinedSamples.data, sample.data.sample(frac=cellFrac)]
+        )
     combinedSamples.data = combinedSamples.data.rename(marker_dict, axis=1)
     combinedSamples.data = combinedSamples.data.astype(int)
     return combinedSamples
@@ -125,7 +132,17 @@ def process_sample(sample):
 
 def makeGate(lowerCorner, upperCorner, channels, name):
     """Returns square gate using upper and lower corners"""
-    return PolyGate([(lowerCorner[0], lowerCorner[1]), (upperCorner[0], lowerCorner[1]), (upperCorner[0], upperCorner[1]), (lowerCorner[0], upperCorner[1])], channels, region='in', name=name)
+    return PolyGate(
+        [
+            (lowerCorner[0], lowerCorner[1]),
+            (upperCorner[0], lowerCorner[1]),
+            (upperCorner[0], upperCorner[1]),
+            (lowerCorner[0], upperCorner[1]),
+        ],
+        channels,
+        region="in",
+        name=name,
+    )
 
 
 gate_dict = OrderedDict(
@@ -163,8 +180,12 @@ def get_gate_dict():
 
 def form_gate(gate):
     """Deconvolutes string flow gate object"""
-    vertices = ast.literal_eval(textwrap.dedent(str(gate).split("Vertices: ")[1].split("Channel")[0]))
-    channels = ast.literal_eval(textwrap.dedent(str(gate).split("Channel(s): ")[1].split("Name")[0]))
+    vertices = ast.literal_eval(
+        textwrap.dedent(str(gate).split("Vertices: ")[1].split("Channel")[0])
+    )
+    channels = ast.literal_eval(
+        textwrap.dedent(str(gate).split("Channel(s): ")[1].split("Name")[0])
+    )
     return PolyGate(vertices, channels)
 
 
@@ -172,7 +193,11 @@ def live_PBMC_gate(sample, patient, gateDF):
     """Returns singlet lymphocyte live PBMCs for a patient"""
     gates = ["PBMC Gate", "Single Cell Gate 1", "Single Cell Gate 2", "Live/Dead Gate"]
     for gate_name in gates:
-        gate = form_gate(gateDF.loc[(gateDF["Patient"] == patient) & (gateDF["Gate Label"] == gate_name)].Gate.values[0])
+        gate = form_gate(
+            gateDF.loc[
+                (gateDF["Patient"] == patient) & (gateDF["Gate Label"] == gate_name)
+            ].Gate.values[0]
+        )
         sample = sample.gate(gate)
     return sample
 
@@ -183,7 +208,11 @@ def pop_gate(sample, cell_type, patient, gateDF):
 
     pop_sample = copy(sample)
     for gate_name in gates:
-        gate = form_gate(gateDF.loc[(gateDF["Patient"] == patient) & (gateDF["Gate Label"] == gate_name)].Gate.values[0])
+        gate = form_gate(
+            gateDF.loc[
+                (gateDF["Patient"] == patient) & (gateDF["Gate Label"] == gate_name)
+            ].Gate.values[0]
+        )
         pop_sample = pop_sample.gate(gate)
     abund = pop_sample.counts / sample.counts
     return pop_sample, abund
@@ -227,43 +256,181 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
                 print(patient, time, treatment)
                 if treatment == "Untreated" and subtract:
                     untreatedDF = pd.DataFrame()
-                if ("/opt/CoH/" + patient + "/----F" + patient_num + "_" + time + "_" + treatment + "_Unmixed.fcs" in patient_files):
-                    sample = FCMeasurement(ID="Sample", datafile="/opt/CoH/" + patient + "/----F" + patient_num + "_" + time + "_" + treatment + "_Unmixed.fcs")
+                if (
+                    "/opt/CoH/"
+                    + patient
+                    + "/----F"
+                    + patient_num
+                    + "_"
+                    + time
+                    + "_"
+                    + treatment
+                    + "_Unmixed.fcs"
+                    in patient_files
+                ):
+                    sample = FCMeasurement(
+                        ID="Sample",
+                        datafile="/opt/CoH/"
+                        + patient
+                        + "/----F"
+                        + patient_num
+                        + "_"
+                        + time
+                        + "_"
+                        + treatment
+                        + "_Unmixed.fcs",
+                    )
                     sample, markers = process_sample(sample)
                     sample = live_PBMC_gate(sample, patient, gateDF)
                     for cell_type in cell_types:
                         pop_sample, abund = pop_gate(sample, cell_type, patient, gateDF)
                         if abundance:
-                            CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Abundance": abund})])
+                            CoH_DF = pd.concat(
+                                [
+                                    CoH_DF,
+                                    pd.DataFrame(
+                                        {
+                                            "Patient": [patient],
+                                            "Time": time,
+                                            "Treatment": treatment,
+                                            "Cell": cell_type,
+                                            "Abundance": abund,
+                                        }
+                                    ),
+                                ]
+                            )
                         else:
                             for marker in markers:
                                 mean = pop_sample.data[marker_dict[marker]]
-                                mean = np.mean(mean.values[mean.values < np.quantile(mean.values, 0.995)])
+                                mean = np.mean(
+                                    mean.values[
+                                        mean.values < np.quantile(mean.values, 0.995)
+                                    ]
+                                )
                                 if subtract:
                                     if treatment == "Untreated":
-                                        CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment,
-                                                           "Cell": cell_type, "Marker": marker_dict[marker], "Mean": mean})])
-                                        untreatedDF = pd.concat([untreatedDF, pd.DataFrame({"Cell": cell_type, "Marker": marker_dict[marker], "Mean": [mean]})])
+                                        CoH_DF = pd.concat(
+                                            [
+                                                CoH_DF,
+                                                pd.DataFrame(
+                                                    {
+                                                        "Patient": [patient],
+                                                        "Time": time,
+                                                        "Treatment": treatment,
+                                                        "Cell": cell_type,
+                                                        "Marker": marker_dict[marker],
+                                                        "Mean": mean,
+                                                    }
+                                                ),
+                                            ]
+                                        )
+                                        untreatedDF = pd.concat(
+                                            [
+                                                untreatedDF,
+                                                pd.DataFrame(
+                                                    {
+                                                        "Cell": cell_type,
+                                                        "Marker": marker_dict[marker],
+                                                        "Mean": [mean],
+                                                    }
+                                                ),
+                                            ]
+                                        )
                                     else:
-                                        subVal = untreatedDF.loc[(untreatedDF["Marker"] == marker_dict[marker]) & (untreatedDF["Cell"] == cell_type)]["Mean"].values
+                                        subVal = untreatedDF.loc[
+                                            (
+                                                untreatedDF["Marker"]
+                                                == marker_dict[marker]
+                                            )
+                                            & (untreatedDF["Cell"] == cell_type)
+                                        ]["Mean"].values
                                         if foldChange:
-                                            CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment,
-                                                               "Cell": cell_type, "Marker": marker_dict[marker], "Mean": (mean / subVal) - 1})])
+                                            CoH_DF = pd.concat(
+                                                [
+                                                    CoH_DF,
+                                                    pd.DataFrame(
+                                                        {
+                                                            "Patient": [patient],
+                                                            "Time": time,
+                                                            "Treatment": treatment,
+                                                            "Cell": cell_type,
+                                                            "Marker": marker_dict[
+                                                                marker
+                                                            ],
+                                                            "Mean": (mean / subVal) - 1,
+                                                        }
+                                                    ),
+                                                ]
+                                            )
                                         else:
-                                            CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment,
-                                                               "Cell": cell_type, "Marker": marker_dict[marker], "Mean": mean - subVal})])
+                                            CoH_DF = pd.concat(
+                                                [
+                                                    CoH_DF,
+                                                    pd.DataFrame(
+                                                        {
+                                                            "Patient": [patient],
+                                                            "Time": time,
+                                                            "Treatment": treatment,
+                                                            "Cell": cell_type,
+                                                            "Marker": marker_dict[
+                                                                marker
+                                                            ],
+                                                            "Mean": mean - subVal,
+                                                        }
+                                                    ),
+                                                ]
+                                            )
                                 else:
-                                    CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment,
-                                                       "Cell": cell_type, "Marker": marker_dict[marker], "Mean": mean})])
+                                    CoH_DF = pd.concat(
+                                        [
+                                            CoH_DF,
+                                            pd.DataFrame(
+                                                {
+                                                    "Patient": [patient],
+                                                    "Time": time,
+                                                    "Treatment": treatment,
+                                                    "Cell": cell_type,
+                                                    "Marker": marker_dict[marker],
+                                                    "Mean": mean,
+                                                }
+                                            ),
+                                        ]
+                                    )
                 else:
                     print("Skipped")
                     for cell_type in cell_types:
                         for marker in markers:
                             if abundance:
-                                CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment, "Cell": cell_type, "Abundance": np.nan})])
+                                CoH_DF = pd.concat(
+                                    [
+                                        CoH_DF,
+                                        pd.DataFrame(
+                                            {
+                                                "Patient": [patient],
+                                                "Time": time,
+                                                "Treatment": treatment,
+                                                "Cell": cell_type,
+                                                "Abundance": np.nan,
+                                            }
+                                        ),
+                                    ]
+                                )
                             else:
-                                CoH_DF = pd.concat([CoH_DF, pd.DataFrame({"Patient": [patient], "Time": time, "Treatment": treatment,
-                                                   "Cell": cell_type, "Marker": marker_dict[marker], "Mean": np.nan})])
+                                CoH_DF = pd.concat(
+                                    [
+                                        CoH_DF,
+                                        pd.DataFrame(
+                                            {
+                                                "Patient": [patient],
+                                                "Time": time,
+                                                "Treatment": treatment,
+                                                "Cell": cell_type,
+                                                "Marker": marker_dict[marker],
+                                                "Mean": np.nan,
+                                            }
+                                        ),
+                                    ]
+                                )
     if subtract:
         UntreatedDF = CoH_DF.loc[(CoH_DF.Treatment == "Untreated")]
         UntreatedDF.to_csv("./coh/data/CoH_Flow_DF_Basal.csv")
@@ -281,7 +448,9 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
     return CoH_DF
 
 
-def make_CoH_Tensor(just_signal: bool = False, foldChange: bool = False) -> xa.DataArray:
+def make_CoH_Tensor(
+    just_signal: bool = False, foldChange: bool = False
+) -> xa.DataArray:
     """Processes RA DataFrame into Xarray Tensor"""
     if foldChange:
         df = pd.read_csv("./coh/data/CoH_Flow_DF_FC.csv", index_col=[1, 2, 3, 4, 5])
@@ -292,25 +461,58 @@ def make_CoH_Tensor(just_signal: bool = False, foldChange: bool = False) -> xa.D
     xdata = xdata.loc[:, "15min", :, :, :]
 
     if just_signal or foldChange:
-        markers = np.array(["pSTAT1", "pSTAT3", "pSTAT4", "pSTAT5", "pSTAT6", "pSmad1-2"])
+        markers = np.array(
+            ["pSTAT1", "pSTAT3", "pSTAT4", "pSTAT5", "pSTAT6", "pSmad1-2"]
+        )
         xdata = xdata.loc[:, :, :, markers]
 
     if foldChange:
-        treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng"])
+        treatments = np.array(
+            [
+                "IL2-50ng",
+                "IL4-50ng",
+                "IL6-50ng",
+                "IL10-50ng",
+                "IFNg-50ng",
+                "TGFB-50ng",
+                "IFNg-50ng+IL6-50ng",
+            ]
+        )
     else:
-        treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng", "Untreated"])
+        treatments = np.array(
+            [
+                "IL2-50ng",
+                "IL4-50ng",
+                "IL6-50ng",
+                "IL10-50ng",
+                "IFNg-50ng",
+                "TGFB-50ng",
+                "IFNg-50ng+IL6-50ng",
+                "Untreated",
+            ]
+        )
 
     xdata = xdata.loc[list(get_status_dict().keys()), treatments, :, :]
 
     # Normalize
     if foldChange:
-        xdata -= np.nanmean(xdata, axis=(0, 1, 2))[np.newaxis, np.newaxis, np.newaxis, :]
+        xdata -= np.nanmean(xdata, axis=(0, 1, 2))[
+            np.newaxis, np.newaxis, np.newaxis, :
+        ]
         xdata /= np.nanstd(xdata, axis=(0, 1, 2))[np.newaxis, np.newaxis, np.newaxis, :]
     else:
-        xdata[:, :-1, :, :] -= np.nanmean(xdata[:, :-1, :, :], axis=(0, 1, 2))[np.newaxis, np.newaxis, np.newaxis, :]
-        xdata[:, :-1, :, :] /= np.nanstd(xdata[:, :-1, :, :], axis=(0, 1, 2))[np.newaxis, np.newaxis, np.newaxis, :]
-        xdata[:, -1, :, :] -= np.nanmean(xdata[:, -1, :, :], axis=(0, 1))[np.newaxis, np.newaxis, :]
-        xdata[:, -1, :, :] /= np.nanstd(xdata[:, -1, :, :], axis=(0, 1))[np.newaxis, np.newaxis, :]
+        xdata[:, :-1, :, :] -= np.nanmean(xdata[:, :-1, :, :], axis=(0, 1, 2))[
+            np.newaxis, np.newaxis, np.newaxis, :
+        ]
+        xdata[:, :-1, :, :] /= np.nanstd(xdata[:, :-1, :, :], axis=(0, 1, 2))[
+            np.newaxis, np.newaxis, np.newaxis, :
+        ]
+        xdata[:, -1, :, :] -= np.nanmean(xdata[:, -1, :, :], axis=(0, 1))[
+            np.newaxis, np.newaxis, :
+        ]
+        xdata[:, -1, :, :] /= np.nanstd(xdata[:, -1, :, :], axis=(0, 1))[
+            np.newaxis, np.newaxis, :
+        ]
 
     return xdata
 
@@ -322,7 +524,18 @@ def make_CoH_Tensor_abund() -> xa.DataArray:
 
     xdata = df.to_xarray()["Abundance"]
 
-    treatments = np.array(["IL2-50ng", "IL4-50ng", "IL6-50ng", "IL10-50ng", "IFNg-50ng", "TGFB-50ng", "IFNg-50ng+IL6-50ng", "Untreated"])
+    treatments = np.array(
+        [
+            "IL2-50ng",
+            "IL4-50ng",
+            "IL6-50ng",
+            "IL10-50ng",
+            "IFNg-50ng",
+            "TGFB-50ng",
+            "IFNg-50ng+IL6-50ng",
+            "Untreated",
+        ]
+    )
 
     xdata = xdata.loc[list(get_status_dict().keys()), "15min", treatments, :]
 
@@ -354,8 +567,30 @@ def make_flow_sc_dataframe():
         for j, time in enumerate(times):
             for k, treatment in enumerate(treatments):
                 print(patient, time, treatment)
-                if ("/opt/CoH/" + patient + "/----F" + patient_num + "_" + time + "_" + treatment + "_Unmixed.fcs" in patient_files):
-                    sample = FCMeasurement(ID="Sample", datafile="/opt/CoH/" + patient + "/----F" + patient_num + "_" + time + "_" + treatment + "_Unmixed.fcs")
+                if (
+                    "/opt/CoH/"
+                    + patient
+                    + "/----F"
+                    + patient_num
+                    + "_"
+                    + time
+                    + "_"
+                    + treatment
+                    + "_Unmixed.fcs"
+                    in patient_files
+                ):
+                    sample = FCMeasurement(
+                        ID="Sample",
+                        datafile="/opt/CoH/"
+                        + patient
+                        + "/----F"
+                        + patient_num
+                        + "_"
+                        + time
+                        + "_"
+                        + treatment
+                        + "_Unmixed.fcs",
+                    )
                     sample, markers = process_sample(sample)
                     sample = live_PBMC_gate(sample, patient, gateDF)
                     for cell_type in cell_types:

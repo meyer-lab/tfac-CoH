@@ -1,6 +1,7 @@
 """
 This creates Figure 2I, Characterization of component dependency when classifying BC patients
 """
+
 import pickle
 import seaborn as sns
 import pandas as pd
@@ -33,7 +34,9 @@ def makeFigure():
 def CoH_comp_scan_plot(ax, tFac, CoH_Array, status_DF):
     """Plot factor weights for donor BC prediction"""
     cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=20)
-    lrmodel = LogisticRegressionCV(penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv)
+    lrmodel = LogisticRegressionCV(
+        penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv
+    )
     coord = CoH_Array.dims.index("Patient")
     mode_facs = tFac[1][coord]
 

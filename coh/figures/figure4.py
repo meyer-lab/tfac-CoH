@@ -1,10 +1,17 @@
 """
 This creates Figure 4, tensor factorization of receptor data.
 """
+
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from .common import subplotLabel, getSetup, plot_tFac_CoH, BC_scatter_cells_rec, comp_corr_plot
+from .common import (
+    subplotLabel,
+    getSetup,
+    plot_tFac_CoH,
+    BC_scatter_cells_rec,
+    comp_corr_plot,
+)
 from ..tensor import factorTensor, BC_status_plot
 from ..flow_rec import make_CoH_Tensor_rec, get_status_rec_df
 
@@ -20,7 +27,7 @@ def makeFigure():
 
     CoH_Data = make_CoH_Tensor_rec()
     tFacAllM = factorTensor(CoH_Data.to_numpy(), r=5)
-    
+
     plot_tFac_CoH(ax[0:], tFacAllM, CoH_Data)
 
     CoH_Data_R = make_CoH_Tensor_rec()
@@ -34,7 +41,12 @@ def makeFigure():
     DF = CoH_Data_DF.loc[CoH_Data_DF.Marker == "IL7Ra"]
     DF["Mean"] -= np.mean(DF["Mean"].values)
     DF["Mean"] /= np.std(DF["Mean"].values)
-    rec_cell_plot(DF, "IL7Ra", ["CD16 NK", "CD20 B", "CD4+", "CD8+", "CD33 Myeloid", "Treg"], ax[5])
+    rec_cell_plot(
+        DF,
+        "IL7Ra",
+        ["CD16 NK", "CD20 B", "CD4+", "CD8+", "CD33 Myeloid", "Treg"],
+        ax[5],
+    )
     ax[5].set(ylim=(-4, 2))
 
     DF = CoH_Data_DF.loc[CoH_Data_DF.Marker == "PD1"]
@@ -67,7 +79,6 @@ def makeFigure():
     ]
     BC_scatter_cells_rec(ax[7], PDL1_DF, "PD_L1", filter=False)
 
-
     DF = CoH_Data_DF.loc[CoH_Data_DF.Marker == "IL6Ra"]
     DF["Mean"] -= np.mean(DF["Mean"].values)
     DF["Mean"] /= np.std(DF["Mean"].values)
@@ -94,6 +105,8 @@ def makeFigure():
 def rec_cell_plot(CoH_DF, rec, cells, ax):
     """Plots cells responses across signaling products for a single stimulatiom"""
     CoH_DF = CoH_DF.loc[(CoH_DF.Marker == rec) & (CoH_DF.Cell.isin(cells))]
-    sns.boxplot(data=CoH_DF, x="Cell", y="Mean", palette='husl', showfliers=False, ax=ax)
+    sns.boxplot(
+        data=CoH_DF, x="Cell", y="Mean", palette="husl", showfliers=False, ax=ax
+    )
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
     ax.set(ylabel=rec)

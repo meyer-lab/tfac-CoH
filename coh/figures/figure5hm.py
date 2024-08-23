@@ -1,6 +1,7 @@
 """
 This creates Figure 5 heatmap (clustered receptor and response correlations).
 """
+
 import seaborn as sns
 import pandas as pd
 import numpy as np
@@ -21,11 +22,20 @@ def makeFigure():
     df_R = pd.read_csv("./coh/data/CoH_Rec_DF.csv")
 
     # CD8
-    #f = dysreg_cor_hm_R(df, df_B, df_R, ["pSTAT3", "pSTAT5"], ["IL10-50ng", "IL2-50ng"], ["pSmad1-2", "pSTAT4"], ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI", "IL2RB"], cells=["CD8+"])
+    # f = dysreg_cor_hm_R(df, df_B, df_R, ["pSTAT3", "pSTAT5"], ["IL10-50ng", "IL2-50ng"], ["pSmad1-2", "pSTAT4"], ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI", "IL2RB"], cells=["CD8+"])
     # CD4
     # f = dysreg_cor_hm_R(df, df_B, df_R, ["pSTAT3"], ["IL10-50ng"], ["pSmad1-2", "pSTAT4", "pSTAT1"], ["TGFB RII", "IL10R", "IL6Ra", "IL12RI", "IFNg R1"], cells=["CD4+"])
     # Bcell
-    f = dysreg_cor_hm_R(df, df_B, df_R, ["pSTAT3", "pSTAT5"], ["IL10-50ng", "IL2-50ng"], ["pSmad1-2", "pSTAT4"], ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI", "IL2RB", "IL2Ra"], cells=["CD20 B"])
+    f = dysreg_cor_hm_R(
+        df,
+        df_B,
+        df_R,
+        ["pSTAT3", "pSTAT5"],
+        ["IL10-50ng", "IL2-50ng"],
+        ["pSmad1-2", "pSTAT4"],
+        ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI", "IL2RB", "IL2Ra"],
+        cells=["CD20 B"],
+    )
     # Treg
     # f = dysreg_cor_hm_R(df, df_B, df_R, ["pSTAT3", "pSTAT5", "pSmad1-2"], ["IL10-50ng", "IL2-50ng", "TGFB-50ng"], ["pSmad1-2", "pSTAT4", "pSTAT1"], ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI", "IL2RB", "IL2Ra", "IFNg R1"], cells=["Treg"])
     # Monocytes
@@ -34,14 +44,29 @@ def makeFigure():
     return f
 
 
-def dysreg_cor_hm_R(df, df_B, df_R, markers_dysreg, cyto_dysreg, markers_dysreg_B, markers_dysreg_R, cells=False):
+def dysreg_cor_hm_R(
+    df,
+    df_B,
+    df_R,
+    markers_dysreg,
+    cyto_dysreg,
+    markers_dysreg_B,
+    markers_dysreg_R,
+    cells=False,
+):
     """Plots possible correlation of dysregulation"""
     df = df.loc[df.Patient != "Patient 406"]
     df_B = df_B.loc[df_B.Patient != "Patient 406"]
     df_R = df_R.loc[df_R.Patient != "Patient 19186-12"]
 
-    df = df.groupby(["Cell", "Patient", "Treatment", "Marker"]).Mean.mean().reset_index()
-    df_B = df_B.groupby(["Cell", "Patient", "Treatment", "Marker"]).Mean.mean().reset_index()
+    df = (
+        df.groupby(["Cell", "Patient", "Treatment", "Marker"]).Mean.mean().reset_index()
+    )
+    df_B = (
+        df_B.groupby(["Cell", "Patient", "Treatment", "Marker"])
+        .Mean.mean()
+        .reset_index()
+    )
     df_R = df_R.groupby(["Cell", "Patient", "Marker"]).Mean.mean().reset_index()
 
     dysreg_DF = pd.DataFrame()
@@ -60,12 +85,17 @@ def dysreg_cor_hm_R(df, df_B, df_R, markers_dysreg, cyto_dysreg, markers_dysreg_
         patient_DF = df.loc[df.Patient == patient]
         patient_row = pd.DataFrame()
         for i, marker in enumerate(markers_dysreg):
-            value = patient_DF.loc[(patient_DF.Marker == marker) & (patient_DF.Treatment == cyto_dysreg[i])].Mean.values
+            value = patient_DF.loc[
+                (patient_DF.Marker == marker) & (patient_DF.Treatment == cyto_dysreg[i])
+            ].Mean.values
             patient_row[markers_dysreg[i] + " response to " + cyto_dysreg[i]] = value
 
         patient_DF_B = df_B.loc[df_B.Patient == patient]
         for i, marker in enumerate(markers_dysreg_B):
-            value = patient_DF_B.loc[(patient_DF_B.Marker == marker) & (patient_DF_B.Treatment == "Untreated")].Mean.values
+            value = patient_DF_B.loc[
+                (patient_DF_B.Marker == marker)
+                & (patient_DF_B.Treatment == "Untreated")
+            ].Mean.values
             patient_row["Basal " + marker] = value
 
         patient_DF_R = df_R.loc[df_R.Patient == patient]
@@ -74,7 +104,6 @@ def dysreg_cor_hm_R(df, df_B, df_R, markers_dysreg, cyto_dysreg, markers_dysreg_
             patient_row[marker] = value
         dysreg_DF = pd.concat([dysreg_DF, patient_row])
 
-    
     cov_DF = dysreg_DF.cov()
     Vi = np.linalg.pinv(cov_DF, hermitian=True)  # Inverse covariance matrix
     Vi_diag = Vi.diagonal()
@@ -84,5 +113,15 @@ def dysreg_cor_hm_R(df, df_B, df_R, markers_dysreg, cyto_dysreg, markers_dysreg_
     pCorr_DF = pd.DataFrame(pCor, columns=cov_DF.columns, index=cov_DF.columns)
 
     cmap = sns.color_palette("vlag", as_cmap=True)
-    f = sns.clustermap(pCorr_DF, robust=True, vmin=-1, vmax=1, row_cluster=True, col_cluster=True, annot=True, cmap=cmap, figsize=(8, 8))
+    f = sns.clustermap(
+        pCorr_DF,
+        robust=True,
+        vmin=-1,
+        vmax=1,
+        row_cluster=True,
+        col_cluster=True,
+        annot=True,
+        cmap=cmap,
+        figsize=(8, 8),
+    )
     return f

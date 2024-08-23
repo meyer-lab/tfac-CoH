@@ -34,7 +34,9 @@ def factorTensor(
     R2X = calcR2X(tFac, tOrig)
 
     # Precalculate the missingness patterns
-    uniqueInfo = [np.unique(np.isfinite(B.T), axis=1, return_inverse=True) for B in unfolded]
+    uniqueInfo = [
+        np.unique(np.isfinite(B.T), axis=1, return_inverse=True) for B in unfolded
+    ]
 
     tq = tqdm(range(maxiter), disable=(not progress))
     for i in tq:
@@ -110,25 +112,36 @@ def R2Xplot(ax, tensor, compNum: int):
 
 
 cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=20)
-lrmodel = LogisticRegressionCV(penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv)
+lrmodel = LogisticRegressionCV(
+    penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv
+)
 
 
 def CoH_LogReg_plot(ax, tFac, CoH_Array, status_DF):
     """Plot factor weights for donor BC prediction"""
     coord = CoH_Array.dims.index("Patient")
     mode_facs = tFac[1][coord]
-    Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
+    Donor_CoH_y = preprocessing.label_binarize(
+        status_DF.Status, classes=["Healthy", "BC"]
+    ).flatten()
 
     LR_CoH = lrmodel.fit(mode_facs, Donor_CoH_y)
     print(np.max(np.mean(lrmodel.scores_[1], axis=0)))
-    CoH_comp_weights = pd.DataFrame({"Component": np.arange(1, mode_facs.shape[1] + 1), "Coefficient": LR_CoH.coef_[0]})
+    CoH_comp_weights = pd.DataFrame(
+        {
+            "Component": np.arange(1, mode_facs.shape[1] + 1),
+            "Coefficient": LR_CoH.coef_[0],
+        }
+    )
     sns.barplot(data=CoH_comp_weights, x="Component", y="Coefficient", color="k", ax=ax)
 
 
 def BC_status_plot(compNum, CoH_Data, ax, status_DF):
     """Plot 5 fold CV by # components"""
     accDF = pd.DataFrame()
-    Donor_CoH_y = preprocessing.label_binarize(status_DF.Status, classes=['Healthy', 'BC']).flatten()
+    Donor_CoH_y = preprocessing.label_binarize(
+        status_DF.Status, classes=["Healthy", "BC"]
+    ).flatten()
 
     for i in range(1, compNum + 1):
         tFacAllM = factorTensor(CoH_Data.to_numpy(), r=i)
@@ -137,8 +150,26 @@ def BC_status_plot(compNum, CoH_Data, ax, status_DF):
 
         lrmodel.fit(mode_facs, Donor_CoH_y)
         scoresTFAC = np.max(np.mean(lrmodel.scores_[1], axis=0))
-        accDF = pd.concat([accDF, pd.DataFrame({"Data Type": "Tensor Factorization", "Components": [i], "Accuracy (10-fold CV)": scoresTFAC})])
+        accDF = pd.concat(
+            [
+                accDF,
+                pd.DataFrame(
+                    {
+                        "Data Type": "Tensor Factorization",
+                        "Components": [i],
+                        "Accuracy (10-fold CV)": scoresTFAC,
+                    }
+                ),
+            ]
+        )
 
     accDF = accDF.reset_index(drop=True)
-    sns.scatterplot(data=accDF, x="Components", y="Accuracy (10-fold CV)", hue="Data Type", ax=ax, color='k')
+    sns.scatterplot(
+        data=accDF,
+        x="Components",
+        y="Accuracy (10-fold CV)",
+        hue="Data Type",
+        ax=ax,
+        color="k",
+    )
     ax.set(xticks=np.arange(1, compNum + 1), ylim=(0.5, 1))

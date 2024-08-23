@@ -1,6 +1,7 @@
 """
 This creates Figure 4's clustered heat map.
 """
+
 import pandas as pd
 import seaborn as sns
 from .common import getSetup
