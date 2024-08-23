@@ -1,13 +1,12 @@
-"""
-This creates Figure S8, signaling R2X and decomposition.
-"""
+"""This creates Figure S8, signaling R2X and decomposition."""
 
 import numpy as np
-from tensorpack.plot import reduction
 from tensorpack import Decomposition
-from .common import subplotLabel, getSetup
-from ..tensor import factorTensor
+from tensorpack.plot import reduction
+
 from ..flow_rec import make_CoH_Tensor_rec
+from ..tensor import factorTensor
+from .common import getSetup, subplotLabel
 
 
 def makeFigure():

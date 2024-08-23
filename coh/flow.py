@@ -1,24 +1,22 @@
-"""
-This file includes various methods for flow cytometry analysis of fixed cells.
-"""
+"""This file includes various methods for flow cytometry analysis of fixed cells."""
 
 import ast
 import textwrap
 import warnings
+from collections import OrderedDict
 from copy import copy
 from pathlib import Path
-from collections import OrderedDict
-import pandas as pd
-import numpy as np
-import xarray as xa
-from FlowCytometryTools import PolyGate, FCMeasurement
 
+import numpy as np
+import pandas as pd
+import xarray as xa
+from FlowCytometryTools import FCMeasurement, PolyGate
 
 warnings.filterwarnings("ignore")
 
 
 def get_status_dict():
-    """Returns status dictionary"""
+    """Returns status dictionary."""
     return OrderedDict(
         [
             ("Patient 26", "Healthy"),
@@ -57,7 +55,7 @@ def get_status_dict():
             ("Patient 19186-14", "BC"),
             ("Patient 21368-3", "BC"),
             ("Patient 21368-4", "BC"),
-        ]
+        ],
     )
 
 
@@ -90,12 +88,12 @@ marker_dict = OrderedDict(
         "PE-Cy7-A": "pSTAT5",
         "BV605-A": "PD-1",
         "BV510-A": "PD-L1",
-    }
+    },
 )
 
 
 def compile_patient(patient_num, cellFrac):
-    """Adds all data from a single patient to an FC file"""
+    """Adds all data from a single patient to an FC file."""
     pathname = "/opt/CoH/" + str(patient_num) + "/"
     pathlist = Path(r"" + str(pathname)).glob("**/*.fcs")
     FCfiles = []
@@ -105,7 +103,7 @@ def compile_patient(patient_num, cellFrac):
 
 
 def combineWells(samples, cellFrac):
-    """Accepts sample array returned from importF, and array of channels, returns combined well data"""
+    """Accepts sample array returned from importF, and array of channels, returns combined well data."""
     markers = np.array(list(marker_dict.keys()))
     log_markers = markers[np.isin(markers, samples[0].data.columns)]
     samples[0] = samples[0].transform("tlog", channels=log_markers)
@@ -114,7 +112,7 @@ def combineWells(samples, cellFrac):
         log_markers = markers[np.isin(markers, sample.data.columns)]
         sample = sample.transform("tlog", channels=log_markers)
         combinedSamples.data = pd.concat(
-            [combinedSamples.data, sample.data.sample(frac=cellFrac)]
+            [combinedSamples.data, sample.data.sample(frac=cellFrac)],
         )
     combinedSamples.data = combinedSamples.data.rename(marker_dict, axis=1)
     combinedSamples.data = combinedSamples.data.astype(int)
@@ -122,7 +120,7 @@ def combineWells(samples, cellFrac):
 
 
 def process_sample(sample):
-    """Relabels and logs a sample"""
+    """Relabels and logs a sample."""
     markers = np.array(list(marker_dict.keys()))
     log_markers = markers[np.isin(markers, sample.data.columns)]
     sample = sample.transform("tlog", channels=log_markers)
@@ -131,7 +129,7 @@ def process_sample(sample):
 
 
 def makeGate(lowerCorner, upperCorner, channels, name):
-    """Returns square gate using upper and lower corners"""
+    """Returns square gate using upper and lower corners."""
     return PolyGate(
         [
             (lowerCorner[0], lowerCorner[1]),
@@ -170,7 +168,7 @@ gate_dict = OrderedDict(
         "CD33 Myeloid": ["CD33 Myeloid Gate"],
         "Classical Monocyte": ["Classical Monocyte Gate"],
         "NC Monocyte": ["Non-Classical Monocyte Gate"],
-    }
+    },
 )
 
 
@@ -179,31 +177,31 @@ def get_gate_dict():
 
 
 def form_gate(gate):
-    """Deconvolutes string flow gate object"""
+    """Deconvolutes string flow gate object."""
     vertices = ast.literal_eval(
-        textwrap.dedent(str(gate).split("Vertices: ")[1].split("Channel")[0])
+        textwrap.dedent(str(gate).split("Vertices: ")[1].split("Channel")[0]),
     )
     channels = ast.literal_eval(
-        textwrap.dedent(str(gate).split("Channel(s): ")[1].split("Name")[0])
+        textwrap.dedent(str(gate).split("Channel(s): ")[1].split("Name")[0]),
     )
     return PolyGate(vertices, channels)
 
 
 def live_PBMC_gate(sample, patient, gateDF):
-    """Returns singlet lymphocyte live PBMCs for a patient"""
+    """Returns singlet lymphocyte live PBMCs for a patient."""
     gates = ["PBMC Gate", "Single Cell Gate 1", "Single Cell Gate 2", "Live/Dead Gate"]
     for gate_name in gates:
         gate = form_gate(
             gateDF.loc[
                 (gateDF["Patient"] == patient) & (gateDF["Gate Label"] == gate_name)
-            ].Gate.values[0]
+            ].Gate.values[0],
         )
         sample = sample.gate(gate)
     return sample
 
 
 def pop_gate(sample, cell_type, patient, gateDF):
-    """Extracts cell population sample"""
+    """Extracts cell population sample."""
     gates = gate_dict[cell_type]
 
     pop_sample = copy(sample)
@@ -211,7 +209,7 @@ def pop_gate(sample, cell_type, patient, gateDF):
         gate = form_gate(
             gateDF.loc[
                 (gateDF["Patient"] == patient) & (gateDF["Gate Label"] == gate_name)
-            ].Gate.values[0]
+            ].Gate.values[0],
         )
         pop_sample = pop_sample.gate(gate)
     abund = pop_sample.counts / sample.counts
@@ -219,7 +217,7 @@ def pop_gate(sample, cell_type, patient, gateDF):
 
 
 def make_flow_df(subtract=True, abundance=False, foldChange=False):
-    """Compiles data for all populations for all patients into .csv"""
+    """Compiles data for all populations for all patients into .csv."""
     patients = get_status_dict().keys()
     times = ["15min", "60min"]
     treatments = [
@@ -294,9 +292,9 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
                                             "Treatment": treatment,
                                             "Cell": cell_type,
                                             "Abundance": abund,
-                                        }
+                                        },
                                     ),
-                                ]
+                                ],
                             )
                         else:
                             for marker in markers:
@@ -304,7 +302,7 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
                                 mean = np.mean(
                                     mean.values[
                                         mean.values < np.quantile(mean.values, 0.995)
-                                    ]
+                                    ],
                                 )
                                 if subtract:
                                     if treatment == "Untreated":
@@ -319,9 +317,9 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
                                                         "Cell": cell_type,
                                                         "Marker": marker_dict[marker],
                                                         "Mean": mean,
-                                                    }
+                                                    },
                                                 ),
-                                            ]
+                                            ],
                                         )
                                         untreatedDF = pd.concat(
                                             [
@@ -331,9 +329,9 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
                                                         "Cell": cell_type,
                                                         "Marker": marker_dict[marker],
                                                         "Mean": [mean],
-                                                    }
+                                                    },
                                                 ),
-                                            ]
+                                            ],
                                         )
                                     else:
                                         subVal = untreatedDF.loc[
@@ -357,9 +355,9 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
                                                                 marker
                                                             ],
                                                             "Mean": (mean / subVal) - 1,
-                                                        }
+                                                        },
                                                     ),
-                                                ]
+                                                ],
                                             )
                                         else:
                                             CoH_DF = pd.concat(
@@ -375,9 +373,9 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
                                                                 marker
                                                             ],
                                                             "Mean": mean - subVal,
-                                                        }
+                                                        },
                                                     ),
-                                                ]
+                                                ],
                                             )
                                 else:
                                     CoH_DF = pd.concat(
@@ -391,9 +389,9 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
                                                     "Cell": cell_type,
                                                     "Marker": marker_dict[marker],
                                                     "Mean": mean,
-                                                }
+                                                },
                                             ),
-                                        ]
+                                        ],
                                     )
                 else:
                     for cell_type in cell_types:
@@ -409,9 +407,9 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
                                                 "Treatment": treatment,
                                                 "Cell": cell_type,
                                                 "Abundance": np.nan,
-                                            }
+                                            },
                                         ),
-                                    ]
+                                    ],
                                 )
                             else:
                                 CoH_DF = pd.concat(
@@ -425,9 +423,9 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
                                                 "Cell": cell_type,
                                                 "Marker": marker_dict[marker],
                                                 "Mean": np.nan,
-                                            }
+                                            },
                                         ),
-                                    ]
+                                    ],
                                 )
     if subtract:
         UntreatedDF = CoH_DF.loc[(CoH_DF.Treatment == "Untreated")]
@@ -437,19 +435,19 @@ def make_flow_df(subtract=True, abundance=False, foldChange=False):
             CoH_DF.to_csv("./coh/data/CoH_Flow_DF_FC.csv")
         else:
             CoH_DF.to_csv("./coh/data/CoH_Flow_DF.csv")
+    elif abundance:
+        CoH_DF.to_csv("./coh/data/CoH_Flow_DF_Abund.csv")
     else:
-        if abundance:
-            CoH_DF.to_csv("./coh/data/CoH_Flow_DF_Abund.csv")
-        else:
-            raise RuntimeError("Shouldn't end up here.")
+        msg = "Shouldn't end up here."
+        raise RuntimeError(msg)
 
     return CoH_DF
 
 
 def make_CoH_Tensor(
-    just_signal: bool = False, foldChange: bool = False
+    just_signal: bool = False, foldChange: bool = False,
 ) -> xa.DataArray:
-    """Processes RA DataFrame into Xarray Tensor"""
+    """Processes RA DataFrame into Xarray Tensor."""
     if foldChange:
         df = pd.read_csv("./coh/data/CoH_Flow_DF_FC.csv", index_col=[1, 2, 3, 4, 5])
     else:
@@ -460,7 +458,7 @@ def make_CoH_Tensor(
 
     if just_signal or foldChange:
         markers = np.array(
-            ["pSTAT1", "pSTAT3", "pSTAT4", "pSTAT5", "pSTAT6", "pSmad1-2"]
+            ["pSTAT1", "pSTAT3", "pSTAT4", "pSTAT5", "pSTAT6", "pSmad1-2"],
         )
         xdata = xdata.loc[:, :, :, markers]
 
@@ -474,7 +472,7 @@ def make_CoH_Tensor(
                 "IFNg-50ng",
                 "TGFB-50ng",
                 "IFNg-50ng+IL6-50ng",
-            ]
+            ],
         )
     else:
         treatments = np.array(
@@ -487,7 +485,7 @@ def make_CoH_Tensor(
                 "TGFB-50ng",
                 "IFNg-50ng+IL6-50ng",
                 "Untreated",
-            ]
+            ],
         )
 
     xdata = xdata.loc[list(get_status_dict().keys()), treatments, :, :]
@@ -495,28 +493,28 @@ def make_CoH_Tensor(
     # Normalize
     if foldChange:
         xdata -= np.nanmean(xdata, axis=(0, 1, 2))[
-            np.newaxis, np.newaxis, np.newaxis, :
+            np.newaxis, np.newaxis, np.newaxis, :,
         ]
         xdata /= np.nanstd(xdata, axis=(0, 1, 2))[np.newaxis, np.newaxis, np.newaxis, :]
     else:
         xdata[:, :-1, :, :] -= np.nanmean(xdata[:, :-1, :, :], axis=(0, 1, 2))[
-            np.newaxis, np.newaxis, np.newaxis, :
+            np.newaxis, np.newaxis, np.newaxis, :,
         ]
         xdata[:, :-1, :, :] /= np.nanstd(xdata[:, :-1, :, :], axis=(0, 1, 2))[
-            np.newaxis, np.newaxis, np.newaxis, :
+            np.newaxis, np.newaxis, np.newaxis, :,
         ]
         xdata[:, -1, :, :] -= np.nanmean(xdata[:, -1, :, :], axis=(0, 1))[
-            np.newaxis, np.newaxis, :
+            np.newaxis, np.newaxis, :,
         ]
         xdata[:, -1, :, :] /= np.nanstd(xdata[:, -1, :, :], axis=(0, 1))[
-            np.newaxis, np.newaxis, :
+            np.newaxis, np.newaxis, :,
         ]
 
     return xdata
 
 
 def make_CoH_Tensor_abund() -> xa.DataArray:
-    """Processes RA DataFrame into Xarray Tensor"""
+    """Processes RA DataFrame into Xarray Tensor."""
     df = pd.read_csv("./coh/data/CoH_Flow_DF_Abund.csv", index_col=[1, 2, 3, 4])
     df = df.dropna()
 
@@ -532,7 +530,7 @@ def make_CoH_Tensor_abund() -> xa.DataArray:
             "TGFB-50ng",
             "IFNg-50ng+IL6-50ng",
             "Untreated",
-        ]
+        ],
     )
 
     xdata = xdata.loc[list(get_status_dict().keys()), "15min", treatments, :]
@@ -557,13 +555,13 @@ def make_flow_sc_dataframe():
     )
     totalDF = pd.DataFrame([])
 
-    for i, patient in enumerate(patients):
+    for _i, patient in enumerate(patients):
         patient_num = patient.split(" ")[1]
         patient_files = []
         for name in Path(r"" + str("/opt/CoH/" + patient + "/")).glob("**/*.fcs"):
             patient_files.append(str(name))
-        for j, time in enumerate(times):
-            for k, treatment in enumerate(treatments):
+        for _j, time in enumerate(times):
+            for _k, treatment in enumerate(treatments):
                 if (
                     "/opt/CoH/"
                     + patient

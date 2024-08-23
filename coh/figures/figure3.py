@@ -1,14 +1,14 @@
-"""
-This creates Figure 3, dissection of signaling.
-"""
+"""This creates Figure 3, dissection of signaling."""
 
 import pickle
-import pandas as pd
+
 import numpy as np
+import pandas as pd
 import seaborn as sns
 from scipy.stats import zscore
-from .common import subplotLabel, getSetup, BC_scatter_cells, CoH_Scat_Plot
-from ..flow import make_CoH_Tensor, get_status_df
+
+from ..flow import get_status_df, make_CoH_Tensor
+from .common import BC_scatter_cells, CoH_Scat_Plot, getSetup, subplotLabel
 
 
 def makeFigure():
@@ -42,7 +42,7 @@ def makeFigure():
             "TGFB-50ng",
             "IFNg-50ng+IL6-50ng",
             "Untreated",
-        ]
+        ],
     )
     CoH_DF = CoH_DF.loc[
         (CoH_DF.Treatment.isin(treatments)) & (CoH_DF.Time == "15min")
@@ -72,7 +72,7 @@ def makeFigure():
 
     meanDF = (
         meanDF.pivot(
-            index=["Patient", "Cell", "Treatment"], columns="Marker", values="Mean"
+            index=["Patient", "Cell", "Treatment"], columns="Marker", values="Mean",
         )
         .reset_index()
         .set_index("Patient")
@@ -190,16 +190,16 @@ def makeFigure():
 
 
 def plot_by_patient(
-    sigDF, cell1, receptor1, treatment1, cell2, receptor2, treatment2, ax
-):
-    """Plots receptor in pop 1 vs receptor in pop 2 per patient, by disease status"""
+    sigDF, cell1, receptor1, treatment1, cell2, receptor2, treatment2, ax,
+) -> None:
+    """Plots receptor in pop 1 vs receptor in pop 2 per patient, by disease status."""
     status_DF = get_status_df()
     plotDF = pd.DataFrame(
         {
             "Patient": sigDF.loc[
                 (sigDF.Cell == cell1) & (sigDF.Treatment == treatment1)
-            ].index.values
-        }
+            ].index.values,
+        },
     )
     plotDF[cell1 + " " + receptor1 + " " + treatment1] = sigDF.loc[
         (sigDF.Cell == cell1) & (sigDF.Treatment == treatment1)
@@ -208,7 +208,7 @@ def plot_by_patient(
         (sigDF.Cell == cell2) & (sigDF.Treatment == treatment2)
     ][receptor2].values
     plotDF = plotDF.set_index("Patient").join(
-        status_DF.set_index("Patient"), on="Patient"
+        status_DF.set_index("Patient"), on="Patient",
     )
     sns.scatterplot(
         data=plotDF,
@@ -228,8 +228,8 @@ def plot_by_patient(
     )
 
 
-def plot_diff_cell(sigDF, marker1, treatment1, marker2, treatment2, ax):
-    """Plots receptor in pop 1 vs receptor in pop 2 per patient, by disease status"""
+def plot_diff_cell(sigDF, marker1, treatment1, marker2, treatment2, ax) -> None:
+    """Plots receptor in pop 1 vs receptor in pop 2 per patient, by disease status."""
     status_DF = get_status_df()
     sigDF = (
         sigDF.reset_index()
@@ -243,28 +243,28 @@ def plot_diff_cell(sigDF, marker1, treatment1, marker2, treatment2, ax):
                 (sigDF.Status == "BC")
                 & (sigDF.Cell == cell)
                 & (sigDF.Treatment == treatment1)
-            ][marker1].values
+            ][marker1].values,
         )
         BC_val_2 = np.mean(
             sigDF.loc[
                 (sigDF.Status == "BC")
                 & (sigDF.Cell == cell)
                 & (sigDF.Treatment == treatment2)
-            ][marker2].values
+            ][marker2].values,
         )
         Healthy_val_1 = np.mean(
             sigDF.loc[
                 (sigDF.Status == "Healthy")
                 & (sigDF.Cell == cell)
                 & (sigDF.Treatment == treatment1)
-            ][marker1].values
+            ][marker1].values,
         )
         Healthy_val_2 = np.mean(
             sigDF.loc[
                 (sigDF.Status == "Healthy")
                 & (sigDF.Cell == cell)
                 & (sigDF.Treatment == treatment2)
-            ][marker2].values
+            ][marker2].values,
         )
         plotDF = pd.concat(
             [
@@ -274,9 +274,9 @@ def plot_diff_cell(sigDF, marker1, treatment1, marker2, treatment2, ax):
                         "Cell": [cell],
                         "BC - Healthy Baseline " + marker1: BC_val_1 - Healthy_val_1,
                         "BC - Healthy Baseline " + marker2: BC_val_2 - Healthy_val_2,
-                    }
+                    },
                 ),
-            ]
+            ],
         )
 
     sns.scatterplot(

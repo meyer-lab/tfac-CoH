@@ -1,15 +1,14 @@
-"""
-This file includes various methods for flow cytometry analysis of fixed cells.
-"""
+"""This file includes various methods for flow cytometry analysis of fixed cells."""
 
-from collections import OrderedDict
-import pandas as pd
-import numpy as np
 import warnings
+from collections import OrderedDict
+
+import numpy as np
+import pandas as pd
 import xarray as xa
 from FlowCytometryTools import FCMeasurement
-from .flow import pop_gate, live_PBMC_gate, get_gate_dict
 
+from .flow import get_gate_dict, live_PBMC_gate, pop_gate
 
 warnings.filterwarnings("ignore")
 
@@ -102,7 +101,7 @@ panelDict = {
 
 
 def get_status_dict_rec():
-    """Returns status dictionary"""
+    """Returns status dictionary."""
     return OrderedDict(
         [
             ("Patient 26", "Healthy"),
@@ -141,20 +140,20 @@ def get_status_dict_rec():
             ("Patient 19186-14", "BC"),
             ("Patient 21368-3", "BC"),
             ("Patient 21368-4", "BC"),
-        ]
+        ],
     )
 
 
 def get_status_rec_df():
     statusDF = pd.DataFrame.from_dict(
-        get_status_dict_rec(), orient="index"
+        get_status_dict_rec(), orient="index",
     ).reset_index()
     statusDF.columns = ["Patient", "Status"]
     return statusDF
 
 
 def compile_patient_rec(patient_num):
-    """Adds all data from a single patient to an FC file"""
+    """Adds all data from a single patient to an FC file."""
     pathname = "/opt/CoH/Receptor Data/F" + patient_num.split(" ")[1] + "_Unmixed.fcs"
     FCfiles = []
     FCfiles.append(FCMeasurement(ID=patient_num, datafile=pathname))
@@ -162,7 +161,7 @@ def compile_patient_rec(patient_num):
 
 
 def combineWells_rec(samples, patientNum):
-    """Accepts sample array returned from importF, and array of channels, returns combined well data"""
+    """Accepts sample array returned from importF, and array of channels, returns combined well data."""
     markerKey = pd.read_csv("coh/data/Patient_Receptor_Panels.csv")
     dictionary = markerKey.loc[markerKey.Patient == patientNum].Panel.values
     marker_dict = panelDict[dictionary[0]]
@@ -176,7 +175,7 @@ def combineWells_rec(samples, patientNum):
 
 
 def process_sample_rec(sample, marker_dict):
-    """Relabels and logs a sample"""
+    """Relabels and logs a sample."""
     markers = np.array(list(marker_dict.keys()))
     log_markers = markers[np.isin(markers, sample.data.columns)]
     sample = sample.transform("tlog", channels=log_markers)
@@ -185,7 +184,7 @@ def process_sample_rec(sample, marker_dict):
 
 
 def make_flow_df_rec():
-    """Compiles data for all populations for all patients into .csv"""
+    """Compiles data for all populations for all patients into .csv."""
     patients = list(get_status_dict_rec().keys())
     cell_types = list(get_gate_dict().keys())
     gateDF = (
@@ -211,7 +210,7 @@ def make_flow_df_rec():
             for marker in markers:
                 mean = pop_sample.data[marker_dict[marker]]
                 mean = np.mean(
-                    mean.values[mean.values < np.quantile(mean.values, 0.995)]
+                    mean.values[mean.values < np.quantile(mean.values, 0.995)],
                 )
                 CoH_DF_rec = pd.concat(
                     [
@@ -222,9 +221,9 @@ def make_flow_df_rec():
                                 "Cell": cell_type,
                                 "Marker": marker_dict[marker],
                                 "Mean": mean,
-                            }
+                            },
                         ),
-                    ]
+                    ],
                 )
 
     CoH_DF_rec.to_csv("./coh/data/CoH_Rec_DF.csv")
@@ -233,7 +232,7 @@ def make_flow_df_rec():
 
 
 def make_CoH_Tensor_rec() -> xa.DataArray:
-    """Processes RA DataFrame into Xarray Tensor"""
+    """Processes RA DataFrame into Xarray Tensor."""
     df = pd.read_csv("./coh/data/CoH_Rec_DF.csv", index_col=[1, 2, 3])
 
     xdata = df.to_xarray()["Mean"]
@@ -251,7 +250,7 @@ def make_CoH_Tensor_rec() -> xa.DataArray:
             "IL7Ra",
             "IL10R",
             "IL12RI",
-        ]
+        ],
     )
 
     xdata = xdata.loc[list(get_status_dict_rec().keys()), :, markers]

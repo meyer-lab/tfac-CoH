@@ -1,17 +1,16 @@
-"""
-This creates Figure 7, heatmap (clustered factor correlations).
-"""
+"""This creates Figure 7, heatmap (clustered factor correlations)."""
 
 import pickle
+
 import numpy as np
 import pandas as pd
 import seaborn as sns
 from scipy.cluster.hierarchy import linkage
-from .common import subplotLabel, getSetup
 
-from ..tensor import factorTensor
-from ..flow_rec import make_CoH_Tensor_rec
 from ..flow import make_CoH_Tensor
+from ..flow_rec import make_CoH_Tensor_rec
+from ..tensor import factorTensor
+from .common import getSetup, subplotLabel
 
 
 def makeFigure():
@@ -31,13 +30,12 @@ def makeFigure():
     CoH_Data_R = make_CoH_Tensor_rec()
     tFacAllM_R = factorTensor(CoH_Data_R.to_numpy(), r=5)
 
-    f = CoH_Factor_HM(tFacAllM, CoH_Data, tFacAllM_R, CoH_Data_R)
+    return CoH_Factor_HM(tFacAllM, CoH_Data, tFacAllM_R, CoH_Data_R)
 
-    return f
 
 
 def CoH_Factor_HM(tFac, CoH_Array, tFac_R, CoH_Array_R):
-    """Plots bar plot for spec"""
+    """Plots bar plot for spec."""
     coord = CoH_Array.dims.index("Patient")
     mode_facs = tFac[1][coord]
 

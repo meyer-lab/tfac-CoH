@@ -1,12 +1,11 @@
-"""
-This creates Figure 5 heatmap (clustered receptor and response correlations).
-"""
+"""This creates Figure 5 heatmap (clustered receptor and response correlations)."""
 
-import seaborn as sns
-import pandas as pd
 import numpy as np
-from .common import subplotLabel, getSetup
+import pandas as pd
+import seaborn as sns
+
 from ..flow import get_status_df
+from .common import getSetup, subplotLabel
 
 
 def makeFigure():
@@ -26,7 +25,7 @@ def makeFigure():
     # CD4
     # f = dysreg_cor_hm_R(df, df_B, df_R, ["pSTAT3"], ["IL10-50ng"], ["pSmad1-2", "pSTAT4", "pSTAT1"], ["TGFB RII", "IL10R", "IL6Ra", "IL12RI", "IFNg R1"], cells=["CD4+"])
     # Bcell
-    f = dysreg_cor_hm_R(
+    return dysreg_cor_hm_R(
         df,
         df_B,
         df_R,
@@ -41,7 +40,6 @@ def makeFigure():
     # Monocytes
     # f = dysreg_cor_hm_R(df, df_B, df_R, ["pSTAT3", "pSTAT5", "pSmad1-2"], ["IL10-50ng", "IL2-50ng", "TGFB-50ng"], ["pSmad1-2", "pSTAT4"], ["TGFB RII", "PD_L1", "IL6Ra", "IL10R", "IL12RI", "IL2RB"], cells=["Classical Monocyte"])
 
-    return f
 
 
 def dysreg_cor_hm_R(
@@ -54,7 +52,7 @@ def dysreg_cor_hm_R(
     markers_dysreg_R,
     cells=False,
 ):
-    """Plots possible correlation of dysregulation"""
+    """Plots possible correlation of dysregulation."""
     df = df.loc[df.Patient != "Patient 406"]
     df_B = df_B.loc[df_B.Patient != "Patient 406"]
     df_R = df_R.loc[df_R.Patient != "Patient 19186-12"]
@@ -113,7 +111,7 @@ def dysreg_cor_hm_R(
     pCorr_DF = pd.DataFrame(pCor, columns=cov_DF.columns, index=cov_DF.columns)
 
     cmap = sns.color_palette("vlag", as_cmap=True)
-    f = sns.clustermap(
+    return sns.clustermap(
         pCorr_DF,
         robust=True,
         vmin=-1,
@@ -124,4 +122,3 @@ def dysreg_cor_hm_R(
         cmap=cmap,
         figsize=(8, 8),
     )
-    return f

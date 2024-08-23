@@ -1,37 +1,41 @@
-"""
-This file contains functions that are used in multiple figures.
-"""
+"""This file contains functions that are used in multiple figures."""
+from __future__ import annotations
 
-from string import ascii_lowercase
 import sys
 import time
+from string import ascii_lowercase
+from typing import TYPE_CHECKING
+
+import matplotlib as mpl
 import numpy as np
-import seaborn as sns
-import matplotlib
-import xarray as xa
 import pandas as pd
-from matplotlib import gridspec, pyplot as plt
+import seaborn as sns
+from matplotlib import gridspec
+from matplotlib import pyplot as plt
 from scipy.stats import mannwhitneyu
-from statannot import add_stat_annotation
 from sklearn import preprocessing
+from statannot import add_stat_annotation
+
 from ..flow import get_status_dict
 from ..flow_rec import get_status_dict_rec
 
+if TYPE_CHECKING:
+    import xarray as xa
 
-matplotlib.use("AGG")
+mpl.use("AGG")
 
-matplotlib.rcParams["legend.labelspacing"] = 0.2
-matplotlib.rcParams["legend.fontsize"] = 8
-matplotlib.rcParams["xtick.major.pad"] = 1.0
-matplotlib.rcParams["ytick.major.pad"] = 1.0
-matplotlib.rcParams["xtick.minor.pad"] = 0.9
-matplotlib.rcParams["ytick.minor.pad"] = 0.9
-matplotlib.rcParams["legend.handletextpad"] = 0.5
-matplotlib.rcParams["legend.handlelength"] = 0.5
-matplotlib.rcParams["legend.framealpha"] = 0.5
-matplotlib.rcParams["legend.markerscale"] = 0.7
-matplotlib.rcParams["legend.borderpad"] = 0.35
-matplotlib.rcParams["svg.fonttype"] = "none"
+mpl.rcParams["legend.labelspacing"] = 0.2
+mpl.rcParams["legend.fontsize"] = 8
+mpl.rcParams["xtick.major.pad"] = 1.0
+mpl.rcParams["ytick.major.pad"] = 1.0
+mpl.rcParams["xtick.minor.pad"] = 0.9
+mpl.rcParams["ytick.minor.pad"] = 0.9
+mpl.rcParams["legend.handletextpad"] = 0.5
+mpl.rcParams["legend.handlelength"] = 0.5
+mpl.rcParams["legend.framealpha"] = 0.5
+mpl.rcParams["legend.markerscale"] = 0.7
+mpl.rcParams["legend.borderpad"] = 0.35
+mpl.rcParams["svg.fonttype"] = "none"
 
 
 def getSetup(figsize: tuple[float, float], gridd: tuple[int, int], multz=None):
@@ -55,9 +59,9 @@ def getSetup(figsize: tuple[float, float], gridd: tuple[int, int], multz=None):
     x = 0
     ax = []
     while x < gridd[0] * gridd[1]:
-        if x not in multz.keys():  # If this is just a normal subplot
+        if x not in multz:  # If this is just a normal subplot
             ax.append(f.add_subplot(gs1[x]))
-        elif x in multz.keys():  # If this is a subplot that spans grid elements
+        elif x in multz:  # If this is a subplot that spans grid elements
             ax.append(f.add_subplot(gs1[x : x + multz[x] + 1]))
             x += multz[x]
         x += 1
@@ -65,7 +69,7 @@ def getSetup(figsize: tuple[float, float], gridd: tuple[int, int], multz=None):
     return (ax, f)
 
 
-def subplotLabel(axs):
+def subplotLabel(axs) -> None:
     """Place subplot labels on figure."""
     for ii, ax in enumerate(axs):
         ax.text(
@@ -79,10 +83,10 @@ def subplotLabel(axs):
         )
 
 
-def genFigure():
+def genFigure() -> None:
     """Main figure generation function."""
     fdir = "./output/"
-    start = time.time()
+    time.time()
     nameOut = "figure" + sys.argv[1]
 
     exec("from coh.figures." + nameOut + " import makeFigure", globals())
@@ -90,11 +94,10 @@ def genFigure():
     ff.savefig(fdir + nameOut + ".svg", dpi=300, bbox_inches="tight", pad_inches=0)
     ff.savefig(fdir + nameOut + ".pdf", dpi=300, bbox_inches="tight", pad_inches=0)
 
-    print(f"Figure {sys.argv[1]} is done after {time.time() - start} seconds.\n")
 
 
-def plot_tFac_CoH(axs: list, tFac, CoH_Array: xa.DataArray):
-    """Plots tensor factorization of cells"""
+def plot_tFac_CoH(axs: list, tFac, CoH_Array: xa.DataArray) -> None:
+    """Plots tensor factorization of cells."""
     for ii in range(CoH_Array.ndim):
         mode = CoH_Array.dims[ii]
         tFacDF = pd.DataFrame(
@@ -107,7 +110,7 @@ def plot_tFac_CoH(axs: list, tFac, CoH_Array: xa.DataArray):
         sns.heatmap(data=tFacDF, ax=axs[ii], cmap=cmap, vmin=-1, vmax=1, cbar=(ii == 0))
 
 
-def scatter_common(ax, hist_DF: pd.DataFrame, filter: bool):
+def scatter_common(ax, hist_DF: pd.DataFrame, filter: bool) -> None:
     filt_cells = []
     pvals = []
     for cell in hist_DF.Cell.unique():
@@ -128,9 +131,8 @@ def scatter_common(ax, hist_DF: pd.DataFrame, filter: bool):
                 pvals.append("*")
             else:
                 pvals.append("****")
-        else:
-            if not filter:
-                pass
+        elif not filter:
+            pass
 
     if filter:
         hist_DF = hist_DF.loc[hist_DF.Cell.isin(filt_cells)]
@@ -156,9 +158,9 @@ def scatter_common(ax, hist_DF: pd.DataFrame, filter: bool):
 
 
 def BC_scatter_cells(
-    ax, CoH_DF: pd.DataFrame, marker: str, cytokine: str, filter=False
-):
-    """Scatters specific responses"""
+    ax, CoH_DF: pd.DataFrame, marker: str, cytokine: str, filter=False,
+) -> None:
+    """Scatters specific responses."""
     CoH_DF = CoH_DF.loc[(CoH_DF.Time == "15min")]
     status_dict = get_status_dict()
     hist_DF = CoH_DF.loc[(CoH_DF.Treatment == cytokine) & (CoH_DF.Marker == marker)]
@@ -172,8 +174,8 @@ def BC_scatter_cells(
     scatter_common(ax, hist_DF, filter=filter)
 
 
-def BC_scatter_cells_rec(ax, CoH_DF: pd.DataFrame, marker: str, filter=False):
-    """Scatters specific responses"""
+def BC_scatter_cells_rec(ax, CoH_DF: pd.DataFrame, marker: str, filter=False) -> None:
+    """Scatters specific responses."""
     status_dict = get_status_dict_rec()
     hist_DF = CoH_DF.loc[(CoH_DF.Marker == marker)]
     hist_DF = hist_DF.groupby(["Cell", "Patient", "Marker"]).Mean.mean().reset_index()
@@ -186,13 +188,13 @@ def BC_scatter_cells_rec(ax, CoH_DF: pd.DataFrame, marker: str, filter=False):
     scatter_common(ax, hist_DF, filter=filter)
 
 
-def CoH_Scat_Plot(ax, tFac, CoH_Array, mode, plot_comps, status_df):
-    """Plots bar plot for spec"""
+def CoH_Scat_Plot(ax, tFac, CoH_Array, mode, plot_comps, status_df) -> None:
+    """Plots bar plot for spec."""
     mode_labels = CoH_Array[mode]
     coord = CoH_Array.dims.index(mode)
     mode_facs = tFac[1][coord]
     tFacDF = pd.DataFrame(
-        mode_facs, index=mode_labels, columns=[i + 1 for i in range(mode_facs.shape[1])]
+        mode_facs, index=mode_labels, columns=[i + 1 for i in range(mode_facs.shape[1])],
     )
     colors = sns.color_palette(n_colors=2)
     palette = {"BC": colors[0], "Healthy": colors[1]}
@@ -215,12 +217,12 @@ def CoH_Scat_Plot(ax, tFac, CoH_Array, mode, plot_comps, status_df):
     )
 
 
-def comp_corr_plot(tFac, CoH_Array, status_DF, ax):
-    """Plots correlation which each component has with outcome across patients"""
+def comp_corr_plot(tFac, CoH_Array, status_DF, ax) -> None:
+    """Plots correlation which each component has with outcome across patients."""
     coord = CoH_Array.dims.index("Patient")
     mode_facs = tFac[1][coord]
     Donor_CoH_y = preprocessing.label_binarize(
-        status_DF.Status, classes=["Healthy", "BC"]
+        status_DF.Status, classes=["Healthy", "BC"],
     ).flatten()
     corrDF = pd.DataFrame(data=mode_facs, columns=np.arange(1, mode_facs.shape[1] + 1))
     corrDF["BC Status"] = Donor_CoH_y

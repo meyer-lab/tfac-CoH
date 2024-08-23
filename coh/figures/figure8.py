@@ -1,19 +1,18 @@
-"""
-This creates Figure 8, an examination of tucker decomposition for response data.
-"""
+"""This creates Figure 8, an examination of tucker decomposition for response data."""
 
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from .common import subplotLabel, getSetup
-from ..flow import make_CoH_Tensor, get_status_df
-from ..flow_rec import make_CoH_Tensor_rec, get_status_rec_df
-from tensorpack.tucker import tucker_decomp
-from tensorpack.plot import tucker_reduction
-from tensorpack.decomposition import Decomposition
+from sklearn import preprocessing
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn.model_selection import RepeatedStratifiedKFold
-from sklearn import preprocessing
+from tensorpack.decomposition import Decomposition
+from tensorpack.plot import tucker_reduction
+from tensorpack.tucker import tucker_decomp
+
+from ..flow import get_status_df, make_CoH_Tensor
+from ..flow_rec import get_status_rec_df, make_CoH_Tensor_rec
+from .common import getSetup, subplotLabel
 
 
 def makeFigure():
@@ -51,15 +50,15 @@ def makeFigure():
 
 cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=20)
 lrmodel = LogisticRegressionCV(
-    penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv
+    penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv,
 )
 
 
-def CoH_tuck_LogReg_plot(ax, tFac, CoH_Array, status_DF):
-    """Plot factor weights for donor BC prediction"""
+def CoH_tuck_LogReg_plot(ax, tFac, CoH_Array, status_DF) -> None:
+    """Plot factor weights for donor BC prediction."""
     mode_facs = tFac[0]
     Donor_CoH_y = preprocessing.label_binarize(
-        status_DF.Status, classes=["Healthy", "BC"]
+        status_DF.Status, classes=["Healthy", "BC"],
     ).flatten()
 
     LR_CoH = lrmodel.fit(mode_facs, Donor_CoH_y)
@@ -68,16 +67,16 @@ def CoH_tuck_LogReg_plot(ax, tFac, CoH_Array, status_DF):
         {
             "Component": np.arange(1, mode_facs.shape[1] + 1),
             "Coefficient": LR_CoH.coef_[0],
-        }
+        },
     )
     sns.barplot(data=CoH_comp_weights, x="Component", y="Coefficient", color="k", ax=ax)
 
 
-def BC_status_plot_tuck(tuck_decomp, ax, status_DF):
-    """Plot 5 fold CV by # components"""
+def BC_status_plot_tuck(tuck_decomp, ax, status_DF) -> None:
+    """Plot 5 fold CV by # components."""
     accDF = pd.DataFrame()
     Donor_CoH_y = preprocessing.label_binarize(
-        status_DF.Status, classes=["Healthy", "BC"]
+        status_DF.Status, classes=["Healthy", "BC"],
     ).flatten()
     xticks = []
 
@@ -94,9 +93,9 @@ def BC_status_plot_tuck(tuck_decomp, ax, status_DF):
                         "Data Type": "Tensor Factorization",
                         "Components": [i],
                         "Accuracy (10-fold CV)": scoresTFAC,
-                    }
+                    },
                 ),
-            ]
+            ],
         )
         xticks.append(" ".join(str(x) for x in tuck_decomp.TuckRank[i]))
 

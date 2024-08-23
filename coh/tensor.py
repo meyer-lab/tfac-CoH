@@ -1,15 +1,16 @@
-import numpy as np
 from copy import deepcopy
-import seaborn as sns
+
+import numpy as np
 import pandas as pd
+import seaborn as sns
 import tensorly as tl
-from tensorly.decomposition._cp import initialize_cp
-from tensorly.cp_tensor import cp_flip_sign, CPTensor
-from tensorly.tenalg.einsum_tenalg import khatri_rao
-from tensorpack.cmtf import cp_normalize, calcR2X, mlstsq, tqdm
+from sklearn import preprocessing
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn.model_selection import RepeatedStratifiedKFold
-from sklearn import preprocessing
+from tensorly.cp_tensor import CPTensor, cp_flip_sign
+from tensorly.decomposition._cp import initialize_cp
+from tensorly.tenalg.einsum_tenalg import khatri_rao
+from tensorpack.cmtf import calcR2X, cp_normalize, mlstsq, tqdm
 
 
 def factorTensor(
@@ -90,15 +91,15 @@ def factorTensor(
 
 
 def giniIndex(X: np.ndarray) -> np.ndarray:
-    """Calculates the Gini Coeff for each component and returns the index rearrangment"""
+    """Calculates the Gini Coeff for each component and returns the index rearrangment."""
     X = np.abs(X)
     gini = np.var(X, axis=0) / np.mean(X, axis=0)
 
     return np.argsort(gini)
 
 
-def R2Xplot(ax, tensor, compNum: int):
-    """Creates R2X plot for non-neg CP tensor decomposition"""
+def R2Xplot(ax, tensor, compNum: int) -> None:
+    """Creates R2X plot for non-neg CP tensor decomposition."""
     varHold = [factorTensor(tensor, i).R2X for i in range(1, compNum + 1)]
     ax.scatter(np.arange(1, compNum + 1), varHold, c="k", s=20.0)
     ax.set(
@@ -113,16 +114,16 @@ def R2Xplot(ax, tensor, compNum: int):
 
 cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=20)
 lrmodel = LogisticRegressionCV(
-    penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv
+    penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv,
 )
 
 
-def CoH_LogReg_plot(ax, tFac, CoH_Array, status_DF):
-    """Plot factor weights for donor BC prediction"""
+def CoH_LogReg_plot(ax, tFac, CoH_Array, status_DF) -> None:
+    """Plot factor weights for donor BC prediction."""
     coord = CoH_Array.dims.index("Patient")
     mode_facs = tFac[1][coord]
     Donor_CoH_y = preprocessing.label_binarize(
-        status_DF.Status, classes=["Healthy", "BC"]
+        status_DF.Status, classes=["Healthy", "BC"],
     ).flatten()
 
     LR_CoH = lrmodel.fit(mode_facs, Donor_CoH_y)
@@ -131,16 +132,16 @@ def CoH_LogReg_plot(ax, tFac, CoH_Array, status_DF):
         {
             "Component": np.arange(1, mode_facs.shape[1] + 1),
             "Coefficient": LR_CoH.coef_[0],
-        }
+        },
     )
     sns.barplot(data=CoH_comp_weights, x="Component", y="Coefficient", color="k", ax=ax)
 
 
-def BC_status_plot(compNum, CoH_Data, ax, status_DF):
-    """Plot 5 fold CV by # components"""
+def BC_status_plot(compNum, CoH_Data, ax, status_DF) -> None:
+    """Plot 5 fold CV by # components."""
     accDF = pd.DataFrame()
     Donor_CoH_y = preprocessing.label_binarize(
-        status_DF.Status, classes=["Healthy", "BC"]
+        status_DF.Status, classes=["Healthy", "BC"],
     ).flatten()
 
     for i in range(1, compNum + 1):
@@ -158,9 +159,9 @@ def BC_status_plot(compNum, CoH_Data, ax, status_DF):
                         "Data Type": "Tensor Factorization",
                         "Components": [i],
                         "Accuracy (10-fold CV)": scoresTFAC,
-                    }
+                    },
                 ),
-            ]
+            ],
         )
 
     accDF = accDF.reset_index(drop=True)

@@ -1,19 +1,18 @@
-"""
-This creates Figure 4, tensor factorization of receptor data.
-"""
+"""This creates Figure 4, tensor factorization of receptor data."""
 
 import numpy as np
 import pandas as pd
 import seaborn as sns
+
+from ..flow_rec import get_status_rec_df, make_CoH_Tensor_rec
+from ..tensor import BC_status_plot, factorTensor
 from .common import (
-    subplotLabel,
-    getSetup,
-    plot_tFac_CoH,
     BC_scatter_cells_rec,
     comp_corr_plot,
+    getSetup,
+    plot_tFac_CoH,
+    subplotLabel,
 )
-from ..tensor import factorTensor, BC_status_plot
-from ..flow_rec import make_CoH_Tensor_rec, get_status_rec_df
 
 
 def makeFigure():
@@ -54,7 +53,7 @@ def makeFigure():
     DF["Mean"] /= np.std(DF["Mean"].values)
     PD1_DF = DF.loc[
         DF.Cell.isin(
-            ["CD8+", "CD8 TEM", "CD8 TCM", "CD8 Naive", "CD8 Naive", "CD8 TEMRA"]
+            ["CD8+", "CD8 TEM", "CD8 TCM", "CD8 Naive", "CD8 Naive", "CD8 TEMRA"],
         )
     ]
     BC_scatter_cells_rec(ax[6], PD1_DF, "PD1", filter=False)
@@ -74,7 +73,7 @@ def makeFigure():
                 "CD20 B",
                 "CD20 B Naive",
                 "CD20 B Memory",
-            ]
+            ],
         )
     ]
     BC_scatter_cells_rec(ax[7], PDL1_DF, "PD_L1", filter=False)
@@ -94,7 +93,7 @@ def makeFigure():
                 "CD20 B",
                 "CD20 B Naive",
                 "CD20 B Memory",
-            ]
+            ],
         )
     ]
     BC_scatter_cells_rec(ax[8], IL6Ra_DF, "IL6Ra", filter=False)
@@ -102,11 +101,11 @@ def makeFigure():
     return f
 
 
-def rec_cell_plot(CoH_DF, rec, cells, ax):
-    """Plots cells responses across signaling products for a single stimulatiom"""
+def rec_cell_plot(CoH_DF, rec, cells, ax) -> None:
+    """Plots cells responses across signaling products for a single stimulatiom."""
     CoH_DF = CoH_DF.loc[(CoH_DF.Marker == rec) & (CoH_DF.Cell.isin(cells))]
     sns.boxplot(
-        data=CoH_DF, x="Cell", y="Mean", palette="husl", showfliers=False, ax=ax
+        data=CoH_DF, x="Cell", y="Mean", palette="husl", showfliers=False, ax=ax,
     )
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
     ax.set(ylabel=rec)

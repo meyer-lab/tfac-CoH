@@ -1,15 +1,13 @@
-"""
-This creates Figure S3, factorization of fold-change data.
-"""
+"""This creates Figure S3, factorization of fold-change data."""
 
+from ..flow import get_status_df, make_CoH_Tensor
 from ..tensor import (
-    factorTensor,
-    R2Xplot,
-    CoH_LogReg_plot,
     BC_status_plot,
+    CoH_LogReg_plot,
+    R2Xplot,
+    factorTensor,
 )
-from ..flow import make_CoH_Tensor, get_status_df
-from .common import subplotLabel, getSetup, plot_tFac_CoH
+from .common import getSetup, plot_tFac_CoH, subplotLabel
 
 
 def makeFigure():

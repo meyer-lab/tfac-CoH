@@ -1,17 +1,17 @@
-"""
-This creates Figure 2I, Characterization of component dependency when classifying BC patients
-"""
+"""This creates Figure 2I, Characterization of component dependency when classifying BC patients."""
 
-import pickle
-import seaborn as sns
-import pandas as pd
 import itertools
+import pickle
+
 import numpy as np
-from .common import subplotLabel, getSetup
-from ..flow import make_CoH_Tensor, get_status_df
+import pandas as pd
+import seaborn as sns
+from sklearn import preprocessing
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn.model_selection import RepeatedStratifiedKFold
-from sklearn import preprocessing
+
+from ..flow import get_status_df, make_CoH_Tensor
+from .common import getSetup, subplotLabel
 
 
 def makeFigure():
@@ -31,17 +31,17 @@ def makeFigure():
     return f
 
 
-def CoH_comp_scan_plot(ax, tFac, CoH_Array, status_DF):
-    """Plot factor weights for donor BC prediction"""
+def CoH_comp_scan_plot(ax, tFac, CoH_Array, status_DF) -> None:
+    """Plot factor weights for donor BC prediction."""
     cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=20)
     lrmodel = LogisticRegressionCV(
-        penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv
+        penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv,
     )
     coord = CoH_Array.dims.index("Patient")
     mode_facs = tFac[1][coord]
 
     Donor_CoH_y = preprocessing.label_binarize(
-        status_DF.Status, classes=["Healthy", "BC"]
+        status_DF.Status, classes=["Healthy", "BC"],
     ).flatten()
     all_comps = np.arange(0, mode_facs.shape[1])
     Acc_DF = pd.DataFrame()
@@ -62,13 +62,13 @@ def CoH_comp_scan_plot(ax, tFac, CoH_Array, status_DF):
                         "Component 1": "Comp. " + str(comps[0] + 1),
                         "Component 2": "Comp. " + str(comps[1] + 1),
                         "Accuracy": [acc],
-                    }
+                    },
                 ),
-            ]
+            ],
         )
 
     Acc_DF = Acc_DF.pivot_table(
-        index="Component 1", columns="Component 2", values="Accuracy", sort=False
+        index="Component 1", columns="Component 2", values="Accuracy", sort=False,
     )
     sns.heatmap(
         data=Acc_DF,
