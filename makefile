@@ -7,7 +7,7 @@ flist = $(wildcard coh/figures/figure*.py)
 all: $(patsubst coh/figures/figure%.py, output/figure%.svg, $(flist))
 
 output/figure%.svg: coh/figures/figure%.py
-	mkdir -p ./output
+	@ mkdir -p ./output
 	poetry run fbuild $*
 
 clean:

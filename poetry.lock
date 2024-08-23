@@ -102,20 +102,18 @@ files = [
 
 [[package]]
 name = "fcsparser"
-version = "0.2.4"
+version = "0.2.8"
 description = "A python package for reading raw fcs files"
 optional = false
-python-versions = "*"
+python-versions = ">=3.8.0,<4.0.0"
 files = [
-    {file = "fcsparser-0.2.4-py3-none-any.whl", hash = "sha256:52e07e96ec21c5915c78c0481aa796888890f704e56a0c7114f5c198ef6de46e"},
-    {file = "fcsparser-0.2.4.tar.gz", hash = "sha256:fa8e60d1bbda2fd592b6fd387e7bf3048fa357359e06e0b263e7034469f617b3"},
+    {file = "fcsparser-0.2.8-py3-none-any.whl", hash = "sha256:833b02ceff18f34c9304681f5b6675039f5b39a31dfdd9640881f43223bcc2ab"},
+    {file = "fcsparser-0.2.8.tar.gz", hash = "sha256:df0436bf678df1f4ad3274e55fa06773f884fa45d8329015913a6178d10c73ea"},
 ]
 
 [package.dependencies]
-numpy = "*"
-pandas = "*"
-setuptools = "*"
-six = "*"
+numpy = ">=1,<2"
+pandas = ">=1.5.3"
 
 [[package]]
 name = "FlowCytometryTools"
@@ -917,22 +915,6 @@ docs = ["ipykernel", "nbconvert", "numpydoc", "pydata_sphinx_theme (==0.10.0rc2)
 stats = ["scipy (>=1.3)", "statsmodels (>=0.10)"]
 
 [[package]]
-name = "setuptools"
-version = "73.0.1"
-description = "Easily download, build, install, upgrade, and uninstall Python packages"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "setuptools-73.0.1-py3-none-any.whl", hash = "sha256:b208925fcb9f7af924ed2dc04708ea89791e24bde0d3020b27df0e116088b34e"},
-    {file = "setuptools-73.0.1.tar.gz", hash = "sha256:d59a3e788ab7e012ab2c4baed1b376da6366883ee20d7a5fc426816e3d7b1193"},
-]
-
-[package.extras]
-core = ["importlib-metadata (>=6)", "importlib-resources (>=5.10.2)", "jaraco.text (>=3.7)", "more-itertools (>=8.8)", "packaging (>=24)", "platformdirs (>=2.6.2)", "tomli (>=2.0.1)", "wheel (>=0.43.0)"]
-doc = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "pygments-github-lexers (==0.0.5)", "pyproject-hooks (!=1.1)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-favicon", "sphinx-inline-tabs", "sphinx-lint", "sphinx-notfound-page (>=1,<2)", "sphinx-reredirects", "sphinxcontrib-towncrier", "towncrier (<24.7)"]
-test = ["build[virtualenv] (>=1.0.3)", "filelock (>=3.4.0)", "importlib-metadata", "ini2toml[lite] (>=0.14)", "jaraco.develop (>=7.21)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "jaraco.test", "mypy (==1.11.*)", "packaging (>=23.2)", "pip (>=19.1)", "pyproject-hooks (!=1.1)", "pytest (>=6,!=8.1.*)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-home (>=0.5)", "pytest-mypy", "pytest-perf", "pytest-ruff (<0.4)", "pytest-ruff (>=0.2.1)", "pytest-ruff (>=0.3.2)", "pytest-subprocess", "pytest-timeout", "pytest-xdist (>=3)", "tomli", "tomli-w (>=1.0.0)", "virtualenv (>=13.0.0)", "wheel (>=0.44.0)"]
-
-[[package]]
 name = "six"
 version = "1.16.0"
 description = "Python 2 and 3 compatibility utilities"
@@ -1051,7 +1033,7 @@ xarray = "^2024"
 type = "git"
 url = "https://github.com/meyer-lab/tensorpack.git"
 reference = "main"
-resolved_reference = "0ff2aec3172940e21d564abc6e805793b3852b48"
+resolved_reference = "5863877254aa5544924088c508c235e981840eed"
 
 [[package]]
 name = "threadpoolctl"
@@ -1111,4 +1093,4 @@ viz = ["matplotlib", "nc-time-axis", "seaborn"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11,<3.13"
-content-hash = "acd97820b5ce82c9713441ee420a7c9abf2e919d32ca5f813fd6e4a7e80a836b"
+content-hash = "09550de85de67463e6b1a00066d95c24a5b0c17a5d81dd59f45f08e6c194c2fa"
