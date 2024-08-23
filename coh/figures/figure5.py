@@ -6,11 +6,9 @@ import seaborn as sns
 from scipy import stats
 from scipy.stats import zscore
 from sklearn import metrics, preprocessing
-from sklearn.linear_model import LogisticRegressionCV
-from sklearn.model_selection import RepeatedStratifiedKFold
 
 from ..flow_rec import get_status_rec_df, make_CoH_Tensor_rec
-from ..tensor import factorTensor
+from ..tensor import factorTensor, lrmodel
 from .common import getSetup, subplotLabel
 
 
@@ -163,10 +161,6 @@ def plot_by_patient(recDF, cell1, receptor1, cell2, receptor2, ax) -> None:
 def ROC_plot(recDF, receptors, cells, tFacDF, comp, ax):
     """Plots accuracy of classification using receptors and a tfac component."""
     status_DF = get_status_rec_df()
-    cv = RepeatedStratifiedKFold(n_splits=10, n_repeats=20)
-    lrmodel = LogisticRegressionCV(
-        penalty="l1", solver="saga", max_iter=5000, tol=1e-6, cv=cv,
-    )
     AUC_DF = pd.DataFrame()
 
     for i, receptor in enumerate(receptors):

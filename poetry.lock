@@ -1051,7 +1051,7 @@ xarray = "^2024"
 type = "git"
 url = "https://github.com/meyer-lab/tensorpack.git"
 reference = "main"
-resolved_reference = "8b613fa9dde6ae1cd8b1264185b5a803d3d8088b"
+resolved_reference = "0ff2aec3172940e21d564abc6e805793b3852b48"
 
 [[package]]
 name = "threadpoolctl"
