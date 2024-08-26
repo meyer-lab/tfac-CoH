@@ -44,8 +44,7 @@ def jackknife_plot(data, tfac_orig, sample_axis, rank, patient_dict, ax):
         cp_j = factorTensor(tensor_j, rank)
         fms_scores[i] = fms(tfac_orig, cp_j, consider_weights=True, skip_mode=sample_axis)
         statuses[i] = patient_dict[data.Patient.to_numpy()[i]]
-        print(statuses)
-        print(fms_scores)
+
     fmsDF = pd.DataFrame({"FMS Scores": fms_scores, "Status": statuses})
     sns.swarmplot(data=fmsDF, y="FMS Scores", hue="Status", ax=ax)
     ax.set(ylim=(0.5, 1))

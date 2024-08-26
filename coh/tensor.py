@@ -11,7 +11,6 @@ from tensorly.cp_tensor import CPTensor, cp_flip_sign
 from tensorly.decomposition._cp import initialize_cp
 from tensorly.tenalg.einsum_tenalg import khatri_rao
 from tensorpack.cmtf import calcR2X, cp_normalize, mlstsq, tqdm
-from tlviz.factor_tools import factor_match_score as fms
 
 
 def factorTensor(
