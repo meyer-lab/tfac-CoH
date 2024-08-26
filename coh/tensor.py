@@ -11,6 +11,7 @@ from tensorly.cp_tensor import CPTensor, cp_flip_sign
 from tensorly.decomposition._cp import initialize_cp
 from tensorly.tenalg.einsum_tenalg import khatri_rao
 from tensorpack.cmtf import calcR2X, cp_normalize, mlstsq, tqdm
+from tlviz.factor_tools import factor_match_score as fms
 
 
 def factorTensor(
@@ -174,3 +175,4 @@ def BC_status_plot(compNum, CoH_Data, ax, status_DF) -> None:
         color="k",
     )
     ax.set(xticks=np.arange(1, compNum + 1), ylim=(0.5, 1))
+            
